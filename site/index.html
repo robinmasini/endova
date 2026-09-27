@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Endova, la veille des sept jours d'avant</title>
+<meta name="description" content="Endova accompagne chaque patient par SMS de J-7 à H-2 et remonte les écarts de préparation pendant qu'ils sont encore rattrapables.">
+<meta name="theme-color" content="#0B1130">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/endova-mark.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Endova, la veille des sept jours d'avant">
+<meta property="og:description" content="Une coloscopie sur cinq est mal préparée. Endova veille les sept jours qui la décident.">
+<meta property="og:image" content="https://endova.fr/assets/hero-ending.jpg">
+<meta property="og:url" content="https://endova.fr/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://endova.fr/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hero-fond:#0B1130;
+  --canvas:#F5F2F8;
+  --panel:rgba(255,255,255,.72);
+  --bordure:rgba(5,28,78,.09);
+  --accent:#932B9C;
+  --accent-hover:#A8389B;
+  --accent-muted:rgba(147,43,156,.1);
+  --navy:#051C4E;
+  --texte:#051C4E;
+  --texte-2:#5B5068;
+  --tshadow:0 1px 2px rgba(5,5,10,.95),0 3px 12px rgba(5,5,10,.78),0 10px 44px rgba(5,5,10,.8);
+  --e1:cubic-bezier(.16,1,.3,1);
+  --e2:cubic-bezier(.4,0,.2,1);
+  --titre:"Jost",system-ui,sans-serif;
+  --corps:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden;overflow-x:clip;margin:0}
+html{scroll-behavior:auto}
+body{
+  background:var(--canvas);color:var(--texte);
+  font-family:var(--corps);font-size:17px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.jost{font-family:var(--titre);font-weight:600;letter-spacing:-.015em;line-height:1.1;margin:0}
+p{margin:0}
+a{color:inherit}
+img{max-width:100%;display:block}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.skip{position:absolute;left:-9999px;top:0;background:#fff;color:var(--navy);padding:12px 18px;z-index:200;border-radius:0 0 12px 0}
+.skip:focus{left:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+/* ---------------------------------------------------------------- Le héros */
+.hero{position:relative;height:520vh;background:var(--hero-fond)}
+.stage{position:sticky;top:0;height:100dvh;overflow:hidden;background:var(--hero-fond);
+  perspective:1400px}
+.stage video{
+  position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;
+  will-change:transform;transform:translateZ(0);opacity:0;transition:opacity .5s var(--e2);
+}
+.stage.video-prete video{opacity:1}
+.poster{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center}
+.scrim{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse 120% 90% at 50% 45%,rgba(4,13,42,0) 35%,rgba(4,13,42,.66) 100%)}
+
+/* Le compte à rebours. Un cadran qui se vide et la mention du jour : le temps
+   qui reste avant le bloc, dit en fond et non en argument. Très basse opacité,
+   loin du texte, il ne doit jamais prendre le regard. */
+.horloge{position:absolute;z-index:2;pointer-events:none;
+  left:57%;top:33%;translate:-50% -50%;
+  width:clamp(86px,8.4vw,116px);aspect-ratio:1;
+  opacity:var(--ho,0);display:grid;place-items:center}
+.horloge svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.horloge .piste{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.1}
+.horloge .arc{fill:none;stroke:rgba(255,255,255,.72);stroke-width:1.6;stroke-linecap:round;
+  stroke-dasharray:326.7;stroke-dashoffset:calc(326.7 * var(--hp,0))}
+.horloge b{font-family:var(--titre);font-weight:600;font-size:clamp(14px,1.5vw,20px);
+  letter-spacing:.08em;color:#fff;font-variant-numeric:tabular-nums}
+
+.bande{
+  position:absolute;left:0;top:0;z-index:3;width:100%;height:100%;
+  display:flex;align-items:center;pointer-events:none;opacity:0;
+  color:#F6EEFA;text-shadow:var(--tshadow);
+}
+.bande::before{
+  content:"";position:absolute;left:-4%;top:-4%;width:64%;height:108%;pointer-events:none;
+  opacity:calc(.25 + .75*var(--k,1));
+  background:radial-gradient(ellipse 78% 64% at 42% 50%,rgba(3,11,38,.72) 0%,rgba(3,11,38,.48) 46%,rgba(3,11,38,0) 76%);
+}
+.bande .dedans{position:relative;width:min(46ch,46vw);margin-left:clamp(24px,7vw,110px)}
+.bande h2{font-size:clamp(28px,4.4vw,58px);color:#fff}
+.bande .sous{margin-top:18px;font-size:clamp(15px,1.5vw,20px);color:#E6D8EE;max-width:34ch}
+
+/* Portrait. Ce bloc doit rester APRÈS les règles qu'il écrase : à spécificité
+   égale, c'est l'ordre d'écriture qui tranche, et une requête média n'ajoute
+   aucune spécificité. Placé plus haut, la moitié de ces règles ne s'appliquait
+   pas du tout. */
+@media (max-aspect-ratio:1/1){
+  /* Le sujet occupe la droite du cadre : un recadrage centré ne montrerait que
+     le duodénum. */
+  .poster{background-position:66% 50%}
+  .stage video{object-position:66% 50%}
+  .marque .mot{display:none}
+  /* Le texte monte en haut du cadre : sur un téléphone tenu à la main, le regard
+     va d'abord au tiers supérieur, et l'organe occupe le bas. */
+  .bande{align-items:flex-start;padding-top:13dvh}
+  .bande .dedans{width:min(46ch,84vw);margin-left:clamp(20px,6vw,40px)}
+  .bande h2{font-size:clamp(30px,7.4vw,46px)}
+  .bande .sous{font-size:clamp(15px,4vw,18px);max-width:30ch}
+  .horloge{display:none}
+  .bande::before{left:-4%;top:-4%;width:108%;height:70%;
+    background:radial-gradient(ellipse 84% 62% at 44% 40%,rgba(3,11,38,.84) 0%,rgba(3,11,38,.62) 44%,rgba(3,11,38,0) 78%)}
+}
+.w{display:inline-block;white-space:pre}
+.c{display:inline-block;will-change:transform,opacity}
+
+/* entrées, une par bande */
+.b1 .c{--kc:clamp(0,(var(--k,0) - var(--th,0))*2.6,1);opacity:var(--kc);
+  transform:translate(calc((1 - var(--kc))*var(--jx,0px)),calc((1 - var(--kc))*var(--jy,0px)))}
+.b2 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*3,1);opacity:var(--kc);
+  transform:translateY(calc((1 - var(--kc))*-26px))}
+.b2 .sous{opacity:clamp(0,(var(--k,0) - .42)*2.6,1)}
+.b2 .rangee{opacity:clamp(0,(var(--k,0) - .62)*3,1);margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;
+  pointer-events:var(--clic,none)}
+/* La caméra traverse la dernière phrase au lieu de l'éteindre : elle vient vers
+   l'oeil, se défocalise, et disparaît par le bord du cadre. Le flou est posé sur
+   le seul bloc de texte et non sur la bande entière, qui couvre tout l'écran. */
+.b2{transform-origin:50% 88%;will-change:transform,opacity}
+.b2 .dedans{filter:blur(calc(var(--sortie,0) * 14px))}
+
+/* le voile qui emmène vers la page claire */
+/* Le jaillissement naît derrière le plan, au point exact où la lumière arrive au
+   bas du tube, et passe le visage du visiteur. C'est lui qui fait la transition. */
+.jaillissement{position:absolute;left:52%;top:84%;z-index:4;width:38vmax;height:38vmax;
+  margin:-19vmax 0 0 -19vmax;pointer-events:none;opacity:0;will-change:transform,opacity;
+  background:radial-gradient(circle at center,#fff 0%,rgba(255,255,255,.94) 16%,rgba(238,231,248,.66) 32%,
+    rgba(186,146,224,.28) 50%,rgba(94,74,168,.12) 64%,rgba(11,17,48,0) 76%)}
+.voile{position:absolute;inset:0;z-index:5;pointer-events:none;background:var(--canvas);opacity:0}
+
+/* -------------------------------------------------------------- La barre */
+.barre{position:fixed;inset:0 0 auto 0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:16px clamp(16px,4vw,40px);transition:background .4s var(--e2),border-color .4s var(--e2)}
+.barre.sur-clair{background:rgba(245,242,248,.82);backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid var(--bordure)}
+.marque{display:flex;align-items:center;gap:10px;text-decoration:none}
+.marque img{height:38px;width:auto}
+.marque .mot{font-family:var(--titre);font-weight:600;font-size:13px;letter-spacing:.3em;color:#fff;transition:color .4s var(--e2)}
+.barre.sur-clair .marque .mot{color:var(--navy)}
+.eclat{position:relative;display:block}
+/* La brillance ne vit pas pendant le film. Une marque qui scintille dans le coin
+   concurrence le plan, et le héros n'a qu'un sujet. Elle ne s'allume qu'une fois
+   la barre passée sur le clair, c'est-à-dire dans le monde du produit. */
+.eclat::after{content:"";position:absolute;left:0;top:-20%;height:140%;width:76%;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.66) 0%,rgba(236,219,250,.42) 34%,rgba(196,155,224,.2) 54%,transparent 72%);
+  filter:blur(11px)}
+.barre.sur-clair .eclat::after{animation:eclat 7s var(--e2) infinite}
+@keyframes eclat{0%,52%{transform:translateX(-74%);opacity:0}64%{opacity:1}90%{opacity:1}100%{transform:translateX(168%);opacity:0}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--titre);font-weight:600;
+  font-size:14px;padding:12px 20px;border-radius:999px;white-space:nowrap;text-decoration:none;border:1px solid transparent;
+  transition:transform .2s var(--e2),background .2s var(--e2),border-color .2s var(--e2);text-shadow:none}
+.btn-plein{background:#fff;color:var(--navy);box-shadow:0 2px 10px rgba(5,28,78,.18)}
+.btn-plein:hover{background:#fff;transform:translateY(-1px);box-shadow:0 6px 20px rgba(5,28,78,.26)}
+.btn-vide{border-color:rgba(255,255,255,.34);color:#fff}
+.barre.sur-clair .btn-vide{border-color:var(--bordure);color:var(--navy)}
+.btn-vide:hover{transform:translateY(-1px)}
+@media (pointer:coarse){.btn{min-height:44px}}
+
+/* --------------------------------------------------------------- La page */
+.page{position:relative;background:var(--canvas);z-index:2}
+.page::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(52rem 38rem at 12% -6%,rgba(147,43,156,.09),transparent 62%),
+             radial-gradient(46rem 44rem at 92% 12%,rgba(5,28,78,.1),transparent 60%),
+             radial-gradient(44rem 40rem at 78% 64%,rgba(5,28,78,.07),transparent 62%),
+             radial-gradient(50rem 38rem at 28% 102%,rgba(5,28,78,.11),transparent 64%)}
+.page section{padding:clamp(72px,11vh,140px) clamp(20px,5vw,48px);position:relative}
+.hero{padding:0}
+.large{max-width:1160px;margin:0 auto}
+.oeil{color:var(--accent);margin-bottom:18px}
+
+/* Le basculement. La lumière vient de nous déposer dans le blanc ; on n'enchaîne
+   pas sur un argument, on laisse la marque arriver et on retourne l'histoire. */
+.page section.bascule{min-height:150svh;position:relative;padding:0}
+.bascule .colle{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;text-align:center;
+  padding-inline:clamp(20px,5vw,48px);padding-top:clamp(84px,10svh,112px)}
+
+/* Le logo arrive par le bas, petit et gris, puis monte, grossit et prend sa
+   couleur. Geste relevé sur l'enregistrement de l'ancienne présentation :
+   environ un quart de hauteur d'écran de montée, 0,6 d'échelle au départ. Piloté
+   par le défilement et non par un déclencheur : sinon il est déjà posé quand la
+   lumière nous dépose dans le blanc. */
+.bascule .marque-g{display:flex;flex-direction:column;align-items:center;
+  --t:clamp(0,(var(--b,0) - .06)*2.04,1);
+  opacity:calc(.07 + .93*var(--t));
+  transform:translateY(calc((1 - var(--t))*2.5svh)) scale(calc(.68 + .32*var(--t)))}
+.bascule .eclat img{filter:saturate(calc(var(--t,1)*var(--t,1)))}
+.bascule .mot-g{--t:clamp(0,(var(--b,0) - .40)*4.545,1);opacity:var(--t)}
+.bascule .eclat img{width:clamp(96px,11vw,132px);height:auto;display:block}
+.bascule .eclat::after{animation:eclat 7s var(--e2) infinite}
+.bascule .mot-g{margin-top:14px;display:flex;width:clamp(96px,11vw,132px);justify-content:space-between;
+  font-family:var(--titre);font-weight:600;font-size:clamp(11px,1.1vw,13px);color:var(--navy)}
+.bascule .duo-b{--t:clamp(0,(var(--b,0) - .52)*4.348,1);
+  margin-top:clamp(24px,3.4vh,44px);display:flex;align-items:center;justify-content:center;
+  gap:clamp(22px,3.4vw,54px);width:min(1060px,92vw);
+  opacity:var(--t);transform:translateY(calc((1 - var(--t))*26px))}
+.bascule .fiche{width:clamp(126px,13.5vw,186px);height:auto;flex:0 0 auto;
+  filter:drop-shadow(0 22px 44px rgba(5,28,78,.18))}
+.bascule .dit{text-align:left;max-width:30ch}
+.bascule h2{font-size:clamp(23px,2.9vw,38px);max-width:20ch}
+.bascule .lede{margin-top:14px;max-width:38ch;text-align:left;margin-inline:0}
+@media (max-aspect-ratio:1/1){
+  .bascule .duo-b{flex-direction:column;gap:12px}
+  .bascule .fiche{width:clamp(94px,24vw,120px)}
+  .bascule .dit{text-align:center;max-width:none}
+  .bascule .lede{text-align:center;margin-inline:auto}
+}
+.titre-s{font-size:clamp(26px,3.6vw,46px);max-width:19ch}
+.lede{margin-top:20px;font-size:clamp(16px,1.5vw,19px);color:var(--texte-2);max-width:56ch}
+
+
+.verre{background:var(--panel);border:1px solid rgba(255,255,255,.8);border-radius:22px;
+  backdrop-filter:blur(22px) saturate(1.7);
+  box-shadow:inset 0 1px 0 0 rgba(255,255,255,.95),0 2px 6px rgba(5,28,78,.05),0 26px 60px -22px rgba(5,28,78,.22)}
+
+.grille-3{display:grid;gap:clamp(14px,1.6vw,20px);grid-template-columns:repeat(3,1fr);
+  margin-top:clamp(30px,4.5vh,50px);width:min(1060px,92vw);perspective:1200px}
+.chiffre{text-align:center;padding:clamp(18px,2.4vw,28px) clamp(12px,1.6vw,20px);
+  --t:clamp(0,(var(--b,0) - var(--r,.58))*5,1);
+  opacity:var(--t);
+  transform:translate3d(0,calc((1 - var(--t))*40px),calc((1 - var(--t))*-200px)) rotateY(calc((1 - var(--t))*-12deg))}
+.chiffre:nth-child(2){--r:.64}
+.chiffre:nth-child(3){--r:.70}
+.chiffre .n{font-family:var(--titre);font-weight:700;font-size:clamp(34px,4.4vw,58px);color:var(--navy);
+  line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.chiffre .q{margin-top:12px;font-weight:600;font-size:clamp(13px,1.15vw,15px);line-height:1.35}
+.chiffre .d{margin-top:7px;font-size:12px;color:var(--texte-2)}
+@media (max-width:620px){
+  .grille-3{grid-template-columns:1fr;gap:8px}
+  .chiffre{display:flex;align-items:baseline;gap:14px;text-align:left;padding:11px 16px}
+  .chiffre .n{font-size:34px;flex:0 0 auto}
+  .chiffre .q{margin-top:0}
+  .chiffre .d{display:none}
+}
+
+/* l'axe des sept jours, le moment interactif */
+.axe{margin-top:46px;padding:34px clamp(20px,3vw,38px)}
+.axe-piste{position:relative;height:4px;background:rgba(5,28,78,.1);border-radius:99px;margin:44px 0 30px}
+.axe-remplie{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--accent),rgba(147,43,156,.5));border-radius:99px;width:var(--ax,0%)}
+.axe-pts{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center}
+.axe-pt{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid rgba(5,28,78,.18);transition:all .3s var(--e2)}
+.axe-pt.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 6px rgba(147,43,156,.14)}
+.axe input{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:40px;margin:-42px 0 0;position:relative;z-index:3;cursor:grab}
+.axe input:active{cursor:grabbing}
+.axe input::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;
+  border:2px solid var(--accent);box-shadow:0 4px 14px rgba(5,28,78,.2)}
+.axe input::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+.axe-lbl{display:flex;justify-content:space-between;color:var(--texte-2)}
+.axe-txt{min-height:112px}
+.axe-txt h3{font-size:22px;color:var(--navy)}
+.axe-txt p{margin-top:10px;color:var(--texte-2);max-width:58ch}
+.axe-sms{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--accent-muted);font-style:italic;font-size:15px}
+
+.duo{display:grid;gap:34px;grid-template-columns:1fr;align-items:center;margin-top:46px}
+@media (min-width:900px){.duo{grid-template-columns:1fr 1fr}.duo.inverse>*:first-child{order:2}}
+.cadre{padding:14px;border-radius:24px;overflow:hidden}
+.cadre img{border-radius:14px}
+.cite{font-style:italic;font-size:clamp(17px,1.9vw,22px);color:var(--navy);padding-left:20px;border-left:3px solid var(--accent)}
+.cite small{display:block;margin-top:10px;font-style:normal;font-size:13px;color:var(--texte-2)}
+
+.faq{margin-top:40px;display:grid;gap:14px}
+.faq details{padding:22px 26px;border-radius:18px}
+.faq summary{font-family:var(--titre);font-weight:600;font-size:17px;color:var(--navy);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--accent);font-size:22px;line-height:1}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{margin-top:14px;color:var(--texte-2)}
+
+.contact{background:var(--navy);color:#EDE7F4;border-radius:28px;padding:clamp(34px,5vw,64px);margin-top:40px}
+.contact h2{color:#fff}
+.contact .lede{color:#C3BBD4}
+form{margin-top:30px;display:grid;gap:14px;max-width:560px}
+label{font-family:var(--titre);font-size:13px;font-weight:500;color:#C3BBD4;display:block;margin-bottom:6px}
+input[type=text],input[type=email],input[type=number]{width:100%;padding:13px 15px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;font-family:var(--corps);font-size:16px}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.deux{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:640px){.deux{grid-template-columns:1fr 1fr}}
+.note{font-size:13px;color:#9E96B2;margin-top:14px}
+
+footer{padding:52px clamp(20px,5vw,48px);background:var(--navy);color:#9E96B2;font-size:14px}
+footer .large{display:flex;gap:26px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+footer img{height:54px;width:auto}
+
+/* entrées de section */
+.ap{opacity:0;transform:translateY(26px);transition:opacity .8s var(--e1),transform .8s var(--e1)}
+.vu .ap{opacity:1;transform:none}
+.vu .ap:nth-child(2){transition-delay:.08s}
+.vu .ap:nth-child(3){transition-delay:.16s}
+.vu .ap:nth-child(4){transition-delay:.24s}
+
+/* Héros fixe : plus rien ne défile, le héros ne doit donc plus mesurer cinq
+   écrans. Sans cette règle, le visiteur traverse quatre hauteurs de vide avant
+   d'atteindre le contenu. La liste est celle de PORTES, en JavaScript. */
+@media (orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
+  .hero{height:100dvh}
+}
+@media (max-aspect-ratio:1/1){
+  /* Le pouce parcourt plus de distance par geste qu'une molette : le film se
+     joue sur moins de hauteur pour ne pas traîner. */
+  .hero{height:380svh}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .ap{opacity:1;transform:none}
+  .eclat::after{opacity:0}
+  .bascule{--b:1;min-height:100svh}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<nav class="barre" id="barre">
+  <a class="marque" href="#main">
+    <span class="eclat"><img id="logo" src="assets/glyphe-blanc.png" alt="Endova"></span>
+    <span class="mot" aria-hidden="true">ENDOVA</span>
+  </a>
+  <a class="btn btn-vide" href="#contact">Voir une démonstration</a>
+</nav>
+
+<main id="main" tabindex="-1">
+
+  <section class="hero" id="hero" aria-label="Présentation">
+    <div class="stage" id="stage">
+      <div class="poster" id="poster"></div>
+      <video id="video" preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
+      <div class="scrim"></div>
+
+      <div class="horloge" id="horloge" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><circle class="piste" cx="60" cy="60" r="52"/><circle class="arc" cx="60" cy="60" r="52"/></svg>
+        <b id="jour">J-7</b>
+      </div>
+
+
+      <div class="bande b1" data-a=".02" data-b=".30">
+        <div class="dedans"><h2 data-split="c">Hier soir, la première dose est passée.</h2></div>
+      </div>
+      <div class="bande b2" data-a=".34" data-b="1" data-rampe=".085">
+        <div class="dedans">
+          <h2 data-split="w">Ce matin, son estomac a refusé la seconde. Dans deux heures, son côlon ne sera pas lisible.</h2>
+          <p class="sous">Endova suit chaque patient par SMS, de J-7 à H-2, et signale l'écart tant qu'il est rattrapable.</p>
+          <div class="rangee"><a class="btn btn-plein" href="#contact">Voir une démonstration</a></div>
+        </div>
+      </div>
+
+      <div class="jaillissement" id="jaillir"></div>
+      <div class="voile" id="voile"></div>
+    </div>
+  </section>
+
+  <div class="page" id="page">
+
+    <section class="bascule" id="bascule" aria-label="Endova">
+      <div class="colle">
+        <span class="marque-g">
+          <span class="eclat"><img src="assets/endova-mark.png" alt=""></span>
+          <span class="mot-g" aria-hidden="true"><span>E</span><span>N</span><span>D</span><span>O</span><span>V</span><span>A</span></span>
+        </span>
+        <div class="duo-b">
+          <img class="fiche" src="assets/app-fiche.png" alt="Fiche patient Endova sur téléphone : index de préparation, pondération du score de J-7 à H-2, projection anatomique" width="372" height="744" loading="lazy">
+          <div class="dit">
+            <h2>Quatre heures plus tôt, il vous l'aurait signalé.</h2>
+            <p class="lede">Il n'a rien caché. Personne ne lui a demandé.</p>
+          </div>
+        </div>
+        <div class="grille-3">
+          <div class="verre chiffre"><div class="n" data-compte="25" data-suffixe=" %">0 %</div><p class="q">des coloscopies jugées mal préparées</p><p class="d">Score de Boston insuffisant</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="33" data-suffixe=" %">0 %</div><p class="q">des patients annulés ne reviennent pas</p><p class="d">Sous six mois, examen ou test de dépistage</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="850" data-suffixe=" €">0 €</div><p class="q">perdus par créneau annulé</p><p class="d">Vacance de salle et acte non coté</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sept-jours">
+      <div class="large">
+        <p class="mono oeil ap">Ce que personne ne regarde</p>
+        <h2 class="titre-s ap">Sept jours décident de l'examen. Le patient les traverse seul.</h2>
+        <p class="lede ap">Faites glisser le curseur pour voir ce qu'Endova demande, jour après jour.</p>
+
+        <div class="verre axe ap">
+          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-1</span><span>H-4</span><span>H-2</span></div>
+          <div class="axe-piste">
+            <div class="axe-remplie" id="axeRemplie"></div>
+            <div class="axe-pts" id="axePts"><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i></div>
+          </div>
+          <input type="range" min="0" max="4" step="1" value="0" id="axeCurseur" aria-label="Choisir une échéance">
+          <div class="axe-txt" id="axeTxt"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rupture">
+      <div class="large">
+        <p class="mono oeil ap">Le point de rupture</p>
+        <h2 class="titre-s ap">Les patients tiennent la première dose. C'est la seconde qui les arrête.</h2>
+        <div class="duo">
+          <div class="ap">
+            <p class="cite">J'ai réussi la première dose, puis seulement quelques gorgées de la seconde avant des nausées terribles.<small>Ce que les patients écrivent, dans leurs mots, sur les forums de santé</small></p>
+            <p class="lede">La seconde fraction est celle qui nettoie le côlon droit, là où se cachent les adénomes plans. Endova découpe la prise en verres espacés, impose la pause entre chacun, et déclenche le protocole de compensation dès qu'un patient déclare un rejet.</p>
+          </div>
+          <div class="verre cadre ap"><img src="assets/app-patients.png" alt="Liste des patients suivis dans Endova, avec leur avancement et leur niveau de risque" loading="lazy"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cabinet">
+      <div class="large">
+        <p class="mono oeil ap">Ce que voit le cabinet</p>
+        <h2 class="titre-s ap">Le matin, une seule question : dans quel ordre j'opère.</h2>
+        <p class="lede ap">Chaque alerte arrive avec la phrase à dire au téléphone. Le secrétariat n'improvise pas.</p>
+        <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova, avec les indicateurs du jour et la file des patients à rappeler" loading="lazy"></div>
+      </div>
+    </section>
+
+    <section id="objections">
+      <div class="large">
+        <p class="mono oeil ap">Les questions qu'on nous pose</p>
+        <h2 class="titre-s ap">Ce que les praticiens demandent avant de se lancer.</h2>
+        <div class="faq">
+          <details class="verre ap"><summary>Mes patients ne liront pas un SMS.</summary><p>Le lien s'ouvre dans leur navigateur, sans installer d'application et sans mot de passe. Une année de naissance suffit à ouvrir le dossier, ce qui protège les données sans rien demander de compliqué au patient.</p></details>
+          <details class="verre ap"><summary>Est-ce un dispositif médical ?</summary><p>Endova ne pose aucun diagnostic. Il transmet des déclarations de patients et signale des écarts. Dès qu'une de ses recommandations est suivie en pratique, la question du règlement européen se pose, et elle doit être arbitrée avant toute mise en service réelle. Nous le disons plutôt que de l'éviter.</p></details>
+          <details class="verre ap"><summary>Combien de temps pour mon secrétariat ?</summary><p>Une file d'appels par jour, triée par urgence. Chaque patient y apparaît une fois, avec tous ses motifs regroupés et la phrase à lui dire. Un appel traite l'ensemble.</p></details>
+          <details class="verre ap"><summary>Et si le patient déclare n'importe quoi ?</summary><p>Une déclaration vaut mieux qu'un silence. Un écart signalé se rattrape, avec un lavement de secours ou un passage décalé en fin de programme. Un écart tu se découvre sur la table.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="large">
+        <div class="contact">
+          <p class="mono oeil">Parlons-en</p>
+          <h2 class="titre-s">Voir Endova sur votre programme.</h2>
+          <p class="lede">Dites-nous combien de coloscopies vous faites par semaine, nous vous montrons ce que l'échéancier changerait sur votre propre planning.</p>
+          <form id="form">
+            <div class="deux">
+              <div><label for="f-nom">Votre nom</label><input id="f-nom" name="nom" type="text" required></div>
+              <div><label for="f-etab">Établissement</label><input id="f-etab" name="etab" type="text" required></div>
+            </div>
+            <div class="deux">
+              <div><label for="f-mail">Adresse électronique</label><input id="f-mail" name="mail" type="email" required></div>
+              <div><label for="f-nb">Coloscopies par semaine</label><input id="f-nb" name="nb" type="number" min="0" step="1"></div>
+            </div>
+            <button class="btn btn-plein" type="submit" style="justify-self:start;margin-top:8px">Demander une démonstration</button>
+          </form>
+          <p class="note" id="note">Ce bouton ouvre votre logiciel de courrier avec le message prérempli. Rien n'est envoyé à votre insu.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="large">
+    <img src="assets/logo-blanc.png" alt="Endova">
+    <p>Endova ne remplace ni la consultation pré-anesthésique ni la cotation per-endoscopique du score de Boston.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const lisse=(p,e0,e1)=>{const t=clamp((p-e0)/(e1-e0),0,1);return t*t*(3-2*t)};
+
+/* ---- découpe du texte, graine fixe pour que ce soit identique à chaque chargement ---- */
+function rng(s){let x=s>>>0;return()=>(x=(x*1664525+1013904223)>>>0)/4294967296}
+function decouper(h2,mode){
+  const txt=h2.textContent.trim(); const r=rng(97);
+  const lu=document.createElement('span'); lu.textContent=txt;
+  lu.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)';
+  const vis=document.createElement('span'); vis.setAttribute('aria-hidden','true');
+  txt.split(' ').forEach((mot,i,arr)=>{
+    const w=document.createElement('span'); w.className='w';
+    w.style.setProperty('--th', (mode==='w'? i/arr.length*.5 : 0).toFixed(3));
+    if(mode==='c'){
+      [...mot].forEach(ch=>{
+        const c=document.createElement('span'); c.className='c'; c.textContent=ch;
+        c.style.setProperty('--th',(r()*.5).toFixed(3));
+        c.style.setProperty('--jx',((r()-.5)*46).toFixed(1)+'px');
+        c.style.setProperty('--jy',((r()-.5)*40).toFixed(1)+'px');
+        w.appendChild(c);
+      });
+    } else w.textContent=mot;
+    vis.appendChild(w);
+    if(i<arr.length-1) vis.appendChild(document.createTextNode(' '));
+  });
+  h2.textContent=''; h2.append(lu,vis);
+}
+$$('.bande h2[data-split]').forEach(h=>decouper(h,h.dataset.split));
+
+/* ---------------------------------------------------- le héros défilant ---- */
+const hero=$('#hero'), stage=$('#stage'), video=$('#video'), poster=$('#poster'), voile=$('#voile'), jaillir=$('#jaillir'), barre=$('#barre'), logo=$('#logo'), page=$('#page'), horloge=$('#horloge'), elJour=$('#jour');
+const bandes=$$('.bande').map(el=>({el,a:parseFloat(el.dataset.a),b:parseFloat(el.dataset.b),
+  rampe:parseFloat(el.dataset.rampe)||0,op:-1,k:-1}));
+const DERNIERE=bandes.length-1;
+
+const PORTES=['(orientation: landscape) and (pointer: coarse) and (max-height: 560px)','(prefers-reduced-motion: reduce)'];
+const MQ=PORTES.map(q=>matchMedia(q));
+const REDUIT=matchMedia('(prefers-reduced-motion: reduce)');
+
+/* L'embouchure du tube, là où la lumière s'arrête, se trouve à 51,7 % / 83,8 %
+   de l'image source : mesuré sur le rendu, pas estimé. Mais `cover` recadre
+   différemment selon la forme de la fenêtre, donc la position à l'écran se
+   recalcule au lieu de se figer. Le point de fuite y est posé aussi : toute la
+   scène converge sur la lumière. */
+const LUM=[.517,.838];
+function placerLumiere(){
+  const lv=video.videoWidth||1920, hv=video.videoHeight||1080;
+  const ls=stage.clientWidth, hs=stage.clientHeight;
+  if(!ls||!hs) return;
+  const e=Math.max(ls/lv,hs/hv);
+  // En portrait le CSS recadre à 66 % et non au centre : un calcul qui suppose
+  // le centre poserait la lumière à côté du tube. On lit donc le recadrage réel.
+  const op=getComputedStyle(video).objectPosition.split(' ');
+  const fx=(parseFloat(op[0])||50)/100, fy=(parseFloat(op[1])||50)/100;
+  const x=(LUM[0]*lv*e-(lv*e-ls)*fx)/ls*100;
+  const y=(LUM[1]*hv*e-(hv*e-hs)*fy)/hs*100;
+  jaillir.style.left=x.toFixed(2)+'%';
+  jaillir.style.top=y.toFixed(2)+'%';
+  stage.style.perspectiveOrigin=x.toFixed(2)+'% '+y.toFixed(2)+'%';
+}
+addEventListener('resize',placerLumiere,{passive:true});
+placerLumiere();
+
+function avancee(){
+  const r=hero.getBoundingClientRect();
+  const course=hero.offsetHeight-window.innerHeight;
+  return course<=0?0:clamp(-r.top/course,0,1);
+}
+
+/* seeks verrouillés : jamais deux en vol, et le verrou ne peut pas rester bloqué */
+let occupe=false, enAttente=null;
+function viser(t){
+  if(!video.duration) return;
+  if(occupe){enAttente=t;return}
+  occupe=true; video.currentTime=t;
+}
+video.addEventListener('seeked',()=>{occupe=false;if(enAttente!==null){const t=enAttente;enAttente=null;viser(t)}});
+video.addEventListener('error',()=>{occupe=false;enAttente=null;stage.classList.remove('video-prete')});
+
+let cible=0, montre=0, frame=null, dernier=0, visible=true, charge=0, t0=0;
+// Déclarées ici et pas plus bas : auScroll les lit dès le premier appel, et une
+// variable en let n'existe pas avant sa ligne de déclaration.
+let clairActif=null, bqAct=-1, jourAct='';
+function tick(now){
+  if(!t0) t0=now;
+  const dt=Math.min(100, now-(dernier||now)); dernier=now;
+  montre += (cible-montre)*(1-Math.pow(1-.16, dt/16.667));
+  const fini=Math.abs(cible-montre)<.0005;
+  if(fini){montre=cible;frame=null;dernier=0} else frame=requestAnimationFrame(tick);
+  if(video.duration) viser(montre*video.duration);
+  peindre(montre);
+}
+function rampeEntree(now){
+  if(!t0) t0=now;
+  charge=Math.min(1,(now-t0)/900);
+  peindre(montre);
+  if(charge<1) requestAnimationFrame(rampeEntree);
+}
+
+function auScroll(){
+  cible=avancee();
+  if(frame===null && visible) frame=requestAnimationFrame(tick);
+}
+
+// Le chrome de page ne dépend pas du héros : son écouteur reste branché même
+// quand le scrub est désarmé. Sans ça, en animations réduites, la barre garde
+// son logo blanc sur la page claire.
+function auDefilement(){ majBarre(); majBascule() }
+addEventListener('scroll',auDefilement,{passive:true});
+addEventListener('resize',auDefilement,{passive:true});
+// Un rechargement au milieu de la page doit retrouver le bon état tout de suite.
+auDefilement();
+
+function peindre(p){
+  bandes.forEach((b,i)=>{
+    const f=Math.min(.02,(b.b-b.a)/3);
+    let o=lisse(p,b.a,b.a+f)*(1-lisse(p,b.b-f,b.b));
+    if(i===0) o=1-lisse(p,b.b-f,b.b);
+    // La dernière bande monte plus lentement : elle porte une phrase, une
+    // explication et un bouton, et ces trois-là doivent se lire dans cet ordre.
+    const pente=b.rampe || Math.min(.025,(b.b-b.a)*.35);
+    const k=i===0 ? Math.max(clamp((p-b.a)/.03,0,1),charge) : clamp((p-b.a)/pente,0,1);
+    // La dernière bande ne s'éteint pas : la plongée l'emporte. Elle avance vers
+    // l'oeil un peu moins vite que l'image, donc elle la précède et sort du cadre.
+    if(i===DERNIERE){
+      const sortie=lisse(p,.88,.97);
+      if(Math.abs(sortie-(b.s??-1))>.006){
+        b.s=sortie;
+        b.el.style.setProperty('--sortie',sortie.toFixed(3));
+        b.el.style.transform='scale('+(1+sortie*.34).toFixed(4)+')';
+      }
+      o=Math.min(o,1-sortie*sortie);
+      // Après le lavage, donc sur l'opacité réellement vue : un bouton effacé
+      // par la lumière ne doit plus attraper le clic.
+      const clic=(o>.6 && k>.75) ? 'auto' : 'none';
+      if(clic!==b.clic){b.clic=clic;b.el.style.setProperty('--clic',clic)}
+    }
+    if(Math.abs(o-b.op)>.004){b.op=o;b.el.style.opacity=o.toFixed(3)}
+    if(Math.abs(k-b.k)>.008){b.k=k;b.el.style.setProperty('--k',k.toFixed(3))}
+  });
+  // Le compte à rebours suit la progression, et s'efface avec la lumière : il
+  // n'a plus rien à dire une fois qu'on a basculé. Le libellé n'est écrit que
+  // lorsqu'il change vraiment.
+  const jour = p<.30 ? 'J-7' : p<.58 ? 'J-3' : p<.80 ? 'J-1' : 'J-J';
+  if(jour!==jourAct){ jourAct=jour; elJour.textContent=jour }
+  horloge.style.setProperty('--hp', (1-p).toFixed(3));
+  horloge.style.setProperty('--ho', (lisse(p,.04,.16)*.17*(1-lisse(p,.86,.97))).toFixed(3));
+
+  // La lumière atteint le bas du tube à 4,24 s de plan, soit .84 de progression,
+  // au point (48 %, 82 %) du cadre : mesuré image par image dans la page, pas
+  // estimé. Le point de fuite y est posé, toute la scène converge donc sur elle.
+  //
+  // Une avancée lente démarre au scintillement du cardia et reste imperceptible :
+  // elle donne de la vie sans gêner la lecture des phrases.
+  const derive=lisse(p,.21,.78)*92;
+  // Le plan ne plonge plus : il prend appui, juste assez pour ne pas se figer
+  // pendant que la lumière le dépasse. C'est elle qui porte la transition.
+  const appui=Math.pow(lisse(p,.78,1),1.8);
+  const z=derive+appui*250;
+  const incl=appui*1.6, lacet=appui*3.2, roulis=appui*4.5;
+  const tf='translate3d(0,0,'+z.toFixed(1)+'px) rotateX('+incl.toFixed(2)+'deg) rotateY('+lacet.toFixed(2)+'deg) rotateZ('+roulis.toFixed(2)+'deg)';
+  video.style.transform=tf;
+  poster.style.transform=tf;
+
+  // Le jaillissement part de derrière le plan et vient vers l'oeil. Sa profondeur
+  // ne doit jamais atteindre celle de la perspective : à 1400 px l'agrandissement
+  // devient infini, on s'arrête à 1270.
+  const j=lisse(p,.84,1);
+  jaillir.style.transform='translate3d(0,0,'+(-780+j*2050).toFixed(0)+'px)';
+  jaillir.style.opacity=lisse(p,.84,.92).toFixed(3);
+  // Le voile ne fait plus que finir le travail, une fois la lumière passée.
+  const v=lisse(p,.93,1);
+  voile.style.opacity=v.toFixed(3);
+  // La barre lit le voile : il faut donc la rappeler ici, sinon elle a toujours
+  // une image de retard sur lui. L'appel est borné par son propre delta.
+  majBarre();
+}
+
+function chargerVideo(){
+  if(video.dataset.pret) return; video.dataset.pret='1';
+  poster.style.backgroundImage="url('assets/hero-poster.jpg')";
+  fetch('assets/hero-scrub.mp4').then(r=>r.blob()).then(b=>{
+    video.src=URL.createObjectURL(b); video.load();
+    video.addEventListener('loadedmetadata',placerLumiere,{once:true});
+    video.addEventListener('canplay',()=>{
+      stage.classList.add('video-prete');
+      const j=video.play(); if(j&&j.then) j.then(()=>video.pause()).catch(()=>{});
+      auScroll();
+    },{once:true});
+  }).catch(()=>{});
+}
+
+let scrubOn=false;
+function armer(){
+  if(scrubOn) return; scrubOn=true;
+  hero.style.height='';
+  chargerVideo();
+  addEventListener('scroll',auScroll,{passive:true});
+  bandes.forEach(b=>{b.op=-1;b.k=-1;b.s=-1;b.clic=null});
+  auScroll();
+  t0=0; charge=0; requestAnimationFrame(rampeEntree);
+}
+function desarmer(){
+  // Pas de sortie anticipée sur scrubOn : au tout premier chargement il vaut déjà
+  // false, et le héros fixe ne serait alors jamais peint.
+  if(scrubOn){
+    scrubOn=false;
+    removeEventListener('scroll',auScroll);
+    if(frame!==null){cancelAnimationFrame(frame);frame=null}
+  }
+  hero.style.height='100dvh';
+  poster.style.backgroundImage="url('assets/hero-ending.jpg')";
+  bandes.forEach((b,i)=>{b.op=-1;b.k=-1;b.s=-1;b.el.style.opacity=i===DERNIERE?'1':'0';
+    b.el.style.transform='none';b.el.style.setProperty('--k','1');b.el.style.setProperty('--sortie','0');
+    b.clic=null;b.el.style.setProperty('--clic',i===DERNIERE?'auto':'none')});
+  jaillir.style.opacity='0';jaillir.style.transform='none';
+  horloge.style.setProperty('--ho','0');
+  voile.style.opacity='0';
+  video.style.transform='translateZ(0)';
+  poster.style.transform='none';
+}
+function modeHero(){ MQ.some(m=>m.matches) ? desarmer() : armer() }
+MQ.forEach(m=>m.addEventListener('change',modeHero));
+modeHero();
+
+new IntersectionObserver(([e])=>{
+  visible=e.isIntersecting;
+  if(!visible && frame!==null){cancelAnimationFrame(frame);frame=null}
+  else if(visible && scrubOn) auScroll();
+},{rootMargin:'140px 0px'}).observe(hero);
+
+/* la barre et le logo changent de monde au passage du voile */
+function majBarre(){
+  const clair = MQ.some(m=>m.matches)
+    ? window.scrollY > hero.offsetHeight - window.innerHeight*1.25
+    : (parseFloat(voile.style.opacity)||0) > .6;
+  if(clair===clairActif) return; clairActif=clair;
+  barre.classList.toggle('sur-clair',clair);
+  logo.src = clair ? 'assets/glyphe-couleur.png' : 'assets/glyphe-blanc.png';
+}
+
+/* --------------------------------------------- le logo qui prend corps ------ */
+function majBascule(){
+  const el=$('#bascule'); if(!el) return;
+  // La course va du moment où la section entre par le bas jusqu'à celui où elle
+  // se colle en haut. Mesurée depuis son sommet et non depuis son défilement
+  // interne : ce dernier reste négatif pendant toute l'entrée, et laissait donc
+  // un plein écran de blanc avant que quoi que ce soit ne commence.
+  // La course commence quand le logo entre dans le cadre, pas quand la section
+  // entre : le contenu est centré dans une boîte d'un écran, il est donc encore
+  // 150 % plus bas au moment où le sommet de la section apparaît. Elle se termine
+  // après le collage, pour que la matérialisation s'achève à l'arrêt.
+  const vh=window.innerHeight;
+  const q=clamp((vh*.948-el.getBoundingClientRect().top)/(vh*1.148),0,1);
+  if(Math.abs(q-bqAct)<.004) return; bqAct=q;
+  el.style.setProperty('--b',q.toFixed(3));
+}
+
+
+/* ------------------------------------------------------- entrées de section -- */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vu');compter(e.target);obs.unobserve(e.target)}}),{threshold:.16});
+$$('section, .duo, .grille-3, .faq').forEach(s=>obs.observe(s));
+
+function compter(racine){
+  $$('[data-compte]',racine).forEach(el=>{
+    const fin=parseInt(el.dataset.compte,10), suf=el.dataset.suffixe||'';
+    if(REDUIT.matches){el.textContent=fin+suf;return}
+    const d=performance.now(), duree=1100; let last='';
+    (function pas(now){
+      const t=clamp((now-d)/duree,0,1), e=1-Math.pow(1-t,3);
+      const s=Math.round(fin*e)+suf;
+      if(s!==last){last=s;el.textContent=s}
+      if(t<1) requestAnimationFrame(pas);
+    })(d);
+  });
+}
+
+/* ------------------------------------------------ l'axe des sept jours -------- */
+const ETAPES=[
+  {c:'J-7',t:'Logistique et anticoagulants',p:"Le patient confirme qu'il a récupéré sa purge et déclare ses fluidifiants sanguins. S'il n'a reçu aucune consigne d'arrêt, une alerte rouge part immédiatement au secrétariat.",s:"Votre coloscopie a lieu le jour J. Deux actions vitales dès aujourd'hui : récupérer votre préparation et vérifier l'arrêt de vos fluidifiants."},
+  {c:'J-3',t:'Régime sans résidu',p:"Une liste visuelle, cherchable, avec le motif de chaque interdit. Un pépin de tomate bouche le canal d'aspiration de l'endoscope ; le patient le comprend mieux qu'une consigne sèche.",s:"Début du régime sans résidu aujourd'hui. Un écart peut empêcher la détection de polypes."},
+  {c:'J-1',t:'Première fraction de purge',p:"Un minuteur guidé impose un verre toutes les quinze minutes et bloque l'avance. Boire trop vite est la première cause de vomissement, et un vomissement fait perdre le volume déjà ingéré.",s:"C'est l'heure de la première dose. Buvez calmement pour éviter tout rejet. Lancez le minuteur guidé."},
+  {c:'H-4',t:'Seconde fraction et contrôle',p:"Le patient évalue la clarté de ses selles sur une échelle visuelle dérivée du score de Boston. C'est cette réponse qui prédit le mieux la qualité réelle de l'examen.",s:"Dernière ligne droite. Prenez votre deuxième dose maintenant, puis évaluez la clarté de vos selles."},
+  {c:'H-2',t:'Verrou anesthésique',p:"Signature horodatée du jeûne, tabac compris. Une cigarette retarde la vidange gastrique autant qu'un repas, et beaucoup de patients l'ignorent.",s:"Arrêt total. Ne plus rien boire, ne plus rien manger, ne pas fumer. Confirmez votre jeûne."}
+];
+const curseur=$('#axeCurseur'), axeTxt=$('#axeTxt'), axeRemplie=$('#axeRemplie'), axePts=$$('#axePts .axe-pt');
+function majAxe(){
+  const i=+curseur.value, e=ETAPES[i];
+  axeRemplie.style.width=(i/(ETAPES.length-1)*100)+'%';
+  axePts.forEach((pt,n)=>pt.classList.toggle('on',n<=i));
+  axeTxt.innerHTML='<h3 class="jost">'+e.c+'  '+e.t+'</h3><p>'+e.p+'</p><p class="axe-sms">« '+e.s+' »</p>';
+}
+curseur.addEventListener('input',majAxe); majAxe();
+
+/* ------------------------------------------------------------- le formulaire -- */
+const DESTINATAIRE='contact@endova.fr';
+$('#form').addEventListener('submit',ev=>{
+  ev.preventDefault();
+  const d=new FormData(ev.target);
+  const corps=['Nom : '+(d.get('nom')||''),'Établissement : '+(d.get('etab')||''),'Adresse : '+(d.get('mail')||''),'Coloscopies par semaine : '+(d.get('nb')||'non précisé')].join('\n');
+  location.href='mailto:'+DESTINATAIRE+'?subject='+encodeURIComponent('Démonstration Endova')+'&body='+encodeURIComponent(corps);
+  $('#note').textContent="Votre logiciel de courrier s'ouvre avec le message prérempli. Il ne part que si vous l'envoyez.";
+});
+
+/* animations en pause hors onglet */
+addEventListener('visibilitychange',()=>document.body.classList.toggle('paused',document.hidden));
+})();
+</script>
+<style>body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}</style>
+</body>
+</html>

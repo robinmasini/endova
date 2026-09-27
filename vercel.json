@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "echo 'rien à installer à la racine'",
+  "rewrites": [
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard/index.html"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/dashboard/index.html"
+    }
+  ]
+}

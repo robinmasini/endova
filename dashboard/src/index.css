@@ -1,0 +1,152 @@
+@import "tailwindcss";
+@import "@fontsource/jost/500.css";
+@import "@fontsource/jost/600.css";
+
+/* Palette relevée directement sur le logo : dégradé magenta → navy. */
+@theme {
+  --color-navy: #051C4E;
+  --color-encre: #0B2A63;
+  --color-iris: #52237F;
+  --color-magenta: #932B9C;
+  --color-ok: #047857;
+  --color-warn: #B45309;
+  --color-risk: #BE123C;
+  --font-sans: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-marque: "Jost", "Inter", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  /* Le verre n'existe que s'il a quelque chose à réfracter : ces valeurs pilotent
+     à la fois les surfaces et la nappe colorée qui passe dessous. */
+  --verre: rgba(255, 255, 255, 0.55);
+  --verre-dense: rgba(255, 255, 255, 0.72);
+  --verre-tenu: rgba(255, 255, 255, 0.38);
+  --liseré: rgba(255, 255, 255, 0.85);
+  --hairline: rgba(5, 28, 78, 0.07);
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #F4F5FA;
+  color: #1E293B;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* Nappe de couleur diffuse sous le verre. Sans elle, un panneau translucide
+   sur fond blanc est indiscernable d'un panneau opaque. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(48rem 34rem at 8% -6%, rgba(147, 43, 156, 0.16), transparent 62%),
+    radial-gradient(42rem 42rem at 96% 4%, rgba(82, 35, 127, 0.14), transparent 60%),
+    radial-gradient(52rem 38rem at 28% 104%, rgba(11, 42, 99, 0.13), transparent 64%),
+    radial-gradient(36rem 30rem at 82% 78%, rgba(147, 43, 156, 0.09), transparent 62%);
+}
+
+/* Réfraction : liseré clair en haut, ombre courte au contact, ombre longue portée. */
+.glass-refraction {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px 0 rgba(5, 28, 78, 0.04),
+    0 8px 24px -6px rgba(5, 28, 78, 0.08);
+}
+
+.glass-refraction-deep {
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.95),
+    0 2px 4px 0 rgba(5, 28, 78, 0.05),
+    0 18px 44px -10px rgba(5, 28, 78, 0.13);
+}
+
+@keyframes pulse-risk {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(190, 18, 60, 0.22); }
+  50% { box-shadow: 0 0 0 10px rgba(190, 18, 60, 0); }
+}
+
+.pulse-ruby {
+  animation: pulse-risk 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Lueur : une lumière diffuse traverse lentement le bloc de marque, puis s'éteint.
+   Volontairement à la limite du perceptible — on doit la remarquer sans pouvoir
+   la nommer. Radiale et très floutée : un dégradé linéaire lirait comme un ruban. */
+@keyframes brillance {
+  0%, 50% { transform: translateX(-70%); opacity: 0; }
+  64% { opacity: 1; }
+  91% { opacity: 1; }
+  100% { transform: translateX(165%); opacity: 0; }
+}
+
+.brillance::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -15%;
+  height: 130%;
+  width: 78%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.66) 0%,
+    rgba(236, 219, 250, 0.42) 34%,
+    rgba(196, 155, 224, 0.2) 54%,
+    transparent 72%
+  );
+  filter: blur(12px);
+  animation: brillance 6.8s ease-in-out infinite;
+}
+
+/* Entrée du héros de la page de présentation : elle se joue au chargement.
+   La lier au défilement ne marche pas — une scène collante de 200vh est déjà
+   parcourue au tiers quand la page s'ouvre, l'écran d'accueil paraîtrait vide. */
+@keyframes apparition3d {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 34px, -300px) rotateX(26deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0deg);
+  }
+}
+
+.apparition {
+  animation: apparition3d 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rise {
+  animation: rise 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ruby, .rise { animation: none; }
+  .apparition { animation-duration: 0.01ms; }
+  .brillance::after { animation: none; opacity: 0; }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(5, 28, 78, 0.16);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(5, 28, 78, 0.28); background-clip: content-box; }
+
+::selection { background: rgba(147, 43, 156, 0.18); }

@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "autoPort": true,
+  "configurations": [
+    {
+      "name": "endova-dev",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": [
+        "-c",
+        "PATH=/Users/robinmasini/.nvm/versions/node/v24.18.0/bin:$PATH npm run dev -- --port $PORT --host"
+      ],
+      "autoPort": true,
+      "port": 5210
+    }
+  ]
+}
