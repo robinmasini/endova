@@ -437,7 +437,8 @@ footer img{height:54px;width:auto}
 .offre .pour{margin-top:4px;font-size:15px;color:#BDB3D1}
 .offre .prix{margin-top:22px;font-family:var(--titre);font-weight:700;font-size:52px;line-height:1;color:#fff;letter-spacing:-.03em}
 .offre .prix span{font-variant-numeric:tabular-nums}
-.offre .prix small{font-size:14px;font-weight:500;letter-spacing:0;color:#BDB3D1}
+.offre .prix small{font-size:14px;font-weight:500;letter-spacing:0;color:#BDB3D1;white-space:nowrap}
+.offre .prix .cts{font-size:.42em;vertical-align:.95em;letter-spacing:0;margin-right:.12em}
 .offre .fact{margin-top:8px;font-size:13px;color:#9E96B2;min-height:1.4em}
 .offre ul{list-style:none;margin:24px 0 28px;padding:22px 0 0;border-top:1px solid rgba(255,255,255,.12);display:grid;gap:12px;flex:1}
 .offre li{position:relative;padding-left:28px;font-size:15px;line-height:1.45;color:#E4DCEE}
@@ -773,7 +774,7 @@ select option{color:var(--navy)}
               <div><span>Mal préparés</span><i><em id="b-mal" class="mal"></em></i><b id="r-mal">26</b></div>
               <div><span>Rattrapés grâce au suivi</span><i><em id="b-ratt" class="ok"></em></i><b id="r-ratt">13</b></div>
             </div>
-            <p class="an">Soit <b id="r-an">49 920 €</b> par an — l'offre Signature remboursée <b id="r-roi">8</b> fois.</p>
+            <p class="an">Soit <b id="r-an">49 920 €</b> par an — l'offre Signature remboursée <b id="r-roi">10</b> fois.</p>
           </div>
         </div>
         <p class="mention-c ap">Estimation indicative. Le taux de rattrapage dépend de votre patientèle : nous le mesurons avec vous sur vos premières vacations.</p>
@@ -816,8 +817,8 @@ select option{color:var(--navy)}
             <p class="ruban">Le plus choisi</p>
             <p class="nom">Signature</p>
             <p class="pour">Le cabinet de groupe</p>
-            <p class="prix"><span data-mois="490" data-an="408">490</span> € <small>HT / mois</small></p>
-            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 4 900 € HT par an">Facturé chaque mois</p>
+            <p class="prix"><span data-mois="379" data-an="316">379</span><sup class="cts" data-mois=",99" data-an=",66">,99</sup> € <small>HT / mois</small></p>
+            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 3 799,90 € HT par an">Facturé chaque mois</p>
             <ul>
               <li>Tout ce que contient l'offre Essentiel</li>
               <li>Praticiens et examens illimités</li>
@@ -1224,7 +1225,7 @@ function calculer(){
   $('#r-tous').textContent=fmt(mois); $('#r-mal').textContent=fmt(mal); $('#r-ratt').textContent=fmt(sauves);
   $('#b-mal').style.width=(taux*100)+'%'; $('#b-ratt').style.width=(taux*ratt*100)+'%';
   $('#r-mois').textContent=fmt(euros); $('#r-an').textContent=fmt(euros*12)+' €';
-  $('#r-roi').textContent=Math.max(0,Math.floor(euros/490));
+  $('#r-roi').textContent=Math.max(0,Math.floor(euros/379.99));
   $$('.calc input[type=range]').forEach(i=>i.style.setProperty('--p',((i.value-i.min)/(i.max-i.min)*100)+'%'));
 }
 $$('.calc input[type=range]').forEach(i=>i.addEventListener('input',calculer)); calculer();
