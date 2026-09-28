@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Endova, la veille des sept jours d'avant</title>
-<meta name="description" content="Endova accompagne chaque patient par SMS de J-7 à H-2 et remonte les écarts de préparation pendant qu'ils sont encore rattrapables.">
+<title>Endova — la préparation des endoscopies, pour les cabinets de gastro-entérologie</title>
+<meta name="description" content="Endova prépare les patients de votre cabinet à leur coloscopie, gastroscopie ou rectosigmoïdoscopie : SMS de J-7 à H-2, fiche patient structurée, traçabilité de l'information délivrée.">
 <meta name="theme-color" content="#0B1130">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/endova-mark.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Endova, la veille des sept jours d'avant">
-<meta property="og:description" content="Une coloscopie sur cinq est mal préparée. Endova veille les sept jours qui la décident.">
+<meta property="og:title" content="Endova — la préparation des endoscopies, suivie par SMS">
+<meta property="og:description" content="Pour les cabinets de gastro-entérologie : chaque patient préparé de J-7 à H-2, chaque écart signalé à temps, chaque consigne tracée.">
 <meta property="og:image" content="https://endova.fr/assets/hero-ending.jpg">
 <meta property="og:url" content="https://endova.fr/">
 <meta name="twitter:card" content="summary_large_image">
@@ -295,6 +295,136 @@ footer{padding:52px clamp(20px,5vw,48px);background:var(--navy);color:#9E96B2;fo
 footer .large{display:flex;gap:26px;flex-wrap:wrap;justify-content:space-between;align-items:center}
 footer img{height:54px;width:auto}
 
+/* -------------------------------------------------------- liens de la barre */
+.liens{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
+.liens a:not(.btn){font-family:var(--titre);font-weight:500;font-size:14px;color:rgba(255,255,255,.86);text-decoration:none;
+  transition:color .3s var(--e2)}
+.liens a:not(.btn):hover{color:#fff}
+.barre.sur-clair .liens a:not(.btn){color:var(--texte-2)}
+.barre.sur-clair .liens a:not(.btn):hover{color:var(--navy)}
+@media (max-width:860px){.liens a:not(.btn){display:none}}
+
+/* ------------------------------------------------------ un échéancier par examen */
+.grille-ex{display:grid;gap:clamp(14px,1.6vw,20px);grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px}
+.ex{padding:26px 24px}
+.ex .mono{color:var(--accent)}
+.ex h3{margin-top:12px;font-size:21px;color:var(--navy)}
+.ex p:last-child{margin-top:10px;font-size:15px;color:var(--texte-2)}
+
+/* -------------------------------------------------------- la fiche, 4 onglets */
+.onglets{display:grid;gap:clamp(14px,1.6vw,20px);grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:44px}
+.onglet{padding:26px 24px;position:relative}
+.onglet .num{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--accent-muted);
+  color:var(--accent);font-family:var(--titre);font-weight:700;font-size:15px}
+.onglet h3{margin-top:16px;font-size:21px;color:var(--navy)}
+.onglet .q{margin-top:4px;font-family:var(--titre);font-weight:500;font-size:14px;color:var(--accent)}
+.onglet p:last-child{margin-top:12px;font-size:15px;color:var(--texte-2)}
+
+/* ------------------------------------------------------------- la preuve */
+.journal{padding:26px clamp(20px,2.6vw,30px)}
+.journal .jt{color:var(--texte-2)}
+.journal ol{list-style:none;margin:18px 0 0;padding:0 0 0 18px;border-left:1px solid rgba(5,28,78,.12);display:grid;gap:16px}
+.journal li{position:relative;font-size:15px;line-height:1.45;color:var(--navy)}
+.journal li::before{content:"";position:absolute;left:-23px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 0 3px #fff}
+.journal b{font-family:var(--mono);font-weight:500;font-size:12px;margin-right:10px}
+.journal .cat{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-right:10px}
+.journal .sms{color:var(--accent)} .journal .pat{color:#047857} .journal .cab{color:var(--texte-2)}
+
+/* ----------------------------------------------------------------- les tarifs
+   Du verre liquide : il n'existe que s'il a de la couleur à réfracter. Une nappe
+   de formes aux couleurs du logo dérive lentement derrière les offres ; le verre
+   la floute, la sature, et laisse passer ses mouvements. */
+.page section.tarifs{background:#070F2E;color:#E9E2F2;overflow:hidden;isolation:isolate}
+.tarifs .titre-s{color:#fff}
+.tarifs .lede{color:#BDB3D1}
+.tarifs .oeil{color:#E6A8F0}
+.nappe{position:absolute;inset:0;z-index:-1;pointer-events:none;filter:blur(60px) saturate(1.3)}
+.nappe i{position:absolute;display:block;border-radius:42% 58% 63% 37% / 45% 39% 61% 55%;opacity:.75;
+  animation:derive 26s var(--e2) infinite alternate}
+.nappe i:nth-child(1){width:44vw;height:44vw;right:-10vw;top:30%;background:#932B9C}
+.nappe i:nth-child(2){width:36vw;height:36vw;left:-10vw;top:6%;background:#1E2C7A;opacity:.6;animation-duration:31s;animation-delay:-8s}
+.nappe i:nth-child(3){width:30vw;height:30vw;left:34%;bottom:-16%;background:#3A2170;opacity:.6;animation-duration:23s;animation-delay:-4s}
+.nappe i:nth-child(4){width:24vw;height:24vw;right:4%;top:8%;background:#4B5CE0;opacity:.55;animation-duration:19s;animation-delay:-12s}
+@keyframes derive{
+  0%{transform:translate(0,0) rotate(0) scale(1);border-radius:42% 58% 63% 37% / 45% 39% 61% 55%}
+  50%{transform:translate(6vw,-4vw) rotate(40deg) scale(1.12);border-radius:61% 39% 44% 56% / 58% 62% 38% 42%}
+  100%{transform:translate(-4vw,5vw) rotate(-25deg) scale(.94);border-radius:38% 62% 55% 45% / 40% 52% 48% 60%}}
+
+.periode{display:inline-flex;gap:4px;margin-top:30px;padding:5px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px) saturate(1.6)}
+.periode button{font-family:var(--titre);font-weight:600;font-size:14px;color:#CFC6E0;background:transparent;border:0;
+  padding:10px 18px;border-radius:999px;cursor:pointer;transition:background .3s var(--e2),color .3s var(--e2)}
+.periode button em{font-style:normal;font-weight:500;font-size:12px;color:#E6A8F0;margin-left:6px}
+.periode button.on{background:#fff;color:var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.periode button.on em{color:var(--accent)}
+
+.offres{display:grid;gap:clamp(16px,2vw,24px);grid-template-columns:repeat(3,1fr);margin-top:44px;align-items:stretch}
+@media (max-width:980px){.offres{grid-template-columns:1fr;max-width:520px}}
+.offre{position:relative;display:flex;flex-direction:column;padding:34px 30px 30px;border-radius:28px;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(26px) saturate(1.8);-webkit-backdrop-filter:blur(26px) saturate(1.8);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.06),0 30px 60px -30px rgba(0,0,0,.6);
+  transition:transform .5s var(--e1),box-shadow .5s var(--e1)}
+/* Le reflet spéculaire : la lumière accroche le haut de la vitre. */
+.offre::before{content:"";position:absolute;inset:1px 1px auto 1px;height:46%;border-radius:27px 27px 60% 60% / 27px 27px 22% 22%;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));pointer-events:none}
+.vu .offre.ap:hover{transform:translateY(-6px)}
+.offre .nom{font-family:var(--titre);font-weight:600;font-size:24px;color:#fff}
+.offre .pour{margin-top:4px;font-size:15px;color:#BDB3D1}
+.offre .prix{margin-top:22px;font-family:var(--titre);font-weight:700;font-size:52px;line-height:1;color:#fff;letter-spacing:-.03em}
+.offre .prix span{font-variant-numeric:tabular-nums}
+.offre .prix small{font-size:14px;font-weight:500;letter-spacing:0;color:#BDB3D1}
+.offre .fact{margin-top:8px;font-size:13px;color:#9E96B2;min-height:1.4em}
+.offre ul{list-style:none;margin:24px 0 28px;padding:22px 0 0;border-top:1px solid rgba(255,255,255,.12);display:grid;gap:12px;flex:1}
+.offre li{position:relative;padding-left:28px;font-size:15px;line-height:1.45;color:#E4DCEE}
+.offre li::before{content:"";position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;
+  background:rgba(230,168,240,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0C6F6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/11px no-repeat}
+.choisir{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;text-decoration:none;
+  font-family:var(--titre);font-weight:600;font-size:15px;color:#fff;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.24);transition:background .3s var(--e2),transform .3s var(--e2)}
+.choisir:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.ruban{position:absolute;top:-13px;left:30px;padding:6px 13px;border-radius:999px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--navy);background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.offre-cabinet{border-color:rgba(230,168,240,.4)}
+.offre-cabinet .choisir{background:#fff;color:var(--navy);border-color:#fff}
+
+/* Signature : verre plus profond, teinté aux couleurs du logo, cerclé d'un
+   liseré irisé qui tourne, et balayé par l'éclat déjà porté par la marque. */
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+.offre-signature{
+  background:
+    radial-gradient(120% 70% at 20% 0%,rgba(230,168,240,.34),transparent 60%),
+    radial-gradient(90% 70% at 100% 100%,rgba(70,90,230,.3),transparent 60%),
+    linear-gradient(165deg,rgba(147,43,156,.42),rgba(17,24,72,.72));
+  border-color:transparent;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 1px rgba(255,255,255,.06),
+    0 30px 80px -24px rgba(147,43,156,.75),0 0 120px -30px rgba(194,87,201,.6)}
+@media (min-width:981px){.vu .offre-signature.ap{transform:translateY(-14px)}.vu .offre-signature.ap:hover{transform:translateY(-20px)}}
+.offre-signature .iris{position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--ang),#F4C7FA,#932B9C,#5B6CFF,#52237F,#E6A8F0,#F4C7FA);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  animation:tourne 7s linear infinite}
+@keyframes tourne{to{--ang:360deg}}
+.offre-signature .balayage{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
+.offre-signature .balayage::after{content:"";position:absolute;top:-30%;left:0;width:60%;height:160%;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.2) 45%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.2) 55%,transparent 100%);
+  transform:translateX(-120%) rotate(8deg);animation:balaie 6.5s var(--e2) infinite}
+@keyframes balaie{0%,55%{transform:translateX(-120%) rotate(8deg)}100%{transform:translateX(260%) rotate(8deg)}}
+.offre-signature .ruban{background:linear-gradient(90deg,#F4C7FA,#fff,#C9CFFF);}
+.offre-signature .prix{background:linear-gradient(180deg,#fff 30%,#F0C6F6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.offre-signature .prix small{-webkit-text-fill-color:#D9CCE8}
+.offre-signature li::before{background-color:rgba(255,255,255,.22)}
+.offre-signature .choisir{color:var(--navy);border:0;
+  background:linear-gradient(100deg,#fff,#F6DDF9 50%,#fff);box-shadow:0 10px 30px -8px rgba(230,168,240,.8)}
+.tarifs .mention{margin-top:30px;font-size:13px;color:#9E96B2}
+
+select{width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
+  color:#fff;font-family:var(--corps);font-size:16px}
+select option{color:var(--navy)}
+
 /* entrées de section */
 .ap{opacity:0;transform:translateY(26px);transition:opacity .8s var(--e1),transform .8s var(--e1)}
 .vu .ap{opacity:1;transform:none}
@@ -329,7 +459,12 @@ footer img{height:54px;width:auto}
     <span class="eclat"><img id="logo" src="assets/glyphe-blanc.png" alt="Endova"></span>
     <span class="mot" aria-hidden="true">ENDOVA</span>
   </a>
-  <a class="btn btn-vide" href="#contact">Voir une démonstration</a>
+  <div class="liens">
+    <a href="#sept-jours">Fonctionnement</a>
+    <a href="#fiche">Fiche patient</a>
+    <a href="#tarifs">Tarifs</a>
+    <a class="btn btn-vide" href="#contact">Voir une démonstration</a>
+  </div>
 </nav>
 
 <main id="main" tabindex="-1">
@@ -352,7 +487,7 @@ footer img{height:54px;width:auto}
       <div class="bande b2" data-a=".34" data-b="1" data-rampe=".085">
         <div class="dedans">
           <h2 data-split="w">Ce matin, son estomac a refusé la seconde. Dans deux heures, son côlon ne sera pas lisible.</h2>
-          <p class="sous">Endova suit chaque patient par SMS, de J-7 à H-2, et signale l'écart tant qu'il est rattrapable.</p>
+          <p class="sous">Endova suit chaque patient de votre cabinet par SMS, de J-7 à H-2, et vous signale l'écart tant qu'il est rattrapable.</p>
           <div class="rangee"><a class="btn btn-plein" href="#contact">Voir une démonstration</a></div>
         </div>
       </div>
@@ -379,8 +514,8 @@ footer img{height:54px;width:auto}
         </div>
         <div class="grille-3">
           <div class="verre chiffre"><div class="n" data-compte="25" data-suffixe=" %">0 %</div><p class="q">des coloscopies jugées mal préparées</p><p class="d">Score de Boston insuffisant</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="33" data-suffixe=" %">0 %</div><p class="q">des patients annulés ne reviennent pas</p><p class="d">Sous six mois, examen ou test de dépistage</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="850" data-suffixe=" €">0 €</div><p class="q">perdus par créneau annulé</p><p class="d">Vacance de salle et acte non coté</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="5" data-suffixe=" SMS">0 SMS</div><p class="q">envoyés à chaque patient, seuls</p><p class="d">De J-7 à H-2, calés sur l'heure d'examen</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="1" data-suffixe=" appel">0 appel</div><p class="q">par patient en écart, pas plus</p><p class="d">Tous ses motifs regroupés, la phrase à dire fournie</p></div>
         </div>
       </div>
     </section>
@@ -389,10 +524,10 @@ footer img{height:54px;width:auto}
       <div class="large">
         <p class="mono oeil ap">Ce que personne ne regarde</p>
         <h2 class="titre-s ap">Sept jours décident de l'examen. Le patient les traverse seul.</h2>
-        <p class="lede ap">Faites glisser le curseur pour voir ce qu'Endova demande, jour après jour.</p>
+        <p class="lede ap">L'échéancier d'une coloscopie. Faites glisser le curseur pour voir ce qu'Endova demande au patient, et ce qu'il vous remonte.</p>
 
         <div class="verre axe ap">
-          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-1</span><span>H-4</span><span>H-2</span></div>
+          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-1</span><span>H-5</span><span>H-2</span></div>
           <div class="axe-piste">
             <div class="axe-remplie" id="axeRemplie"></div>
             <div class="axe-pts" id="axePts"><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i></div>
@@ -417,12 +552,146 @@ footer img{height:54px;width:auto}
       </div>
     </section>
 
+    <section id="examens">
+      <div class="large">
+        <p class="mono oeil ap">Un échéancier par examen</p>
+        <h2 class="titre-s ap">Une gastroscopie ne se prépare pas comme une coloscopie.</h2>
+        <p class="lede ap">À la création du dossier, votre secrétariat choisit l'examen. Endova en déduit les messages, les heures d'envoi et les questions à poser.</p>
+        <div class="grille-ex">
+          <article class="verre ex ap">
+            <p class="mono">Purge · 5 SMS</p>
+            <h3>Coloscopie</h3>
+            <p>Traitements et purge à J-7, régime sans résidu à J-3 (J-5 en préparation renforcée), minuteur guidé pour chaque fraction, échelle de clarté des selles à H-5, verrou de jeûne à H-2.</p>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Purge · 5 SMS</p>
+            <h3>Coloscopie et gastroscopie</h3>
+            <p>Le même échéancier, sous la même anesthésie. Le bilan d'anémie ferriprive rappelle l'arrêt du fer oral sept jours avant, que les patients oublient presque toujours.</p>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Jeûne · 3 SMS</p>
+            <h3>Gastroscopie</h3>
+            <p>Pas de purge, tout se joue sur l'estomac. Heure limite des solides, liquides clairs jusqu'à H-2, et une attention particulière aux patients sous GLP-1, dont la vidange gastrique est ralentie.</p>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Lavements · 3 SMS</p>
+            <h3>Rectosigmoïdoscopie</h3>
+            <p>Deux lavements le matin même, à une heure d'intervalle. Endova vérifie la veille que le patient les a achetés, puis lui demande le résultat.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="cabinet">
       <div class="large">
         <p class="mono oeil ap">Ce que voit le cabinet</p>
-        <h2 class="titre-s ap">Le matin, une seule question : dans quel ordre j'opère.</h2>
-        <p class="lede ap">Chaque alerte arrive avec la phrase à dire au téléphone. Le secrétariat n'improvise pas.</p>
-        <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova, avec les indicateurs du jour et la file des patients à rappeler" loading="lazy"></div>
+        <h2 class="titre-s ap">Le matin, une seule liste : qui rappeler, et quoi lui dire.</h2>
+        <p class="lede ap">Un patient, un appel. Ses motifs sont regroupés, les urgents passent devant, et chaque alerte arrive avec la phrase à dire au téléphone. Votre secrétariat n'improvise pas.</p>
+        <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova : préparations en cours, patients à rappeler, vacation du jour" loading="lazy"></div>
+      </div>
+    </section>
+
+    <section id="fiche">
+      <div class="large">
+        <p class="mono oeil ap">La fiche patient</p>
+        <h2 class="titre-s ap">Quatre onglets, quatre questions. Jamais tout en vrac.</h2>
+        <p class="lede ap">L'identité, l'examen et le statut restent en haut de l'écran. En dessous, chaque onglet répond à une seule question.</p>
+        <div class="onglets">
+          <article class="verre onglet ap"><span class="num">1</span><h3>Dossier</h3><p class="q">Qui est le patient, quel examen ?</p><p>Identité, indication, anesthésie, préparation prescrite. Traitements à risque avec leur consigne usuelle, facteurs de préparation insuffisante, check-list pré-examen : consultation d'anesthésie, consentement, ordonnance, bon d'admission.</p></article>
+          <article class="verre onglet ap"><span class="num">2</span><h3>Préparation</h3><p class="q">Où en est-il ?</p><p>Index de préparation sur 100, alertes avec leur conduite à tenir, détail de chaque déclaration. Projection du Boston prévisionnel par segment colique.</p></article>
+          <article class="verre onglet ap"><span class="num">3</span><h3>SMS</h3><p class="q">Qu'a-t-il reçu ?</p><p>Chaque message, programmé ou parti, avec son statut : délivré, lien ouvert, répondu. Renvoi en un clic, messages libres à partir de modèles.</p></article>
+          <article class="verre onglet ap"><span class="num">4</span><h3>Traçabilité</h3><p class="q">Que pouvez-vous prouver ?</p><p>Le journal horodaté du dossier : envois, ouvertures, déclarations, appels, actions du cabinet. Exportable et imprimable.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="preuve">
+      <div class="large">
+        <div class="duo">
+          <div class="ap">
+            <p class="mono oeil">La preuve de l'information délivrée</p>
+            <h2 class="titre-s">Le jour où l'on vous demande ce que le patient savait.</h2>
+            <p class="lede">Consigne d'arrêt d'un anticoagulant, heure limite de jeûne, préparation prescrite : chaque information est horodatée au moment où elle part, et chaque réponse du patient au moment où il la donne. Une pièce que vous versez au dossier, pas une reconstitution de mémoire.</p>
+          </div>
+          <div class="verre journal ap" aria-label="Extrait de traçabilité">
+            <p class="mono jt">Journal · NKEMBA Joseph</p>
+            <ol>
+              <li><b>10:00</b><span class="cat sms">SMS</span>SMS J-7 envoyé — Logistique et traitements</li>
+              <li><b>10:12</b><span class="cat pat">Patient</span>Lien ouvert, identité vérifiée</li>
+              <li><b>10:35</b><span class="cat pat">Patient</span>Déclaration J-7 — Eliquis : aucune consigne reçue</li>
+              <li><b>11:02</b><span class="cat cab">Cabinet</span>Appel sortant — joint. Consigne d'arrêt 48 h confirmée, envoyée par écrit.</li>
+              <li><b>11:03</b><span class="cat cab">Cabinet</span>Alerte traitée — Nadia, secrétariat</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tarifs" class="tarifs">
+      <div class="nappe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="large">
+        <p class="mono oeil ap">Tarifs</p>
+        <h2 class="titre-s ap">Un examen sauvé par mois suffit à le payer.</h2>
+        <p class="lede ap">Par cabinet, sans engagement de durée. SMS inclus, mise en service accompagnée.</p>
+
+        <div class="periode ap" role="group" aria-label="Période de facturation">
+          <button type="button" class="on" data-periode="mois" aria-pressed="true">Mensuel</button>
+          <button type="button" data-periode="an" aria-pressed="false">Annuel <em>2 mois offerts</em></button>
+        </div>
+
+        <div class="offres">
+          <article class="offre ap">
+            <p class="nom">Essentiel</p>
+            <p class="pour">Le praticien installé seul</p>
+            <p class="prix"><span data-mois="149" data-an="124">149</span> € <small>HT / mois</small></p>
+            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 1 490 € HT par an">Facturé chaque mois</p>
+            <ul>
+              <li>1 praticien, jusqu'à 60 examens par mois</li>
+              <li>Coloscopie et gastroscopie</li>
+              <li>Fiche patient en quatre onglets</li>
+              <li>Échéancier SMS de J-7 à H-2, SMS inclus</li>
+              <li>File d'appels avec phrases types</li>
+            </ul>
+            <a class="choisir" href="#contact" data-offre="Essentiel">Choisir Essentiel</a>
+          </article>
+
+          <article class="offre offre-cabinet ap">
+            <p class="ruban">Le plus choisi</p>
+            <p class="nom">Cabinet</p>
+            <p class="pour">Le cabinet de groupe</p>
+            <p class="prix"><span data-mois="290" data-an="242">290</span> € <small>HT / mois</small></p>
+            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 2 900 € HT par an">Facturé chaque mois</p>
+            <ul>
+              <li>Jusqu'à 3 praticiens, 200 examens par mois</li>
+              <li>Tous les examens, dont la rectosigmoïdoscopie</li>
+              <li>Préparation renforcée pour les patients à risque</li>
+              <li>SMS au nom de votre cabinet</li>
+              <li>Traçabilité exportable, versable au dossier</li>
+              <li>Ordre de passage conseillé pour la vacation</li>
+            </ul>
+            <a class="choisir" href="#contact" data-offre="Cabinet">Choisir Cabinet</a>
+          </article>
+
+          <article class="offre offre-signature ap">
+            <span class="iris" aria-hidden="true"></span>
+            <span class="balayage" aria-hidden="true"></span>
+            <p class="ruban">Le plus complet</p>
+            <p class="nom">Signature</p>
+            <p class="pour">Les cabinets à fort volume</p>
+            <p class="prix"><span data-mois="490" data-an="408">490</span> € <small>HT / mois</small></p>
+            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 4 900 € HT par an">Facturé chaque mois</p>
+            <ul>
+              <li>Praticiens et examens illimités</li>
+              <li>Tout ce que contient l'offre Cabinet</li>
+              <li>Protocoles et messages écrits sur mesure</li>
+              <li>Installation sur place, formation du secrétariat</li>
+              <li>Un interlocuteur dédié, joignable directement</li>
+              <li>Bilan mensuel de la qualité des préparations</li>
+            </ul>
+            <a class="choisir" href="#contact" data-offre="Signature">Choisir Signature</a>
+          </article>
+        </div>
+        <p class="mention ap">Tarifs hors taxes, par cabinet. Au-delà du volume inclus, les examens supplémentaires sont facturés à l'unité.</p>
       </div>
     </section>
 
@@ -431,10 +700,12 @@ footer img{height:54px;width:auto}
         <p class="mono oeil ap">Les questions qu'on nous pose</p>
         <h2 class="titre-s ap">Ce que les praticiens demandent avant de se lancer.</h2>
         <div class="faq">
-          <details class="verre ap"><summary>Mes patients ne liront pas un SMS.</summary><p>Le lien s'ouvre dans leur navigateur, sans installer d'application et sans mot de passe. Une année de naissance suffit à ouvrir le dossier, ce qui protège les données sans rien demander de compliqué au patient.</p></details>
+          <details class="verre ap"><summary>Mes patients ne liront pas un SMS.</summary><p>Le lien s'ouvre dans leur navigateur, sans application et sans mot de passe : l'année de naissance suffit. Et si un patient n'ouvre pas son premier lien, Endova vous le signale 36 heures plus tard, pour que votre secrétariat l'appelle avant qu'il ne soit trop tard.</p></details>
+          <details class="verre ap"><summary>Combien de temps pour mon secrétariat ?</summary><p>La création d'un dossier prend deux minutes, à la sortie de consultation. Ensuite, une file d'appels par jour, triée par urgence : chaque patient y apparaît une fois, avec tous ses motifs et la phrase à lui dire. Les patients conformes ne génèrent aucun appel.</p></details>
+          <details class="verre ap"><summary>Et mes patients sous GLP-1 ?</summary><p>Ozempic, Wegovy, Trulicity, Mounjaro : la vidange gastrique ralentie expose à l'inhalation à l'induction. Endova le repère dès la création du dossier, rappelle de prévenir l'anesthésiste et impose au patient les liquides clairs la veille. Même logique pour les gliflozines, à arrêter trois jours avant.</p></details>
+          <details class="verre ap"><summary>Les consignes sont-elles figées ?</summary><p>Non. Endova rappelle les consignes usuelles des sociétés savantes, mais c'est votre prescription qui fait foi. Préparation, schéma de prise, préparation renforcée : tout se règle patient par patient, et l'offre Signature adapte les messages à vos propres protocoles.</p></details>
           <details class="verre ap"><summary>Est-ce un dispositif médical ?</summary><p>Endova ne pose aucun diagnostic. Il transmet des déclarations de patients et signale des écarts. Dès qu'une de ses recommandations est suivie en pratique, la question du règlement européen se pose, et elle doit être arbitrée avant toute mise en service réelle. Nous le disons plutôt que de l'éviter.</p></details>
-          <details class="verre ap"><summary>Combien de temps pour mon secrétariat ?</summary><p>Une file d'appels par jour, triée par urgence. Chaque patient y apparaît une fois, avec tous ses motifs regroupés et la phrase à lui dire. Un appel traite l'ensemble.</p></details>
-          <details class="verre ap"><summary>Et si le patient déclare n'importe quoi ?</summary><p>Une déclaration vaut mieux qu'un silence. Un écart signalé se rattrape, avec un lavement de secours ou un passage décalé en fin de programme. Un écart tu se découvre sur la table.</p></details>
+          <details class="verre ap"><summary>Et si le patient déclare n'importe quoi ?</summary><p>Une déclaration vaut mieux qu'un silence. Un écart signalé se rattrape, avec un lavement à l'arrivée ou un passage décalé en fin de vacation. Un écart tu se découvre pendant l'examen.</p></details>
         </div>
       </div>
     </section>
@@ -444,15 +715,18 @@ footer img{height:54px;width:auto}
         <div class="contact">
           <p class="mono oeil">Parlons-en</p>
           <h2 class="titre-s">Voir Endova sur votre programme.</h2>
-          <p class="lede">Dites-nous combien de coloscopies vous faites par semaine, nous vous montrons ce que l'échéancier changerait sur votre propre planning.</p>
+          <p class="lede">Dites-nous combien d'examens votre cabinet programme par semaine : nous vous montrons, sur vos propres vacations, ce que l'échéancier changerait.</p>
           <form id="form">
             <div class="deux">
               <div><label for="f-nom">Votre nom</label><input id="f-nom" name="nom" type="text" required></div>
-              <div><label for="f-etab">Établissement</label><input id="f-etab" name="etab" type="text" required></div>
+              <div><label for="f-etab">Cabinet</label><input id="f-etab" name="etab" type="text" required></div>
             </div>
             <div class="deux">
               <div><label for="f-mail">Adresse électronique</label><input id="f-mail" name="mail" type="email" required></div>
-              <div><label for="f-nb">Coloscopies par semaine</label><input id="f-nb" name="nb" type="number" min="0" step="1"></div>
+              <div><label for="f-nb">Examens par semaine</label><input id="f-nb" name="nb" type="number" min="0" step="1"></div>
+            </div>
+            <div><label for="f-offre">Offre envisagée</label>
+              <select id="f-offre" name="offre"><option>Je ne sais pas encore</option><option>Essentiel</option><option>Cabinet</option><option>Signature</option></select>
             </div>
             <button class="btn btn-plein" type="submit" style="justify-self:start;margin-top:8px">Demander une démonstration</button>
           </form>
@@ -466,7 +740,7 @@ footer img{height:54px;width:auto}
 <footer>
   <div class="large">
     <img src="assets/logo-blanc.png" alt="Endova">
-    <p>Endova ne remplace ni la consultation pré-anesthésique ni la cotation per-endoscopique du score de Boston.</p>
+    <p>Endova prépare le patient jusqu'à son arrivée. Il ne remplace ni la consultation d'anesthésie, ni la prescription du gastro-entérologue, ni la cotation per-endoscopique du score de Boston.</p>
   </div>
 </footer>
 
@@ -753,11 +1027,11 @@ function compter(racine){
 
 /* ------------------------------------------------ l'axe des sept jours -------- */
 const ETAPES=[
-  {c:'J-7',t:'Logistique et anticoagulants',p:"Le patient confirme qu'il a récupéré sa purge et déclare ses fluidifiants sanguins. S'il n'a reçu aucune consigne d'arrêt, une alerte rouge part immédiatement au secrétariat.",s:"Votre coloscopie a lieu le jour J. Deux actions vitales dès aujourd'hui : récupérer votre préparation et vérifier l'arrêt de vos fluidifiants."},
-  {c:'J-3',t:'Régime sans résidu',p:"Une liste visuelle, cherchable, avec le motif de chaque interdit. Un pépin de tomate bouche le canal d'aspiration de l'endoscope ; le patient le comprend mieux qu'une consigne sèche.",s:"Début du régime sans résidu aujourd'hui. Un écart peut empêcher la détection de polypes."},
-  {c:'J-1',t:'Première fraction de purge',p:"Un minuteur guidé impose un verre toutes les quinze minutes et bloque l'avance. Boire trop vite est la première cause de vomissement, et un vomissement fait perdre le volume déjà ingéré.",s:"C'est l'heure de la première dose. Buvez calmement pour éviter tout rejet. Lancez le minuteur guidé."},
-  {c:'H-4',t:'Seconde fraction et contrôle',p:"Le patient évalue la clarté de ses selles sur une échelle visuelle dérivée du score de Boston. C'est cette réponse qui prédit le mieux la qualité réelle de l'examen.",s:"Dernière ligne droite. Prenez votre deuxième dose maintenant, puis évaluez la clarté de vos selles."},
-  {c:'H-2',t:'Verrou anesthésique',p:"Signature horodatée du jeûne, tabac compris. Une cigarette retarde la vidange gastrique autant qu'un repas, et beaucoup de patients l'ignorent.",s:"Arrêt total. Ne plus rien boire, ne plus rien manger, ne pas fumer. Confirmez votre jeûne."}
+  {c:'J-7',t:'Traitements et logistique',p:"Le patient confirme qu'il a sa préparation, puis répond pour chaque traitement noté au dossier : anticoagulant, antiagrégant, GLP-1, gliflozine, insuline, fer. Pas de consigne d'arrêt ? L'alerte part au cabinet, avec la conduite à tenir.",s:"Rendez-vous le jour J pour votre coloscopie. Dès aujourd'hui, vérifiez vos traitements et votre préparation."},
+  {c:'J-3',t:'Régime sans résidu',p:"Une liste cherchable, avec le motif de chaque interdit : un pépin de kiwi bouche le canal d'aspiration de l'endoscope. Les écarts déclarés vous remontent. En préparation renforcée, le régime démarre à J-5.",s:"Début du régime sans résidu aujourd'hui, jusqu'à l'examen. La liste des aliments autorisés est ici."},
+  {c:'J-1',t:'Première fraction',p:"Un minuteur impose un verre à la fois et bloque l'avance : boire trop vite est la première cause de vomissement. Un rejet déclenche aussitôt la conduite à tenir chez le patient, et une alerte chez vous.",s:"C'est l'heure de la première dose. Buvez lentement, un verre à la fois, avec le minuteur."},
+  {c:'H-5',t:'Seconde fraction et contrôle',p:"La fraction qui nettoie le côlon droit, à terminer trois heures avant l'examen. Le patient compare ses selles à une échelle visuelle dérivée du score de Boston : c'est la réponse qui prédit le mieux la qualité de l'examen.",s:"Seconde dose maintenant, à terminer avant 6 h. Puis indiquez l'aspect de vos selles."},
+  {c:'H-2',t:'Verrou de jeûne',p:"Signature horodatée du jeûne, tabac compris : une cigarette retarde la vidange gastrique, et beaucoup de patients l'ignorent. La signature rejoint la traçabilité du dossier.",s:"À partir de maintenant, plus rien à boire, à manger ni à fumer. Confirmez votre jeûne."}
 ];
 const curseur=$('#axeCurseur'), axeTxt=$('#axeTxt'), axeRemplie=$('#axeRemplie'), axePts=$$('#axePts .axe-pt');
 function majAxe(){
@@ -773,10 +1047,18 @@ const DESTINATAIRE='contact@endova.fr';
 $('#form').addEventListener('submit',ev=>{
   ev.preventDefault();
   const d=new FormData(ev.target);
-  const corps=['Nom : '+(d.get('nom')||''),'Établissement : '+(d.get('etab')||''),'Adresse : '+(d.get('mail')||''),'Coloscopies par semaine : '+(d.get('nb')||'non précisé')].join('\n');
+  const corps=['Nom : '+(d.get('nom')||''),'Cabinet : '+(d.get('etab')||''),'Adresse : '+(d.get('mail')||''),'Examens par semaine : '+(d.get('nb')||'non précisé'),'Offre envisagée : '+(d.get('offre')||'')].join('\n');
   location.href='mailto:'+DESTINATAIRE+'?subject='+encodeURIComponent('Démonstration Endova')+'&body='+encodeURIComponent(corps);
   $('#note').textContent="Votre logiciel de courrier s'ouvre avec le message prérempli. Il ne part que si vous l'envoyez.";
 });
+
+/* ------------------------------------------------------------- les tarifs ---- */
+$$('.periode button').forEach(b=>b.addEventListener('click',()=>{
+  const p=b.dataset.periode;
+  $$('.periode button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});
+  $$('.offre [data-mois]').forEach(el=>{el.textContent=el.dataset[p==='an'?'an':'mois']});
+}));
+$$('.choisir').forEach(a=>a.addEventListener('click',()=>{const sel=$('#f-offre'); if(sel) sel.value=a.dataset.offre}));
 
 /* animations en pause hors onglet */
 addEventListener('visibilitychange',()=>document.body.classList.toggle('paused',document.hidden));

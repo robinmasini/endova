@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Check, Eye, AlertTriangle } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Bouton, CarteChoix, Libelle, TONS } from '../components/ui.jsx';
-import { ECHELLE_EVACUATION, ETAPES } from '../lib/protocols.js';
+import { ECHELLE_EVACUATION } from '../lib/protocols.js';
+import { ETAPES } from '../lib/examens.js';
+import { heure } from '../lib/patient.js';
 import { store } from '../lib/store.js';
 import Coque from './Coque.jsx';
 
-const ETAPE = ETAPES[3];
+const ETAPE = ETAPES.h5;
 
 /** Carte de l'échelle visuelle : la pastille de couleur porte l'information, pas le texte. */
 function CarteEvacuation({ item, actif, onClick, verrouille }) {
@@ -39,17 +41,17 @@ function CarteEvacuation({ item, actif, onClick, verrouille }) {
   );
 }
 
-export default function EtapeH4({ patient, protocole, onFermer }) {
-  const dejaFait = patient.etapes.h4.done;
-  const [tolerance, setTolerance] = useState(patient.etapes.h4.tolerance ?? null);
-  const [evac, setEvac] = useState(patient.etapes.h4.evacuation ?? null);
+export default function EtapeH5({ patient, protocole, onFermer }) {
+  const dejaFait = patient.etapes.h5?.done;
+  const [tolerance, setTolerance] = useState(patient.etapes.h5?.tolerance ?? null);
+  const [evac, setEvac] = useState(patient.etapes.h5?.evacuation ?? null);
 
   const choisi = ECHELLE_EVACUATION.find((e) => e.id === evac);
   const insuffisant = evac !== null && evac <= 2;
 
   function valider() {
     store.majEtape(
-      patient.id, 'h4',
+      patient.id, 'h5',
       { tolerance, evacuation: evac },
       insuffisant ? `Évacuation non conforme (${choisi.verdict})` : `Évacuation ${choisi.verdict.toLowerCase()}`,
     );
@@ -75,7 +77,7 @@ export default function EtapeH4({ patient, protocole, onFermer }) {
         <GlassCard className="p-5">
           <p className="text-xs leading-relaxed text-slate-700">
             C’est la fraction qui décide de la qualité de l’examen : elle nettoie le côlon droit, là où se cachent
-            les adénomes plans. Elle doit être <span className="font-medium text-navy">terminée 2 heures avant l’induction</span>.
+            les adénomes plans. Elle doit être <span className="font-medium text-navy">terminée avant {heure(new Date(patient.examen.date).getTime() - 3 * 3600 * 1000)}</span>, pour laisser deux heures de jeûne avant l’examen.
           </p>
           <p className="mt-2.5 text-xs text-slate-600">{protocole.volumeFraction} — {protocole.eauClaireApres}</p>
           <div className="mt-4 space-y-2.5">
@@ -118,7 +120,7 @@ export default function EtapeH4({ patient, protocole, onFermer }) {
           <p className="mt-2 text-xs leading-relaxed text-slate-700">
             Continuez à boire de l’eau claire — sans dépasser l’heure limite de jeûne — et restez joignable.
             L’équipe est alertée : selon l’évolution, un lavement de secours sera prescrit à votre arrivée,
-            ou votre passage sera décalé en fin de programme pour laisser agir la préparation.
+            ou votre passage sera décalé en fin de vacation pour laisser agir la préparation.
           </p>
         </GlassCard>
       ) : choisi ? (

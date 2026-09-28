@@ -117,7 +117,7 @@ export default function SchemaDigestif({ patient, compact = false }) {
       {!compact ? (
         <p className="mt-3 text-center text-[11px] leading-relaxed text-slate-500">
           {etat.inconnu
-            ? 'Projection indisponible tant que l’auto-évaluation H-4 n’est pas remontée.'
+            ? 'Projection indisponible tant que l’auto-évaluation H-5 n’est pas remontée.'
             : 'Touchez un repère : Boston prévisionnel par segment, déduit des déclarations du patient — il ne remplace pas la cotation per-endoscopique.'}
         </p>
       ) : null}

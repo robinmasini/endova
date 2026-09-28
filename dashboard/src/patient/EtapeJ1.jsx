@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { GlassWater, Timer, Check, AlertTriangle, Zap, Droplets } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Bouton, CarteChoix, Libelle, AnneauScore } from '../components/ui.jsx';
-import { ETAPES } from '../lib/protocols.js';
+import { ETAPES } from '../lib/examens.js';
 import { store } from '../lib/store.js';
 import Coque from './Coque.jsx';
 
-const ETAPE = ETAPES[2];
+const ETAPE = ETAPES.j1;
 /** Le minuteur réel est de 15 min entre deux verres. Accéléré ici pour être démontrable. */
 const VITESSE_DEMO = 120;
 
@@ -16,13 +16,13 @@ function mmss(s) {
 }
 
 export default function EtapeJ1({ patient, protocole, onFermer }) {
-  const dejaFait = patient.etapes.j1.done;
+  const dejaFait = patient.etapes.j1?.done;
   const total = protocole.verres;
   const intervalle = protocole.intervalleMin * 60;
 
-  const [bus, setBus] = useState(dejaFait ? (patient.etapes.j1.verresBus ?? total) : 0);
+  const [bus, setBus] = useState(dejaFait ? (patient.etapes.j1?.verresBus ?? total) : 0);
   const [restant, setRestant] = useState(0);
-  const [tolerance, setTolerance] = useState(patient.etapes.j1.tolerance ?? null);
+  const [tolerance, setTolerance] = useState(patient.etapes.j1?.tolerance ?? null);
   const tick = useRef(null);
 
   // Décompte entre deux verres : la nausée vient d'une ingestion trop rapide.
@@ -158,10 +158,10 @@ export default function EtapeJ1({ patient, protocole, onFermer }) {
                 <li className="flex gap-2.5"><span className="font-bold text-rose-700">1.</span> Arrêtez la purge et attendez 30 minutes, au calme, sans rien boire.</li>
                 <li className="flex gap-2.5"><span className="font-bold text-rose-700">2.</span> Prenez l’antiémétique prescrit si vous en avez un (métoclopramide, dompéridone).</li>
                 <li className="flex gap-2.5"><span className="font-bold text-rose-700">3.</span> Reprenez ensuite par petites gorgées, verre glacé, avec une paille.</li>
-                <li className="flex gap-2.5"><span className="font-bold text-rose-700">4.</span> Le secrétariat est alerté et vous rappelle pour adapter la suite.</li>
+                <li className="flex gap-2.5"><span className="font-bold text-rose-700">4.</span> Le cabinet est alerté et vous rappelle pour adapter la suite.</li>
               </ol>
               <p className="mt-3 text-[11px] text-slate-600">
-                N’abandonnez pas la préparation de vous-même : un côlon non préparé fait annuler l’examen sur table.
+                N’abandonnez pas la préparation de vous-même : un côlon mal préparé oblige souvent à refaire l’examen.
               </p>
             </GlassCard>
           ) : null}

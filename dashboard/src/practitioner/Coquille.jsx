@@ -1,19 +1,42 @@
-import { NavLink, Outlet, useSearchParams } from 'react-router-dom';
-import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw } from '../components/icones.js';
+import { NavLink, Navigate, Outlet, useSearchParams } from 'react-router-dom';
+import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus } from '../components/icones.js';
 import { useDossiers, store } from '../lib/store.js';
-import { alertes } from '../lib/score.js';
-import FichePatient from './FichePatient.jsx';
+import { alertesActives } from '../lib/score.js';
+import { joursAvant } from '../lib/examens.js';
 
 /**
  * Chaque entrée répond à une question distincte, et à une seule.
  * C'est ce qui évite de réempiler quatre sujets sur un même écran.
  */
-const SECTIONS = [
-  { to: '/', fin: true, label: 'Dashboard', complet: 'Dashboard', icone: LayoutDashboard },
-  { to: '/patients', label: 'Patients', complet: 'Liste Patients', icone: UsersRound, compteur: 'alertes' },
-  { to: '/echeancier', label: 'Échéancier', complet: 'Échéancier SMS', icone: CalendarClock },
-  { to: '/reglages', label: 'Réglages', complet: 'Réglages', icone: Settings },
+const GROUPES = [
+  {
+    titre: 'Suivi',
+    sections: [
+      { to: '/', fin: true, label: 'Accueil', complet: 'Tableau de bord', icone: LayoutDashboard },
+      { to: '/rappels', label: 'Rappels', complet: 'À rappeler', icone: PhoneCall, compteur: 'rappels', mobile: 0 },
+      { to: '/vacations', label: 'Vacations', complet: 'Vacations', icone: CalendarDays, mobile: 1 },
+    ],
+  },
+  {
+    titre: 'Dossiers',
+    sections: [
+      { to: '/patients', label: 'Patients', complet: 'Patients', icone: UsersRound, mobile: 2 },
+      { to: '/patients/nouveau', label: 'Nouveau', complet: 'Nouveau dossier', icone: Plus, fin: true },
+    ],
+  },
+  {
+    titre: 'Communication',
+    sections: [{ to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 }],
+  },
+  {
+    titre: 'Cabinet',
+    sections: [{ to: '/reglages', label: 'Réglages', complet: 'Réglages', icone: Settings }],
+  },
 ];
+
+// La barre mobile n'a que quatre places : le tableau de bord est la pastille centrale,
+// les réglages restent accessibles depuis le tableau de bord.
+const MOBILE = GROUPES.flatMap((g) => g.sections).filter((s) => s.mobile !== undefined).sort((a, b) => a.mobile - b.mobile);
 
 function Pastille({ n }) {
   if (!n) return null;
@@ -49,27 +72,21 @@ function Onglet({ section: { to, fin, label, icone: Icone, compteur }, compteurs
 }
 
 export default function Coquille() {
-  const { patients } = useDossiers();
-  const [params, setParams] = useSearchParams();
+  const { patients, cabinet } = useDossiers();
+  const [params] = useSearchParams();
 
-  // Le dossier ouvert vit dans l'URL : la fiche reste partageable et le retour
-  // arrière du navigateur la referme, depuis n'importe quelle section.
-  const ouvert = params.get('dossier');
-  const fiche = patients.find((p) => p.id === ouvert);
-  const fermerFiche = () => {
-    const suite = new URLSearchParams(params);
-    suite.delete('dossier');
-    setParams(suite, { replace: true });
-  };
+  // Anciens liens « ?dossier= » : la fiche est désormais une page à part entière.
+  const ancien = params.get('dossier');
+  if (ancien) return <Navigate to={`/patients/${ancien}`} replace />;
 
   const compteurs = {
-    alertes: patients.filter((p) => alertes(p).length).length,
+    rappels: patients.filter((p) => joursAvant(p) >= 0 && alertesActives(p).length).length,
   };
 
   return (
-    <div className="min-h-dvh md:pl-60">
+    <div className="min-h-dvh md:pl-60 print:pl-0">
       {/* Sidebar — desktop */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-navy/[0.07] bg-white/60 backdrop-blur-2xl backdrop-saturate-[180%] md:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 print:!hidden flex-col border-r border-navy/[0.07] bg-white/60 backdrop-blur-2xl backdrop-saturate-[180%] md:flex">
         {/* Bloc de marque centré, à l'inverse des entrées de nav calées à gauche.
             Le mot-symbole est distribué sur la largeur exacte du pictogramme :
             le E et le A tombent sur ses bords, quelle que soit la taille. */}
@@ -87,30 +104,38 @@ export default function Coquille() {
           </p>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3">
-          {SECTIONS.map(({ to, fin, complet, icone: Icone, compteur }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={fin}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
-                  isActive
-                    ? 'bg-magenta/[0.09] font-semibold text-magenta'
-                    : 'font-medium text-slate-700 hover:bg-navy/[0.04] hover:text-navy'
-                }`
-              }
-            >
-              <Icone size={17} className="shrink-0" />
-              {complet}
-              <Pastille n={compteurs[compteur]} />
-            </NavLink>
+        <nav className="flex-1 space-y-5 overflow-y-auto px-3">
+          {GROUPES.map((g) => (
+            <div key={g.titre}>
+              <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{g.titre}</p>
+              <div className="space-y-0.5">
+                {g.sections.map(({ to, fin, complet, icone: Icone, compteur }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end={fin}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
+                        isActive
+                          ? 'bg-magenta/[0.09] font-semibold text-magenta'
+                          : 'font-medium text-slate-700 hover:bg-navy/[0.04] hover:text-navy'
+                      }`
+                    }
+                  >
+                    <Icone size={16} className="shrink-0" />
+                    {complet}
+                    <Pastille n={compteurs[compteur]} />
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
         <div className="border-t border-navy/[0.07] p-3">
           <p className="px-2 pb-2 text-[11px] leading-relaxed text-slate-500">
-            Unité d’endoscopie · {patients.length} dossiers
+            <span className="block font-semibold text-slate-700">{cabinet.nomCourt}</span>
+            {patients.length} dossiers en préparation
           </p>
           <button
             type="button"
@@ -129,9 +154,9 @@ export default function Coquille() {
 
       {/* Barre de navigation — mobile. La marque occupe le centre, en pastille
           surélevée : quatre sections se répartissent de part et d'autre. */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-navy/[0.07] bg-white/85 backdrop-blur-2xl backdrop-saturate-[180%] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 print:hidden border-t border-navy/[0.07] bg-white/85 backdrop-blur-2xl backdrop-saturate-[180%] md:hidden">
         <div className="flex items-stretch pb-[env(safe-area-inset-bottom,0px)]">
-          {SECTIONS.slice(0, 2).map((s) => <Onglet key={s.to} section={s} compteurs={compteurs} />)}
+          {MOBILE.slice(0, 2).map((s) => <Onglet key={s.to} section={s} compteurs={compteurs} />)}
 
           <div className="relative w-20 shrink-0">
             {/* Glyphe seul, sans le cadre arrondi du badge : masqué en cercle,
@@ -145,11 +170,10 @@ export default function Coquille() {
             </NavLink>
           </div>
 
-          {SECTIONS.slice(2).map((s) => <Onglet key={s.to} section={s} compteurs={compteurs} />)}
+          {MOBILE.slice(2).map((s) => <Onglet key={s.to} section={s} compteurs={compteurs} />)}
         </div>
       </nav>
 
-      {fiche ? <FichePatient patient={fiche} onFermer={fermerFiche} /> : null}
     </div>
   );
 }

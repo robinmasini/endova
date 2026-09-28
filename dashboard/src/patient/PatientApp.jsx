@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Lock, Check, ChevronRight, ShieldCheck, AlertCircle } from '../components/icones.js';
-import { usePatient } from '../lib/store.js';
-import { ETAPES, PROTOCOLES } from '../lib/protocols.js';
+import { usePatient, useCabinet, store } from '../lib/store.js';
+import { etapesDe } from '../lib/examens.js';
 import { calculerScore } from '../lib/score.js';
+import { anneeNaissance, examenDe, anesthesieDe, protocoleDe, heure, jour, horodatage, nomComplet } from '../lib/patient.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Badge, Bouton, Libelle, Marque, TONS } from '../components/ui.jsx';
 import EtapeJ7 from './EtapeJ7.jsx';
 import EtapeJ3 from './EtapeJ3.jsx';
 import EtapeJ1 from './EtapeJ1.jsx';
-import EtapeH4 from './EtapeH4.jsx';
+import EtapeH5 from './EtapeH5.jsx';
 import EtapeH2 from './EtapeH2.jsx';
+import EtapeG1 from './EtapeG1.jsx';
+import EtapeLavements, { EtapeR1 } from './EtapeLavements.jsx';
 
-const ECRANS = { j7: EtapeJ7, j3: EtapeJ3, j1: EtapeJ1, h4: EtapeH4, h2: EtapeH2 };
+const ECRANS = { j7: EtapeJ7, j3: EtapeJ3, j1: EtapeJ1, h5: EtapeH5, h2: EtapeH2, g1: EtapeG1, r1: EtapeR1, lav: EtapeLavements };
 
 /**
  * Porte d'entrée du lien SMS : pas de mot de passe, mais une seconde preuve.
@@ -24,7 +27,11 @@ function Verrou({ patient, onOuvrir }) {
 
   function valider(e) {
     e.preventDefault();
-    if (Number(saisie) === patient.anneeNaissance) onOuvrir();
+    if (Number(saisie) === anneeNaissance(patient)) {
+      // L'ouverture est tracée : c'est la preuve que le patient a eu accès à ses consignes.
+      store.journaliser(patient.id, { type: 'lien_ouvert', auteur: nomComplet(patient) });
+      onOuvrir();
+    }
     else {
       setErreur(true);
       setSaisie('');
@@ -69,7 +76,7 @@ function Verrou({ patient, onOuvrir }) {
   );
 }
 
-function LigneEtape({ etape, etat, statut, onOuvrir }) {
+function LigneEtape({ etape, patient, etat, statut, onOuvrir }) {
   const verrouille = statut === 'verrouille';
   const fait = statut === 'fait';
   const ton = fait ? 'emerald' : statut === 'actif' ? 'marque' : 'neutre';
@@ -90,13 +97,13 @@ function LigneEtape({ etape, etat, statut, onOuvrir }) {
       <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${TONS[ton].bord} ${TONS[ton].fond}`}>
         {fait ? <Check size={15} className="text-emerald-700" strokeWidth={3} />
           : verrouille ? <Lock size={14} className="text-slate-600" />
-          : <span className="text-[11px] font-bold text-magenta">{etape.cle}</span>}
+          : <span className="text-[11px] font-bold text-magenta">{etape.cle(patient)}</span>}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-slate-900">{etape.titre}</span>
         <span className="mt-0.5 block text-xs text-slate-600">
           {fait ? `Validé${etat?.at ? ` · ${new Date(etat.at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : ''}`
-            : verrouille ? `SMS à ${etape.heure}`
+            : verrouille ? `SMS le ${horodatage(etape.envoi(patient))}`
             : 'À faire maintenant'}
         </span>
       </span>
@@ -108,6 +115,7 @@ function LigneEtape({ etape, etat, statut, onOuvrir }) {
 export default function PatientApp() {
   const { token } = useParams();
   const patient = usePatient(token);
+  const cabinet = useCabinet();
   const [ouvert, setOuvert] = useState(false);
   const [etapeActive, setEtapeActive] = useState(null);
 
@@ -117,8 +125,8 @@ export default function PatientApp() {
         <GlassCard className="max-w-sm p-7 text-center">
           <Marque taille="sm" />
           <p className="mt-5 text-sm text-slate-700">Ce lien n’est plus valide.</p>
-          <p className="mt-2 text-xs text-slate-600">Contactez le secrétariat d’endoscopie pour en recevoir un nouveau.</p>
-          <Link to="/" className="mt-5 inline-block text-xs text-magenta hover:underline">Retour au programme de bloc</Link>
+          <p className="mt-2 text-xs text-slate-600">Contactez le secrétariat de votre gastro-entérologue au {cabinet.telephone}.</p>
+          <Link to="/" className="mt-5 inline-block text-xs text-magenta hover:underline">Vue cabinet</Link>
         </GlassCard>
       </div>
     );
@@ -126,35 +134,36 @@ export default function PatientApp() {
 
   if (!ouvert) return <Verrou patient={patient} onOuvrir={() => setOuvert(true)} />;
 
-  const protocole = PROTOCOLES[patient.protocole];
+  const protocole = protocoleDe(patient);
+  const etapes = etapesDe(patient);
   const { total } = calculerScore(patient);
   // Une étape ne s'ouvre qu'une fois la précédente close : l'échéancier est séquentiel.
-  const indexCourant = ETAPES.findIndex((e) => !patient.etapes[e.id]?.done);
+  const indexCourant = etapes.findIndex((e) => !patient.etapes[e.id]?.done);
 
   if (etapeActive) {
     const Ecran = ECRANS[etapeActive];
     return <Ecran patient={patient} protocole={protocole} onFermer={() => setEtapeActive(null)} />;
   }
 
-  const induction = new Date(patient.heureInduction);
+  const date = patient.examen.date;
   const toutFait = indexCourant === -1;
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-md px-5 pb-12 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
       <header className="flex items-center justify-between">
         <Marque />
-        <Link to="/" className="text-[11px] text-slate-600 transition-colors hover:text-magenta">Vue praticien</Link>
+        <Link to="/" className="text-[11px] text-slate-600 transition-colors hover:text-magenta">Vue cabinet</Link>
       </header>
 
       <GlassCard deep className="mt-6 p-6 rise">
         <Libelle>Votre examen</Libelle>
-        <h1 className="mt-2 text-lg font-semibold leading-tight tracking-tight text-navy">{patient.acte}</h1>
+        <h1 className="mt-2 text-lg font-semibold leading-tight tracking-tight text-navy">{examenDe(patient).label}</h1>
         <p className="mt-1.5 text-sm text-slate-600">
-          {induction.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à{' '}
-          {induction.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+          {jour(date)} à {heure(date)}
         </p>
+        <p className="mt-0.5 text-xs text-slate-500">{patient.examen.lieu} · {patient.examen.operateur}</p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge ton="marque">{protocole.nom}</Badge>
+          {protocole ? <Badge ton="marque">{protocole.nom}</Badge> : <Badge ton="marque">{anesthesieDe(patient).label}</Badge>}
           <Badge ton={total >= 80 ? 'emerald' : total >= 50 ? 'amber' : 'neutre'}>
             Préparation {total} %
           </Badge>
@@ -173,18 +182,20 @@ export default function PatientApp() {
             <ShieldCheck size={16} /> Préparation terminée
           </p>
           <p className="mt-2 text-xs leading-relaxed text-slate-600">
-            Présentez-vous à l’accueil d’endoscopie 30 minutes avant l’heure indiquée, avec une pièce d’identité
-            et votre carte Vitale. Vous devez être accompagné pour le retour.
+            Présentez-vous à l’accueil ({patient.examen.lieu}) 30 minutes avant l’heure indiquée, avec une pièce
+            d’identité, votre carte Vitale et le consentement signé.
+            {anesthesieDe(patient).accompagnant ? ' Vous devez être accompagné pour le retour.' : ''}
           </p>
         </GlassCard>
       ) : null}
 
       <Libelle className="mt-8 mb-3">Votre échéancier</Libelle>
       <div className="space-y-2.5">
-        {ETAPES.map((etape, i) => (
+        {etapes.map((etape, i) => (
           <LigneEtape
             key={etape.id}
             etape={etape}
+            patient={patient}
             etat={patient.etapes[etape.id]}
             statut={patient.etapes[etape.id]?.done ? 'fait' : i === indexCourant ? 'actif' : 'verrouille'}
             onOuvrir={() => setEtapeActive(etape.id)}
@@ -193,6 +204,8 @@ export default function PatientApp() {
       </div>
 
       <p className="mt-8 text-center text-[11px] leading-relaxed text-slate-500">
+        Une question ? {cabinet.nomCourt} : {cabinet.telephone}
+        <br />
         Endova ne remplace pas les consignes de votre gastro-entérologue.
         <br />
         En cas de douleur abdominale intense, appelez le 15.

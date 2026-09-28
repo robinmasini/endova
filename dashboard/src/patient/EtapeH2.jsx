@@ -2,18 +2,18 @@ import { useState } from 'react';
 import { Ban, Cigarette, PenLine, ShieldCheck, AlertTriangle } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Bouton, CarteChoix, Libelle } from '../components/ui.jsx';
-import { ETAPES } from '../lib/protocols.js';
+import { ETAPES } from '../lib/examens.js';
 import { store } from '../lib/store.js';
 import Coque from './Coque.jsx';
 
-const ETAPE = ETAPES[4];
+const ETAPE = ETAPES.h2;
 
 export default function EtapeH2({ patient, onFermer }) {
-  const dejaFait = patient.etapes.h2.done;
-  const [jeune, setJeune] = useState(patient.etapes.h2.jeuneSigne ?? false);
-  const [tabac, setTabac] = useState(patient.etapes.h2.tabac ?? null);
+  const dejaFait = patient.etapes.h2?.done;
+  const [jeune, setJeune] = useState(patient.etapes.h2?.jeuneSigne ?? false);
+  const [tabac, setTabac] = useState(patient.etapes.h2?.tabac ?? null);
 
-  const induction = new Date(patient.heureInduction);
+  const induction = new Date(patient.examen.date);
   const limite = new Date(induction.getTime() - 2 * 3600 * 1000);
   const hLimite = limite.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
@@ -21,7 +21,7 @@ export default function EtapeH2({ patient, onFermer }) {
     store.majEtape(
       patient.id, 'h2',
       { jeuneSigne: jeune, tabac, heureDernierApport: limite.toISOString() },
-      tabac ? 'Tabagisme déclaré dans les 2 h — MAR à prévenir' : 'Jeûne certifié, signature horodatée',
+      tabac ? 'Tabagisme déclaré dans les 2 h' : 'Jeûne certifié, signature horodatée',
     );
     onFermer();
   }
@@ -45,9 +45,9 @@ export default function EtapeH2({ patient, onFermer }) {
           <Ban size={16} /> Arrêt total depuis {hLimite}
         </p>
         <p className="mt-2.5 text-xs leading-relaxed text-slate-700">
-          Plus rien à boire, plus rien à manger, plus de cigarette. Un estomac non vide sous propofol expose à
-          l’inhalation du contenu gastrique dans les poumons — le syndrome de Mendelson.
-          <span className="font-medium text-navy"> L’anesthésiste annulera l’examen sur table</span> au moindre doute.
+          Plus rien à boire, plus rien à manger, plus de cigarette. Un estomac non vide pendant l’anesthésie expose à
+          l’inhalation du contenu gastrique dans les poumons.
+          <span className="font-medium text-navy"> L’anesthésiste reportera l’examen</span> au moindre doute.
         </p>
       </GlassCard>
 
@@ -72,11 +72,11 @@ export default function EtapeH2({ patient, onFermer }) {
       {tabac ? (
         <GlassCard glow="amber" className="p-5 rise">
           <p className="flex items-center gap-2 text-sm font-semibold text-amber-700">
-            <AlertTriangle size={15} /> Information transmise au MAR
+            <AlertTriangle size={15} /> Information transmise au cabinet
           </p>
           <p className="mt-2 text-xs leading-relaxed text-slate-700">
-            Ne fumez plus jusqu’à l’examen. L’anesthésiste en tiendra compte : induction séquence rapide,
-            ou décalage de votre passage pour prolonger le jeûne.
+            Ne fumez plus jusqu’à l’examen. L’anesthésiste en sera informé et pourra décaler votre passage
+            pour prolonger le jeûne.
           </p>
         </GlassCard>
       ) : null}
@@ -104,8 +104,8 @@ export default function EtapeH2({ patient, onFermer }) {
           </p>
         </button>
         <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
-          Signature horodatée et versée à votre fiche d’anesthésie. Elle ne remplace pas l’interrogatoire
-          du MAR avant l’induction.
+          Signature horodatée et versée à votre dossier. Elle ne remplace pas les questions de l’anesthésiste
+          avant l’examen.
         </p>
       </section>
     </Coque>

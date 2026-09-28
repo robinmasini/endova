@@ -3,11 +3,11 @@ import { Search, Check, X, Salad, Info } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Bascule, Bouton, Libelle } from '../components/ui.jsx';
 import { ALIMENTS } from '../lib/foods.js';
-import { ETAPES } from '../lib/protocols.js';
+import { ETAPES } from '../lib/examens.js';
 import { store } from '../lib/store.js';
 import Coque from './Coque.jsx';
 
-const ETAPE = ETAPES[1];
+const ETAPE = ETAPES.j3;
 
 /** Normalise pour que « pate », « pâté » et « PÂTES » se répondent. */
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -46,9 +46,9 @@ function Pastille({ aliment, onDeclarerEcart, ecart, verrouille }) {
 }
 
 export default function EtapeJ3({ patient, onFermer }) {
-  const dejaFait = patient.etapes.j3.done;
-  const [regime, setRegime] = useState(patient.etapes.j3.regimeDemarre ?? false);
-  const [ecarts, setEcarts] = useState(patient.etapes.j3.ecarts ?? []);
+  const dejaFait = patient.etapes.j3?.done;
+  const [regime, setRegime] = useState(patient.etapes.j3?.regimeDemarre ?? false);
+  const [ecarts, setEcarts] = useState(patient.etapes.j3?.ecarts ?? []);
   const [q, setQ] = useState('');
   const [filtre, setFiltre] = useState('tous');
 
@@ -103,7 +103,7 @@ export default function EtapeJ3({ patient, onFermer }) {
             actif={regime}
             onChange={dejaFait ? () => {} : setRegime}
             label="Je démarre le régime aujourd’hui"
-            detail="À tenir sans interruption jusqu’à l’examen."
+            detail={`À tenir sans interruption jusqu’à l’examen${patient.examen.renforce ? ', soit 5 jours : votre médecin a prévu une préparation renforcée' : ''}.`}
           />
         </div>
       </GlassCard>
@@ -147,7 +147,7 @@ export default function EtapeJ3({ patient, onFermer }) {
             <GlassCard className="p-5 text-center">
               <p className="text-sm text-slate-700">Aliment non répertorié</p>
               <p className="mt-1.5 text-xs text-slate-600">
-                Dans le doute, abstenez-vous et posez la question au secrétariat.
+                Dans le doute, abstenez-vous et posez la question au secrétariat du cabinet.
               </p>
             </GlassCard>
           ) : (

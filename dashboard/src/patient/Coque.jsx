@@ -1,15 +1,14 @@
 import { ArrowLeft, MessageSquare } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Libelle } from '../components/ui.jsx';
+import { useCabinet } from '../lib/store.js';
+import { rediger } from '../lib/sms.js';
+import { horodatage } from '../lib/patient.js';
 
 /** Coque commune aux 5 écrans de l'échéancier : rappel du SMS reçu, contenu, CTA collant. */
 export default function Coque({ etape, patient, onFermer, children, pied, lecture = false }) {
-  const sms = patient
-    ? etape.sms.replace(
-        "{date}",
-        new Date(patient.heureInduction).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }),
-      )
-    : etape.sms;
+  const cabinet = useCabinet();
+  const sms = rediger(etape.sms, patient, cabinet);
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-md px-5 pb-40 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
@@ -22,7 +21,7 @@ export default function Coque({ etape, patient, onFermer, children, pied, lectur
       </button>
 
       <div className="mt-5 rise">
-        <Libelle>{etape.cle} · {etape.heure}</Libelle>
+        <Libelle>{etape.cle(patient)} · SMS du {horodatage(etape.envoi(patient))}</Libelle>
         <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-navy">{etape.titre}</h1>
       </div>
 

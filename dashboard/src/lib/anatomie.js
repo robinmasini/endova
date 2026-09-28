@@ -26,10 +26,10 @@ export const LIBELLE_BOSTON = {
 };
 
 export function etatSegments(patient) {
-  const { j1, j3, h4, h2 } = patient.etapes;
+  const { j1, j3, h5: h4, h2 } = patient.etapes;
 
   if (!h4?.done) {
-    const attente = { boston: null, ton: 'neutre', libelle: 'Évaluation H-4 non reçue' };
+    const attente = { boston: null, ton: 'neutre', libelle: 'Évaluation H-5 non reçue' };
     return {
       inconnu: true,
       droit: attente,

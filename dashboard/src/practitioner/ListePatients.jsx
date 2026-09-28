@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, AlertTriangle, ChevronRight, Check, Clock, UsersRound } from '../components/icones.js';
+import { Search, AlertTriangle, ChevronRight, Check, Clock, Plus } from '../components/icones.js';
 import { useDossiers } from '../lib/store.js';
-import { calculerScore, statutRisque, alertes } from '../lib/score.js';
-import { ETAPES, PROTOCOLES } from '../lib/protocols.js';
+import { calculerScore, statutRisque, alertesActives } from '../lib/score.js';
+import { EXAMENS, etapesDe, joursAvant } from '../lib/examens.js';
+import { age, examenDe, heure, jourCourt, echeance, nomComplet } from '../lib/patient.js';
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
 
@@ -18,30 +19,29 @@ const FILTRES = [
 
 /** Avancement dans l'échéancier, en nombre d'étapes closes. */
 function avancement(patient) {
-  const faites = ETAPES.filter((e) => patient.etapes[e.id]?.done).length;
-  const courante = ETAPES.find((e) => !patient.etapes[e.id]?.done);
-  return { faites, total: ETAPES.length, courante };
+  const etapes = etapesDe(patient);
+  const faites = etapes.filter((e) => patient.etapes[e.id]?.done).length;
+  const courante = etapes.find((e) => !patient.etapes[e.id]?.done);
+  return { faites, total: etapes.length, courante, etapes };
 }
 
 function Rangee({ patient }) {
   const { total } = calculerScore(patient);
   const statut = statutRisque(patient);
-  const nb = alertes(patient).length;
-  const { faites, total: nbEtapes, courante } = avancement(patient);
-  const induction = new Date(patient.heureInduction);
-  const age = new Date().getFullYear() - patient.anneeNaissance;
+  const nb = alertesActives(patient).length;
+  const { faites, total: nbEtapes, courante, etapes } = avancement(patient);
 
   return (
     <Link
-      to={`?dossier=${patient.id}`}
+      to={`/patients/${patient.id}`}
       className={`group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl border p-4 transition-all duration-200 hover:bg-white/85 sm:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_auto_auto] ${
         nb ? 'border-rose-400/35 bg-rose-50/50' : 'border-navy/[0.07] bg-white/60'
       }`}
     >
       <div className="min-w-0">
         <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-navy">
-          {patient.nom.toUpperCase()} {patient.prenom}
-          <span className="font-normal text-slate-500">{age} ans</span>
+          {nomComplet(patient)}
+          <span className="font-normal text-slate-500">{age(patient)} ans</span>
           {nb ? (
             <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${TONS[statut.ton].texte}`}>
               <AlertTriangle size={11} /> {nb}
@@ -49,17 +49,18 @@ function Rangee({ patient }) {
           ) : null}
         </p>
         <p className="mt-0.5 truncate text-xs text-slate-600">
-          {patient.acte} · {PROTOCOLES[patient.protocole].nom}
+          {examenDe(patient).label} · {jourCourt(patient.examen.date)} à {heure(patient.examen.date)}
+          <span className="text-slate-400"> ({echeance(patient)})</span>
         </p>
       </div>
 
       <div className="hidden min-w-0 sm:block">
         <p className="flex items-center gap-1.5 text-xs text-slate-600">
           {courante ? <Clock size={12} className="shrink-0 text-magenta" /> : <Check size={12} strokeWidth={3} className="shrink-0 text-emerald-700" />}
-          <span className="truncate">{courante ? `${courante.cle} — ${courante.titre}` : 'Préparation terminée'}</span>
+          <span className="truncate">{courante ? `${courante.cle(patient)} — ${courante.titre}` : 'Préparation terminée'}</span>
         </p>
         <div className="mt-1.5 flex gap-1">
-          {ETAPES.map((e, i) => (
+          {etapes.map((e, i) => (
             <span
               key={e.id}
               className={`h-1.5 flex-1 rounded-full ${i < faites ? TONS[statut.ton].trait : 'bg-navy/[0.09]'}`}
@@ -67,7 +68,7 @@ function Rangee({ patient }) {
           ))}
         </div>
         <p className="mt-1 text-[10px] text-slate-500">
-          {faites}/{nbEtapes} étapes · bloc n°{patient.ordreBloc} à {induction.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+          {faites}/{nbEtapes} étapes · {patient.examen.operateur}
         </p>
       </div>
 
@@ -93,33 +94,38 @@ export default function ListePatients() {
     setParams(suite, { replace: true });
   };
 
+  const [type, setType] = useState('tous');
   const resultats = useMemo(() => {
     const requete = norm(q.trim());
     return patients
       .filter((p) => {
         const { courante } = avancement(p);
-        if (filtre === 'alerte' && !alertes(p).length) return false;
+        if (type !== 'tous' && p.examen.type !== type) return false;
+        if (filtre === 'alerte' && !alertesActives(p).length) return false;
         if (filtre === 'encours' && !courante) return false;
         if (filtre === 'termine' && courante) return false;
         if (!requete) return true;
-        return norm(`${p.nom} ${p.prenom} ${p.acte}`).includes(requete);
+        return norm(`${p.identite.nom} ${p.identite.prenom} ${examenDe(p).label} ${p.examen.indication} ${p.numero}`).includes(requete);
       })
-      .sort((a, b) => a.ordreBloc - b.ordreBloc);
-  }, [patients, q, filtre]);
+      .sort((a, b) => joursAvant(a) - joursAvant(b) || new Date(a.examen.date) - new Date(b.examen.date));
+  }, [patients, q, filtre, type]);
 
   const compte = {
     tous: patients.length,
-    alerte: patients.filter((p) => alertes(p).length).length,
+    alerte: patients.filter((p) => alertesActives(p).length).length,
     encours: patients.filter((p) => avancement(p).courante).length,
     termine: patients.filter((p) => !avancement(p).courante).length,
   };
 
   return (
     <>
-      <EnTete titre="Liste Patients" question="Tous les dossiers suivis, quel que soit leur stade.">
-        <span className="flex items-center gap-2 rounded-xl border border-navy/[0.07] bg-white/60 px-3 py-2 text-xs text-slate-700">
-          <UsersRound size={14} className="text-magenta" /> {patients.length} dossiers
-        </span>
+      <EnTete titre="Patients" question={`${patients.length} dossiers, classés par date d’examen.`}>
+        <Link
+          to="/patients/nouveau"
+          className="inline-flex items-center gap-2 rounded-xl bg-magenta px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+        >
+          <Plus size={14} /> Nouveau dossier
+        </Link>
       </EnTete>
 
       <div className="px-5 pt-6 sm:px-8">
@@ -129,7 +135,7 @@ export default function ListePatients() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Rechercher un nom, un acte…"
+              placeholder="Nom, examen, indication, n° de dossier…"
               aria-label="Rechercher un patient"
               className="w-full rounded-xl border border-navy/[0.09] bg-white/70 py-3 pl-10 pr-4 text-sm text-navy outline-none transition-colors placeholder:text-slate-500 focus:border-magenta/50"
             />
@@ -150,6 +156,21 @@ export default function ListePatients() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="mt-3 flex gap-2 overflow-x-auto">
+          {[['tous', 'Tous examens'], ...Object.values(EXAMENS).map((e) => [e.id, e.label])].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setType(id)}
+              className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                type === id ? 'bg-navy text-white' : 'bg-white/60 text-slate-600 hover:text-navy'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="mt-5 space-y-2.5">

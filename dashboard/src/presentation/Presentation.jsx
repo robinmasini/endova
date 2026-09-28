@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useProgression, entre, phase, adoucir, useAnimationsReduites } from './useProgression.js';
-import { ETAPES, COUT_CRENEAU } from '../lib/protocols.js';
+import { ETAPES as CATALOGUE } from '../lib/examens.js';
+
+// Échéancier de la coloscopie, le cas le plus complet, pour la démonstration.
+const EXEMPLE = { examen: { renforce: false, schema: 'FRACTIONNE' } };
+const ETAPES = ['j7', 'j3', 'j1', 'h5', 'h2'].map((id) => ({ ...CATALOGUE[id], cle: CATALOGUE[id].cle(EXEMPLE) }));
+const HEURES = { j7: '10h00', j3: '09h00', j1: '18h00', h5: 'H-5', h2: 'H-2' };
 import {
   AlertTriangle, ArrowLeft, Banknote, Check, ChevronRight, ListChecks,
   PhoneCall, ShieldCheck, Timer, UsersRound,
@@ -206,7 +211,7 @@ function Probleme(t) {
   const chiffres = [
     { valeur: 25, suffixe: ' %', libelle: 'des coloscopies jugées mal préparées', detail: 'Score de Boston insuffisant' },
     { valeur: 3, prefixe: '× ', libelle: 'de risque de manquer un adénome', detail: 'Adenoma miss rate' },
-    { valeur: COUT_CRENEAU, suffixe: ' €', libelle: 'perdus par créneau annulé', detail: 'Vacance de salle + acte non coté' },
+    { valeur: 1, suffixe: ' patient', libelle: 'à reconvoquer par examen à refaire', detail: 'Nouvelle préparation, nouveau créneau, nouvelle anesthésie' },
   ];
   const sortie = adoucir(phase(t, 0.82, 0.97));
   return (
@@ -219,7 +224,7 @@ function Probleme(t) {
           Le coût du silence
         </p>
         <h2 className="mx-auto mt-4 max-w-2xl text-balance text-2xl font-bold tracking-tight text-white sm:text-4xl">
-          Entre la consultation et le bloc, personne ne sait où en est le patient.
+          Entre la consultation et l’examen, personne ne sait où en est le patient.
         </h2>
       </div>
 
@@ -282,11 +287,11 @@ function Echeancier(t) {
             >
               <div className="flex items-baseline justify-between gap-2">
                 <p className="font-marque text-lg font-bold text-magenta">{etape.cle}</p>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{etape.heure}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{HEURES[etape.id]}</p>
               </div>
               <p className="mt-2 text-sm font-semibold leading-snug text-navy">{etape.titre}</p>
               <p className="mt-2.5 line-clamp-4 text-xs italic leading-relaxed text-slate-600">
-                « {etape.sms.replace('{date}', 'jour J')} »
+                « {etape.sms.replace(/\{cabinet\}/g, 'Votre cabinet').replace(/\{examen\}/g, 'votre coloscopie').replace(/\{date\}/g, 'jour J').replace(/\{(heure|limite)\}/g, '8 h').replace(/\{lien\}/g, 'endova.fr/p/…')} »
               </p>
             </Verre>
           );
@@ -427,13 +432,13 @@ function Pilotage(t) {
           style={{ opacity: entre(phase(t, 0.58, 0.82), 0, 1) }}
         >
           <p className="flex items-center gap-2 text-sm font-semibold text-rose-700">
-            <PhoneCall size={15} /> NKEMBA Joseph — bloc n°2 · 3 motifs
+            <PhoneCall size={15} /> NKEMBA Joseph — coloscopie demain · 3 motifs
           </p>
           <p className="mt-2 text-xs leading-relaxed text-slate-800">
-            Anticoagulant sans consigne d’arrêt · écart au régime · évacuation non conforme à H-4.
+            Anticoagulant sans consigne d’arrêt · écart au régime · fer oral non arrêté.
           </p>
           <p className="mt-2 text-xs italic leading-relaxed text-slate-700">
-            « Ne modifiez surtout pas votre traitement vous-même. Nous vérifions avec votre cardiologue. »
+            « Ne modifiez surtout pas votre traitement vous-même. Nous vérifions avec votre médecin et vous envoyons la consigne par écrit. »
           </p>
         </div>
 
