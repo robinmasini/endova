@@ -17,6 +17,13 @@ export function resume(patient, id) {
       if (refus.length || e.accompagnant === false) return { texte: 'À compléter', ton: 'amber' };
       return { texte: 'Confirmé', ton: 'emerald' };
     }
+    case 'j2': {
+      const refus = Object.entries(e.traitements ?? {}).filter(([, ok]) => ok === false);
+      if (refus.some(([t]) => traitement(t)?.critique) || (anesthesieDe(patient).cpa && e.cpa === false))
+        return { texte: 'Arrêt ou anesthésie manquant', ton: 'ruby' };
+      if (refus.length) return { texte: 'À compléter', ton: 'amber' };
+      return { texte: 'Arrêts confirmés', ton: 'emerald' };
+    }
     case 'j3':
       if (!e.regimeDemarre) return { texte: 'Régime non démarré', ton: 'ruby' };
       return e.ecarts?.length
@@ -69,6 +76,14 @@ export function lignes(patient, id) {
         out.push(['Accompagnant pour le retour', oui(e.accompagnant), e.accompagnant ? 'emerald' : 'amber']);
       }
       return out;
+    }
+    case 'j2': {
+      const out = Object.entries(e.traitements ?? {}).map(([tid, ok]) => {
+        const t = traitement(tid);
+        return [t?.label ?? tid, ok ? 'Consigne suivie' : 'Non suivie', ok ? 'emerald' : t?.critique ? 'ruby' : 'amber'];
+      });
+      if (anesthesieDe(patient).cpa) out.push(['Consultation d’anesthésie', e.cpa ? 'Faite' : 'Non faite', e.cpa ? 'emerald' : 'ruby']);
+      return out.length ? out : [['Rappel J-2', 'Lu et confirmé', 'emerald']];
     }
     case 'j3':
       return [

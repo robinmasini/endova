@@ -7,17 +7,18 @@ import { heure, horodatage, nomComplet } from '../lib/patient.js';
 import { EnTete } from './Coquille.jsx';
 
 /** Ordre chronologique du catalogue : une colonne n'apparaît que si un examen l'utilise. */
-const ORDRE = ['j7', 'j3', 'g1', 'r1', 'j1', 'h5', 'lav', 'h2'];
+const ORDRE = ['j7', 'j3', 'j2', 'g1', 'r1', 'j1', 'h5', 'lav', 'h2'];
 
 const STYLE = {
   repondu: 'border-emerald-400/50 bg-emerald-50/70 text-emerald-700',
   incident: 'border-rose-400/50 bg-rose-50/70 text-rose-700',
   ouvert: 'border-magenta/35 bg-magenta/[0.08] text-magenta',
   envoye: 'border-amber-400/50 bg-amber-50/70 text-amber-700',
+  a_envoyer: 'border-dashed border-rose-400/60 bg-white/70 text-rose-700',
   planifie: 'border-navy/[0.07] bg-white/50 text-slate-500',
 };
 
-const ICONE = { repondu: Check, incident: AlertTriangle, ouvert: Eye, envoye: Send, planifie: Clock };
+const ICONE = { repondu: Check, incident: AlertTriangle, ouvert: Eye, envoye: Send, a_envoyer: AlertTriangle, planifie: Clock };
 
 function Jeton({ patient, sms }) {
   const incident = sms.statut === 'repondu' && sms.reponse?.ton === 'ruby';
@@ -48,7 +49,7 @@ export default function Echeancier() {
 
   return (
     <>
-      <EnTete titre="Échéancier SMS" question="Ce qui est parti, ce qui a été lu, ce qui part ensuite — pour chaque examen." />
+      <EnTete titre="Échéancier SMS" question="Ce qui est parti, ce qui a été lu, ce qui attend le scan — de J-7 jusqu’au jour J." />
 
       <div className="px-5 pt-6 sm:px-8">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
@@ -106,7 +107,7 @@ export default function Echeancier() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[11px] text-slate-600">
-          {[['repondu', 'Répondu'], ['incident', 'Répondu avec incident'], ['ouvert', 'Lien ouvert'], ['envoye', 'Délivré, non ouvert'], ['planifie', 'Programmé']].map(([k, l]) => {
+          {[['repondu', 'Répondu'], ['incident', 'Répondu avec incident'], ['ouvert', 'Lien ouvert'], ['envoye', 'Délivré, non ouvert'], ['a_envoyer', 'Échu, en attente du scan'], ['planifie', 'Programmé']].map(([k, l]) => {
             const I = ICONE[k];
             return <span key={k} className="flex items-center gap-1.5"><span className={`flex size-5 items-center justify-center rounded border ${STYLE[k]}`}><I size={10} /></span>{l}</span>;
           })}

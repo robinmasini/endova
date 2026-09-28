@@ -10,12 +10,13 @@ import { Badge, Bouton, Libelle, Marque, TONS } from '../components/ui.jsx';
 import EtapeJ7 from './EtapeJ7.jsx';
 import EtapeJ3 from './EtapeJ3.jsx';
 import EtapeJ1 from './EtapeJ1.jsx';
+import EtapeJ2 from './EtapeJ2.jsx';
 import EtapeH5 from './EtapeH5.jsx';
 import EtapeH2 from './EtapeH2.jsx';
 import EtapeG1 from './EtapeG1.jsx';
 import EtapeLavements, { EtapeR1 } from './EtapeLavements.jsx';
 
-const ECRANS = { j7: EtapeJ7, j3: EtapeJ3, j1: EtapeJ1, h5: EtapeH5, h2: EtapeH2, g1: EtapeG1, r1: EtapeR1, lav: EtapeLavements };
+const ECRANS = { j7: EtapeJ7, j3: EtapeJ3, j2: EtapeJ2, j1: EtapeJ1, h5: EtapeH5, h2: EtapeH2, g1: EtapeG1, r1: EtapeR1, lav: EtapeLavements };
 
 /**
  * Porte d'entrée du lien SMS : pas de mot de passe, mais une seconde preuve.
@@ -201,6 +202,14 @@ export default function PatientApp() {
             onOuvrir={() => setEtapeActive(etape.id)}
           />
         ))}
+        {/* Le jour J clôt l'échéancier : à partir de là, c'est l'équipe d'endoscopie. */}
+        <div className="flex items-center gap-4 rounded-xl border border-dashed border-navy/15 p-4">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-navy text-[11px] font-bold text-white">J</span>
+          <span className="min-w-0">
+            <span className="block text-sm font-medium text-slate-900">Jour J — votre examen</span>
+            <span className="mt-0.5 block text-xs text-slate-600">{jour(date)} à {heure(date)}</span>
+          </span>
+        </div>
       </div>
 
       <p className="mt-8 text-center text-[11px] leading-relaxed text-slate-500">

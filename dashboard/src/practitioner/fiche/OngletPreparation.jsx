@@ -188,6 +188,14 @@ export default function OngletPreparation({ patient }) {
                 </li>
               );
             })}
+            {/* Le jour J clôt l'échéancier : Endova passe la main à l'équipe d'endoscopie. */}
+            <li className="flex items-center gap-3 rounded-xl border border-dashed border-navy/15 p-3.5">
+              <span className="flex size-[17px] shrink-0 items-center justify-center rounded-full bg-navy text-[8px] font-bold text-white">J</span>
+              <div className="min-w-0">
+                <p className="truncate text-sm text-navy"><span className="font-bold">Jour J</span> — {examenDe(patient).label}</p>
+                <p className="text-[11px] text-slate-500">{horodatage(patient.examen.date)} · {patient.examen.lieu}. Fin du suivi Endova.</p>
+              </div>
+            </li>
           </ol>
         </Carte>
       </div>

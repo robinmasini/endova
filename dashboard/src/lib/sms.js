@@ -32,25 +32,31 @@ export function rediger(modele, patient, cabinet) {
 
 /**
  * Plan d'envoi : un SMS par étape, à l'heure calculée depuis l'examen.
- * Le statut se lit dans le dossier — aucun état SMS n'est stocké à part.
+ *
+ * Un SMS n'est délivré que par le scan SMS (ou un envoi manuel) : il laisse alors
+ * un événement `sms_envoye` dans le dossier. Échu mais pas encore scanné, il est
+ * « à envoyer ». Le reste du statut se lit dans le dossier.
  */
 export function planSms(patient, cabinet, maintenant = new Date()) {
   const etapes = etapesDe(patient);
-  const ouvertures = (patient.evenements ?? []).filter((e) => e.type === 'lien_ouvert').map((e) => new Date(e.at));
+  const evts = patient.evenements ?? [];
+  const ouvertures = evts.filter((e) => e.type === 'lien_ouvert').map((e) => new Date(e.at));
 
   return etapes.map((etape, i) => {
     const envoi = etape.envoi(patient);
+    const livraison = evts.find((e) => e.type === 'sms_envoye' && e.etape === etape.id);
+    const delivre = livraison ? new Date(livraison.at) : null;
     const suivant = etapes[i + 1]?.envoi(patient) ?? new Date(patient.examen.date);
     const e = patient.etapes[etape.id];
     let statut = 'planifie';
     if (e?.done) statut = 'repondu';
-    else if (envoi <= maintenant) {
-      statut = ouvertures.some((d) => d >= envoi && d < suivant) ? 'ouvert' : 'envoye';
-    }
+    else if (delivre) statut = ouvertures.some((d) => d >= delivre && d < suivant) ? 'ouvert' : 'envoye';
+    else if (envoi <= maintenant) statut = 'a_envoyer';
     return {
       etape,
       cle: etape.cle(patient),
       envoi,
+      delivre,
       texte: rediger(etape.sms, patient, cabinet),
       statut,
       reponse: e?.done ? { at: e.at, ...resume(patient, etape.id) } : null,
@@ -59,11 +65,24 @@ export function planSms(patient, cabinet, maintenant = new Date()) {
 }
 
 export const STATUTS_SMS = {
-  planifie: { label: 'Planifié', ton: 'neutre' },
+  planifie: { label: 'Programmé', ton: 'neutre' },
+  a_envoyer: { label: 'À envoyer — lancez le scan', ton: 'ruby' },
   envoye: { label: 'Délivré, non ouvert', ton: 'amber' },
   ouvert: { label: 'Lien ouvert', ton: 'marque' },
   repondu: { label: 'Répondu', ton: 'emerald' },
 };
+
+/**
+ * Ce que le scan SMS doit délivrer maintenant : tous les messages échus et pas
+ * encore partis, pour les patients dont l'examen n'est pas passé. Le jour J,
+ * Endova passe la main : plus rien ne part après l'heure d'examen.
+ */
+export function smsEchus(patients, cabinet, maintenant = new Date()) {
+  return patients
+    .filter((p) => new Date(p.examen.date) > maintenant)
+    .flatMap((p) => planSms(p, cabinet, maintenant).filter((s) => s.statut === 'a_envoyer').map((s) => ({ ...s, patient: p })))
+    .sort((a, b) => a.envoi - b.envoi);
+}
 
 /** Le prochain SMS à partir, tous patients confondus. */
 export function prochainsEnvois(patients, cabinet, maintenant = new Date(), fenetreH = 24) {
@@ -87,6 +106,7 @@ const LIBELLES = {
   action: 'Action corrective',
   sms_libre: 'Message libre envoyé',
   sms_renvoye: 'SMS renvoyé',
+  sms_envoye: 'SMS délivré',
   modification: 'Dossier modifié',
   checklist: 'Check-list pré-examen',
   alerte_traitee: 'Alerte traitée',
@@ -99,6 +119,7 @@ const CATEGORIE_EVT = {
   action: 'cabinet',
   sms_libre: 'sms',
   sms_renvoye: 'sms',
+  sms_envoye: 'sms',
   modification: 'cabinet',
   checklist: 'cabinet',
   alerte_traitee: 'alerte',
@@ -119,16 +140,6 @@ export function chronologie(patient, cabinet, maintenant = new Date()) {
   }));
 
   const plan = planSms(patient, cabinet, maintenant);
-  const envois = plan
-    .filter((s) => s.statut !== 'planifie')
-    .map((s) => ({
-      at: s.envoi.toISOString(),
-      categorie: 'sms',
-      titre: `SMS ${s.cle} envoyé — ${s.etape.titre}`,
-      detail: s.texte,
-      auteur: `Endova · expéditeur ${cabinet.expediteur}`,
-      ton: null,
-    }));
 
   const declarations = plan
     .filter((s) => s.reponse?.at)
@@ -141,5 +152,5 @@ export function chronologie(patient, cabinet, maintenant = new Date()) {
       ton: s.reponse.ton,
     }));
 
-  return [...saisis, ...envois, ...declarations].sort((a, b) => new Date(b.at) - new Date(a.at));
+  return [...saisis, ...declarations].sort((a, b) => new Date(b.at) - new Date(a.at));
 }

@@ -331,6 +331,34 @@ footer img{height:54px;width:auto}
 .journal .cat{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-right:10px}
 .journal .sms{color:var(--accent)} .journal .pat{color:#047857} .journal .cab{color:var(--texte-2)}
 
+/* ---------------------------------------------------------- le calculateur */
+.calc{display:grid;gap:clamp(24px,4vw,56px);grid-template-columns:1fr 1fr;margin-top:44px;padding:clamp(24px,3.4vw,44px)}
+@media (max-width:860px){.calc{grid-template-columns:1fr}}
+.curseurs{display:grid;gap:26px;align-content:center}
+.curseur .lib{display:flex;justify-content:space-between;gap:12px;font-family:var(--titre);font-weight:500;font-size:15px;color:var(--navy);margin-bottom:12px}
+.curseur .lib b{font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent) 0 var(--p,50%),rgba(5,28,78,.1) var(--p,50%) 100%)}
+.calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;
+  border:2px solid var(--accent);box-shadow:0 4px 14px rgba(5,28,78,.22)}
+.calc input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+.bilan{border-radius:22px;padding:clamp(22px,3vw,34px);color:#EDE7F4;
+  background:radial-gradient(120% 80% at 0% 0%,rgba(147,43,156,.55),transparent 60%),linear-gradient(160deg,#0B1646,#070F2E);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 24px 50px -24px rgba(5,28,78,.6)}
+.bilan .mono{color:#E6A8F0}
+.bilan .gros{margin-top:10px;font-family:var(--titre);font-weight:700;font-size:clamp(46px,6vw,72px);line-height:1;letter-spacing:-.03em;
+  color:#fff;font-variant-numeric:tabular-nums}
+.barres{margin-top:26px;display:grid;gap:14px}
+.barres div{display:grid;grid-template-columns:minmax(0,9.5rem) 1fr 3rem;align-items:center;gap:12px;font-size:14px;color:#C9BFDA}
+.barres i{display:block;height:8px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.barres em{display:block;height:100%;border-radius:99px;background:rgba(255,255,255,.55);transition:width .5s var(--e1)}
+.barres em.mal{background:#F59E9E}
+.barres em.ok{background:linear-gradient(90deg,#E6A8F0,#fff)}
+.barres b{text-align:right;color:#fff;font-family:var(--titre);font-variant-numeric:tabular-nums}
+.bilan .an{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:15px;color:#C9BFDA}
+.bilan .an b{color:#fff}
+.mention-c{margin-top:18px;font-size:13px;color:var(--texte-2)}
+
 /* ----------------------------------------------------------------- les tarifs
    Du verre liquide : il n'existe que s'il a de la couleur à réfracter. Une nappe
    de formes aux couleurs du logo dérive lentement derrière les offres ; le verre
@@ -462,6 +490,7 @@ select option{color:var(--navy)}
   <div class="liens">
     <a href="#sept-jours">Fonctionnement</a>
     <a href="#fiche">Fiche patient</a>
+    <a href="#economies">Économies</a>
     <a href="#tarifs">Tarifs</a>
     <a class="btn btn-vide" href="#contact">Voir une démonstration</a>
   </div>
@@ -514,25 +543,25 @@ select option{color:var(--navy)}
         </div>
         <div class="grille-3">
           <div class="verre chiffre"><div class="n" data-compte="25" data-suffixe=" %">0 %</div><p class="q">des coloscopies jugées mal préparées</p><p class="d">Score de Boston insuffisant</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="5" data-suffixe=" SMS">0 SMS</div><p class="q">envoyés à chaque patient, seuls</p><p class="d">De J-7 à H-2, calés sur l'heure d'examen</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="1" data-suffixe=" appel">0 appel</div><p class="q">par patient en écart, pas plus</p><p class="d">Tous ses motifs regroupés, la phrase à dire fournie</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="6" data-suffixe=" SMS">0 SMS</div><p class="q">de préopératoire par patient</p><p class="d">De J-7 à H-2, délivrés d'un seul scan</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="4160" data-suffixe=" €">0 €</div><p class="q">rattrapés chaque mois</p><p class="d">Pour 30 examens par semaine, voir le calcul plus bas</p></div>
         </div>
       </div>
     </section>
 
     <section id="sept-jours">
       <div class="large">
-        <p class="mono oeil ap">Ce que personne ne regarde</p>
-        <h2 class="titre-s ap">Sept jours décident de l'examen. Le patient les traverse seul.</h2>
-        <p class="lede ap">L'échéancier d'une coloscopie. Faites glisser le curseur pour voir ce qu'Endova demande au patient, et ce qu'il vous remonte.</p>
+        <p class="mono oeil ap">Le préopératoire, jour par jour</p>
+        <h2 class="titre-s ap">Sept jours de préopératoire décident de l'examen. Le patient les traverse seul.</h2>
+        <p class="lede ap">L'échéancier d'une coloscopie, de J-7 au jour J. Faites glisser le curseur pour voir ce qu'Endova demande au patient, et ce qu'il vous remonte. Le jour J, Endova passe la main.</p>
 
         <div class="verre axe ap">
-          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-1</span><span>H-5</span><span>H-2</span></div>
+          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-2</span><span>J-1</span><span>H-5</span><span>H-2</span><span>Jour J</span></div>
           <div class="axe-piste">
             <div class="axe-remplie" id="axeRemplie"></div>
-            <div class="axe-pts" id="axePts"><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i></div>
+            <div class="axe-pts" id="axePts"><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i></div>
           </div>
-          <input type="range" min="0" max="4" step="1" value="0" id="axeCurseur" aria-label="Choisir une échéance">
+          <input type="range" min="0" max="6" step="1" value="0" id="axeCurseur" aria-label="Choisir une échéance">
           <div class="axe-txt" id="axeTxt"></div>
         </div>
       </div>
@@ -556,25 +585,25 @@ select option{color:var(--navy)}
       <div class="large">
         <p class="mono oeil ap">Un échéancier par examen</p>
         <h2 class="titre-s ap">Une gastroscopie ne se prépare pas comme une coloscopie.</h2>
-        <p class="lede ap">À la création du dossier, votre secrétariat choisit l'examen. Endova en déduit les messages, les heures d'envoi et les questions à poser.</p>
+        <p class="lede ap">À la création du dossier, votre secrétariat choisit l'examen. Endova en déduit les messages, les heures d'envoi et les questions à poser. Tout le préopératoire, rien après : le jour J, Endova passe la main.</p>
         <div class="grille-ex">
           <article class="verre ex ap">
-            <p class="mono">Purge · 5 SMS</p>
+            <p class="mono">Purge · 6 SMS</p>
             <h3>Coloscopie</h3>
-            <p>Traitements et purge à J-7, régime sans résidu à J-3 (J-5 en préparation renforcée), minuteur guidé pour chaque fraction, échelle de clarté des selles à H-5, verrou de jeûne à H-2.</p>
+            <p>Traitements et purge à J-7, régime sans résidu à J-3 (J-5 en préparation renforcée), contrôle des arrêts à J-2, minuteur guidé pour chaque fraction, échelle de clarté des selles à H-5, verrou de jeûne à H-2.</p>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Purge · 5 SMS</p>
+            <p class="mono">Purge · 6 SMS</p>
             <h3>Coloscopie et gastroscopie</h3>
             <p>Le même échéancier, sous la même anesthésie. Le bilan d'anémie ferriprive rappelle l'arrêt du fer oral sept jours avant, que les patients oublient presque toujours.</p>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Jeûne · 3 SMS</p>
+            <p class="mono">Jeûne · 4 SMS</p>
             <h3>Gastroscopie</h3>
             <p>Pas de purge, tout se joue sur l'estomac. Heure limite des solides, liquides clairs jusqu'à H-2, et une attention particulière aux patients sous GLP-1, dont la vidange gastrique est ralentie.</p>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Lavements · 3 SMS</p>
+            <p class="mono">Lavements · 4 SMS</p>
             <h3>Rectosigmoïdoscopie</h3>
             <p>Deux lavements le matin même, à une heure d'intervalle. Endova vérifie la veille que le patient les a achetés, puis lui demande le résultat.</p>
           </article>
@@ -586,7 +615,7 @@ select option{color:var(--navy)}
       <div class="large">
         <p class="mono oeil ap">Ce que voit le cabinet</p>
         <h2 class="titre-s ap">Le matin, une seule liste : qui rappeler, et quoi lui dire.</h2>
-        <p class="lede ap">Un patient, un appel. Ses motifs sont regroupés, les urgents passent devant, et chaque alerte arrive avec la phrase à dire au téléphone. Votre secrétariat n'improvise pas.</p>
+        <p class="lede ap">Un geste pour les SMS : le bouton Endova délivre d'un scan tous les messages arrivés à échéance, chaque patient à son étape. Puis une liste d'appels : un patient, un appel, ses motifs regroupés et la phrase à dire. Votre secrétariat n'improvise pas.</p>
         <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova : préparations en cours, patients à rappeler, vacation du jour" loading="lazy"></div>
       </div>
     </section>
@@ -627,6 +656,37 @@ select option{color:var(--navy)}
       </div>
     </section>
 
+    <section id="economies">
+      <div class="large">
+        <p class="mono oeil ap">Ce que le préopératoire vous rapporte</p>
+        <h2 class="titre-s ap">Chaque préparation rattrapée, c'est un examen qui n'est pas à refaire.</h2>
+        <p class="lede ap">Un examen mal préparé se refait : le créneau est perdu, le patient reconvoqué, sa préparation recommencée. Réglez les curseurs sur votre activité.</p>
+        <div class="verre calc ap">
+          <div class="curseurs">
+            <label class="curseur"><span class="lib">Examens par semaine <b id="v-sem">30</b></span>
+              <input type="range" id="c-sem" min="5" max="100" step="1" value="30"></label>
+            <label class="curseur"><span class="lib">Préparations insuffisantes <b id="v-taux">20 %</b></span>
+              <input type="range" id="c-taux" min="5" max="35" step="1" value="20"></label>
+            <label class="curseur"><span class="lib">Écarts rattrapés avant l'examen <b id="v-ratt">50 %</b></span>
+              <input type="range" id="c-ratt" min="10" max="90" step="5" value="50"></label>
+            <label class="curseur"><span class="lib">Valeur d'un examen perdu <b id="v-val">320 €</b></span>
+              <input type="range" id="c-val" min="100" max="800" step="10" value="320"></label>
+          </div>
+          <div class="bilan">
+            <p class="mono">Rattrapé chaque mois</p>
+            <p class="gros"><span id="r-mois">4 160</span> €</p>
+            <div class="barres">
+              <div><span>Examens par mois</span><i><em id="b-tous" style="width:100%"></em></i><b id="r-tous">130</b></div>
+              <div><span>Mal préparés</span><i><em id="b-mal" class="mal"></em></i><b id="r-mal">26</b></div>
+              <div><span>Rattrapés grâce au suivi</span><i><em id="b-ratt" class="ok"></em></i><b id="r-ratt">13</b></div>
+            </div>
+            <p class="an">Soit <b id="r-an">49 920 €</b> par an — l'offre Cabinet remboursée <b id="r-roi">14</b> fois.</p>
+          </div>
+        </div>
+        <p class="mention-c ap">Estimation indicative. Le taux de rattrapage dépend de votre patientèle : nous le mesurons avec vous sur vos premières vacations.</p>
+      </div>
+    </section>
+
     <section id="tarifs" class="tarifs">
       <div class="nappe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="large">
@@ -650,6 +710,7 @@ select option{color:var(--navy)}
               <li>Coloscopie et gastroscopie</li>
               <li>Fiche patient en quatre onglets</li>
               <li>Échéancier SMS de J-7 à H-2, SMS inclus</li>
+              <li>Scan SMS : un geste par jour</li>
               <li>File d'appels avec phrases types</li>
             </ul>
             <a class="choisir" href="#contact" data-offre="Essentiel">Choisir Essentiel</a>
@@ -701,6 +762,7 @@ select option{color:var(--navy)}
         <h2 class="titre-s ap">Ce que les praticiens demandent avant de se lancer.</h2>
         <div class="faq">
           <details class="verre ap"><summary>Mes patients ne liront pas un SMS.</summary><p>Le lien s'ouvre dans leur navigateur, sans application et sans mot de passe : l'année de naissance suffit. Et si un patient n'ouvre pas son premier lien, Endova vous le signale 36 heures plus tard, pour que votre secrétariat l'appelle avant qu'il ne soit trop tard.</p></details>
+          <details class="verre ap"><summary>Qui envoie les SMS, et quand ?</summary><p>Votre secrétariat, d'un geste : le bouton Endova lance un scan qui délivre tous les messages arrivés à échéance, chaque patient à sa propre étape. Un patient opéré dans deux jours reçoit son SMS de J-2, un autre dans une semaine celui de J-7. Chaque envoi est horodaté dans son dossier.</p></details>
           <details class="verre ap"><summary>Combien de temps pour mon secrétariat ?</summary><p>La création d'un dossier prend deux minutes, à la sortie de consultation. Ensuite, une file d'appels par jour, triée par urgence : chaque patient y apparaît une fois, avec tous ses motifs et la phrase à lui dire. Les patients conformes ne génèrent aucun appel.</p></details>
           <details class="verre ap"><summary>Et mes patients sous GLP-1 ?</summary><p>Ozempic, Wegovy, Trulicity, Mounjaro : la vidange gastrique ralentie expose à l'inhalation à l'induction. Endova le repère dès la création du dossier, rappelle de prévenir l'anesthésiste et impose au patient les liquides clairs la veille. Même logique pour les gliflozines, à arrêter trois jours avant.</p></details>
           <details class="verre ap"><summary>Les consignes sont-elles figées ?</summary><p>Non. Endova rappelle les consignes usuelles des sociétés savantes, mais c'est votre prescription qui fait foi. Préparation, schéma de prise, préparation renforcée : tout se règle patient par patient, et l'offre Signature adapte les messages à vos propres protocoles.</p></details>
@@ -1029,9 +1091,11 @@ function compter(racine){
 const ETAPES=[
   {c:'J-7',t:'Traitements et logistique',p:"Le patient confirme qu'il a sa préparation, puis répond pour chaque traitement noté au dossier : anticoagulant, antiagrégant, GLP-1, gliflozine, insuline, fer. Pas de consigne d'arrêt ? L'alerte part au cabinet, avec la conduite à tenir.",s:"Rendez-vous le jour J pour votre coloscopie. Dès aujourd'hui, vérifiez vos traitements et votre préparation."},
   {c:'J-3',t:'Régime sans résidu',p:"Une liste cherchable, avec le motif de chaque interdit : un pépin de kiwi bouche le canal d'aspiration de l'endoscope. Les écarts déclarés vous remontent. En préparation renforcée, le régime démarre à J-5.",s:"Début du régime sans résidu aujourd'hui, jusqu'à l'examen. La liste des aliments autorisés est ici."},
+  {c:'J-2',t:'Contrôle des arrêts',p:"À J-7, le patient a reçu ses consignes. À J-2, il confirme les avoir suivies : dernière prise d'anticoagulant, gliflozine arrêtée, consultation d'anesthésie faite. C'est le dernier moment où un oubli se rattrape sans reporter.",s:"Votre examen est dans 2 jours. Vérifiez vos arrêts de traitement et votre rendez-vous d'anesthésie."},
   {c:'J-1',t:'Première fraction',p:"Un minuteur impose un verre à la fois et bloque l'avance : boire trop vite est la première cause de vomissement. Un rejet déclenche aussitôt la conduite à tenir chez le patient, et une alerte chez vous.",s:"C'est l'heure de la première dose. Buvez lentement, un verre à la fois, avec le minuteur."},
   {c:'H-5',t:'Seconde fraction et contrôle',p:"La fraction qui nettoie le côlon droit, à terminer trois heures avant l'examen. Le patient compare ses selles à une échelle visuelle dérivée du score de Boston : c'est la réponse qui prédit le mieux la qualité de l'examen.",s:"Seconde dose maintenant, à terminer avant 6 h. Puis indiquez l'aspect de vos selles."},
-  {c:'H-2',t:'Verrou de jeûne',p:"Signature horodatée du jeûne, tabac compris : une cigarette retarde la vidange gastrique, et beaucoup de patients l'ignorent. La signature rejoint la traçabilité du dossier.",s:"À partir de maintenant, plus rien à boire, à manger ni à fumer. Confirmez votre jeûne."}
+  {c:'H-2',t:'Verrou de jeûne',p:"Signature horodatée du jeûne, tabac compris : une cigarette retarde la vidange gastrique, et beaucoup de patients l'ignorent. La signature rejoint la traçabilité du dossier.",s:"À partir de maintenant, plus rien à boire, à manger ni à fumer. Confirmez votre jeûne."},
+  {c:'Jour J',t:'Endova passe la main',p:"Le patient arrive préparé, avec un dossier complet : déclarations, arrêts confirmés, jeûne signé. Endova s'arrête là. Le jour J appartient à votre équipe d'endoscopie.",s:"Aucun SMS le jour de l'examen après H-2 : tout s'est joué avant."}
 ];
 const curseur=$('#axeCurseur'), axeTxt=$('#axeTxt'), axeRemplie=$('#axeRemplie'), axePts=$$('#axePts .axe-pt');
 function majAxe(){
@@ -1051,6 +1115,21 @@ $('#form').addEventListener('submit',ev=>{
   location.href='mailto:'+DESTINATAIRE+'?subject='+encodeURIComponent('Démonstration Endova')+'&body='+encodeURIComponent(corps);
   $('#note').textContent="Votre logiciel de courrier s'ouvre avec le message prérempli. Il ne part que si vous l'envoyez.";
 });
+
+/* ----------------------------------------------------------- le calculateur -- */
+const fmt=n=>Math.round(n).toLocaleString('fr-FR');
+function calculer(){
+  const sem=+$('#c-sem').value, taux=+$('#c-taux').value/100, ratt=+$('#c-ratt').value/100, val=+$('#c-val').value;
+  const mois=sem*52/12, mal=mois*taux, sauves=mal*ratt, euros=Math.round(sauves)*val;
+  $('#v-sem').textContent=sem; $('#v-taux').textContent=Math.round(taux*100)+' %';
+  $('#v-ratt').textContent=Math.round(ratt*100)+' %'; $('#v-val').textContent=fmt(val)+' €';
+  $('#r-tous').textContent=fmt(mois); $('#r-mal').textContent=fmt(mal); $('#r-ratt').textContent=fmt(sauves);
+  $('#b-mal').style.width=(taux*100)+'%'; $('#b-ratt').style.width=(taux*ratt*100)+'%';
+  $('#r-mois').textContent=fmt(euros); $('#r-an').textContent=fmt(euros*12)+' €';
+  $('#r-roi').textContent=Math.max(0,Math.floor(euros/290));
+  $$('.calc input[type=range]').forEach(i=>i.style.setProperty('--p',((i.value-i.min)/(i.max-i.min)*100)+'%'));
+}
+$$('.calc input[type=range]').forEach(i=>i.addEventListener('input',calculer)); calculer();
 
 /* ------------------------------------------------------------- les tarifs ---- */
 $$('.periode button').forEach(b=>b.addEventListener('click',()=>{

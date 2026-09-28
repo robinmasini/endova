@@ -6,7 +6,7 @@ import { useDossiers } from '../lib/store.js';
 import FileRappels, { fileDAppels } from './FileRappels.jsx';
 import { calculerScore, statutRisque, alertesActives } from '../lib/score.js';
 import { etapesDe, joursAvant } from '../lib/examens.js';
-import { prochainsEnvois } from '../lib/sms.js';
+import { prochainsEnvois, smsEchus } from '../lib/sms.js';
 import { examenDe, heure, jourCourt, nomComplet } from '../lib/patient.js';
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
@@ -94,6 +94,7 @@ export default function Dashboard() {
   const enCours = aVenir.filter((p) => etapesDe(p).some((e) => !p.etapes[e.id]?.done)).length;
   const prets = duJour.filter((p) => statutRisque(p).court === 'Prêt').length;
   const envois = prochainsEnvois(aVenir, cabinet);
+  const echus = smsEchus(aVenir, cabinet).length;
 
   // Conformité : points acquis rapportés aux points atteignables sur les étapes échues.
   const [acquis, atteignable] = aVenir.reduce(([a, m], p) => {
@@ -125,6 +126,12 @@ export default function Dashboard() {
       </EnTete>
 
       <div className="px-5 pt-6 sm:px-8">
+        {echus ? (
+          <p className="mb-5 flex items-center gap-2.5 rounded-xl border border-magenta/30 bg-magenta/[0.06] px-4 py-3 text-sm text-navy">
+            <Send size={15} className="shrink-0 text-magenta" />
+            <span><span className="font-semibold">{echus} SMS arrivé{echus > 1 ? 's' : ''} à échéance.</span> Touchez le bouton Endova pour les délivrer.</span>
+          </p>
+        ) : null}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Data
             libelle="Préparations en cours" valeur={enCours} unite={`/ ${aVenir.length}`}

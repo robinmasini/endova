@@ -47,7 +47,7 @@ export default function FichePage() {
   const statut = statutRisque(patient);
   const actives = alertesActives(patient);
   const critiques = actives.filter((a) => a.ton === 'ruby');
-  const nonLus = planSms(patient, cabinet).filter((s) => s.statut === 'envoye').length;
+  const nonLus = planSms(patient, cabinet).filter((s) => s.statut === 'envoye' || s.statut === 'a_envoyer').length;
   const ex = examenDe(patient);
   const Contenu = onglet.composant;
 

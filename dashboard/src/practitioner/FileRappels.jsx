@@ -25,6 +25,22 @@ const SCRIPTS = {
     'La veille et le matin de l’examen, vos doses doivent être réduites. Je vous lis la consigne du médecin.',
   TRAITEMENT_FER:
     'Arrêtez votre fer dès maintenant : il colle à la paroi de l’intestin et gêne l’examen.',
+  ARRET_AOD:
+    'Votre examen est dans deux jours : votre dernière prise d’anticoagulant doit être au plus tard 48 h avant. Je vous relis la consigne écrite.',
+  ARRET_AVK:
+    'Il faut que votre traitement soit arrêté et la prise de sang faite la veille. Je vérifie avec le médecin et je vous rappelle.',
+  ARRET_P2Y12:
+    'Ne prenez aucune décision seul. Nous appelons votre cardiologue aujourd’hui et nous vous rappelons.',
+  ARRET_GLP1:
+    'Ne faites pas votre injection avant l’examen. Nous prévenons l’anesthésiste ; la veille, uniquement des liquides clairs.',
+  ARRET_SGLT2:
+    'Arrêtez ce comprimé dès maintenant et jusqu’à l’examen : avec le jeûne, il peut provoquer un malaise grave. Nous prévenons l’anesthésiste.',
+  ARRET_INSULINE:
+    'Je vous renvoie la consigne d’adaptation de vos doses pour la veille et le matin de l’examen.',
+  ARRET_FER:
+    'Arrêtez votre fer dès maintenant, même si c’est un peu tard : cela limite les résidus.',
+  CPA_PATIENT:
+    'La consultation d’anesthésie est obligatoire avant l’examen. Je vous cherche un créneau aujourd’hui ou demain.',
   PURGE_ABSENTE:
     'Votre préparation doit être récupérée en pharmacie aujourd’hui. Si elle n’est pas en stock, rappelez-nous : nous trouverons une alternative.',
   ACCOMPAGNANT:

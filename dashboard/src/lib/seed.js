@@ -1,4 +1,4 @@
-import { ETAPES } from './examens.js';
+import { ETAPES, etapesDe } from './examens.js';
 
 /**
  * Jeu de démonstration : un cabinet libéral de deux gastro-entérologues qui
@@ -69,8 +69,11 @@ function dossier({ id, token, numero, identite, examen, terrain = {}, administra
 
 /**
  * Horodate les étapes déclarées (quelques dizaines de minutes après leur SMS),
- * ajoute l'ouverture du lien correspondante, et écarte tout ce qui serait
- * postérieur à l'instant présent.
+ * trace la livraison des SMS et l'ouverture des liens, et écarte tout ce qui
+ * serait postérieur à l'instant présent.
+ *
+ * Les SMS échus depuis moins de six heures sont laissés « à envoyer » : c'est ce
+ * que délivre le scan SMS à l'ouverture de la démonstration.
  */
 function horodater(p) {
   const n = Date.now();
@@ -82,7 +85,19 @@ function horodater(p) {
     etapes[id] = { ...valeurs, done: true, at: new Date(at).toISOString() };
     ouvertures.push({ at: new Date(Math.min(envoi + 12 * MIN, at - MIN)).toISOString(), type: 'lien_ouvert' });
   }
-  const evenements = [...p.evenements, ...ouvertures]
+  const livraisons = etapesDe(p)
+    .filter((e) => {
+      const envoi = e.envoi(p).getTime();
+      return envoi <= n && (p.etapes[e.id] || n - envoi > 6 * HEURE);
+    })
+    .map((e) => ({
+      at: new Date(Math.min(e.envoi(p).getTime(), n - 5 * MIN)).toISOString(),
+      type: 'sms_envoye',
+      etape: e.id,
+      titre: `SMS ${e.cle(p)} délivré — ${e.titre}`,
+      auteur: `Scan SMS · expéditeur ${CABINET_SEED.expediteur}`,
+    }));
+  const evenements = [...p.evenements, ...livraisons, ...ouvertures]
     .filter((e) => new Date(e.at).getTime() <= n)
     .sort((a, b) => new Date(a.at) - new Date(b.at));
   return { ...p, etapes, evenements };
@@ -120,6 +135,7 @@ export function semer() {
       etapes: {
         j7: { purgeRecuperee: true, traitements: {}, accompagnant: true },
         j3: { regimeDemarre: true, ecarts: [] },
+        j2: { traitements: {}, cpa: true },
         j1: { tolerance: 'COMPLETE', verresBus: 4 },
         h5: { tolerance: 'COMPLETE', evacuation: 4 },
         h2: { jeuneSigne: true, tabac: false },
@@ -135,6 +151,7 @@ export function semer() {
       etapes: {
         j7: { purgeRecuperee: true, traitements: { AOD: true, FER: true, INSULINE: true }, accompagnant: true },
         j3: { regimeDemarre: true, ecarts: [] },
+        j2: { traitements: { AOD: true, FER: true, INSULINE: true }, cpa: true },
         j1: { tolerance: 'PARTIELLE', verresBus: 3 },
         h5: { tolerance: 'PARTIELLE', evacuation: 2 },
       },
@@ -156,6 +173,7 @@ export function semer() {
       etapes: {
         j7: { purgeRecuperee: true, traitements: {}, accompagnant: true },
         j3: { regimeDemarre: true, ecarts: [] },
+        j2: { traitements: {}, cpa: true },
         j1: { tolerance: 'VOMI', verresBus: 2 },
       },
       evenements: [cree(d3, MARCHAL)],
@@ -168,6 +186,7 @@ export function semer() {
       etapes: {
         j7: { purgeRecuperee: true, traitements: {}, accompagnant: true },
         j3: { regimeDemarre: true, ecarts: [] },
+        j2: { traitements: {}, cpa: true },
         j1: { tolerance: 'COMPLETE', verresBus: 4 },
         h5: { tolerance: 'COMPLETE', evacuation: 3 },
       },
@@ -181,7 +200,10 @@ export function semer() {
       examen: { type: 'GASTRO', indication: 'Épigastralgies, dyspepsie', date: le(1, 8, 45), lieu: SAINT_JUST, operateur: BENALI },
       terrain: { traitements: ['GLP1', 'SGLT2'], facteurs: ['DIABETE', 'OBESITE'], antecedents: 'Diabète de type 2, obésité' },
       administratif: { ...complet, cpa: { faite: true, date: le(-6, 16).toISOString() } },
-      etapes: { j7: { traitements: { GLP1: true, SGLT2: false }, accompagnant: true } },
+      etapes: {
+        j7: { traitements: { GLP1: true, SGLT2: true }, accompagnant: true },
+        j2: { traitements: { GLP1: true, SGLT2: false }, cpa: true },
+      },
       evenements: [cree(le(1, 8, 45), BENALI), coche(le(1, 8, 45), 6, 'Consultation d’anesthésie faite')],
     }),
     dossier({
@@ -192,6 +214,7 @@ export function semer() {
       etapes: {
         j7: { purgeRecuperee: true, traitements: {}, accompagnant: true },
         j3: { regimeDemarre: true, ecarts: ['Kiwi', 'Pain complet, aux céréales'] },
+        j2: { traitements: {}, cpa: true },
       },
       evenements: [cree(le(1, 14, 30), BENALI)],
     }),

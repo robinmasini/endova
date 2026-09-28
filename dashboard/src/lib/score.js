@@ -1,4 +1,4 @@
-import { etapesDe, poidsDe, joursAvant, ETAPES } from './examens.js';
+import { etapesDe, poidsDe, joursAvant } from './examens.js';
 import { traitement, comorbidite } from './terrain.js';
 import { PROTOCOLES } from './protocols.js';
 import { anesthesieDe, examenDe } from './patient.js';
@@ -20,6 +20,14 @@ const CREDITS = {
       if (ok === false) r -= traitement(id)?.critique ? 0.4 : 0.15;
     }
     if (anesthesieDe(p).accompagnant && e.accompagnant === false) r -= 0.2;
+    return r;
+  },
+  j2(e, p) {
+    let r = 1;
+    for (const [id, ok] of Object.entries(e.traitements ?? {})) {
+      if (ok === false) r -= traitement(id)?.critique ? 0.4 : 0.15;
+    }
+    if (anesthesieDe(p).cpa && e.cpa === false) r -= 0.4;
     return r;
   },
   j3: (e) => (e.regimeDemarre ? 1 - (e.ecarts?.length ?? 0) * 0.25 : 0),
@@ -130,6 +138,29 @@ export function alertes(patient, maintenant = new Date()) {
     }
   }
 
+  // — Contrôle J-2 : les arrêts ont-ils vraiment eu lieu ?
+  if (s.j2?.done) {
+    for (const [id, ok] of Object.entries(s.j2.traitements ?? {})) {
+      if (ok !== false) continue;
+      const t = traitement(id);
+      if (!t) continue;
+      pousser({
+        code: `ARRET_${id}`, ton: t.critique ? 'ruby' : 'amber', source: 'patient',
+        titre: `${t.label} : consigne non suivie à J-2`,
+        detail: `${t.exemples}. Consigne usuelle : ${t.consigne}`,
+        action: t.critique ? 'Rappeler aujourd’hui : l’examen est dans 48 h' : 'Rappeler la consigne au patient',
+      });
+    }
+    if (anesth.cpa && s.j2.cpa === false) {
+      pousser({
+        code: 'CPA_PATIENT', ton: 'ruby', source: 'patient',
+        titre: 'Le patient n’a pas vu l’anesthésiste',
+        detail: 'Déclaration J-2 : aucune consultation d’anesthésie faite. Elle est obligatoire au moins 48 h avant.',
+        action: 'Trouver un créneau d’anesthésie en urgence ou reporter l’examen',
+      });
+    }
+  }
+
   // — Terrain saisi par le cabinet : GLP-1 = estomac potentiellement plein.
   if (anesth.jeune && patient.terrain.traitements?.includes('GLP1')) {
     pousser({
@@ -159,9 +190,10 @@ export function alertes(patient, maintenant = new Date()) {
   }
 
   // — Le patient n'a jamais ouvert le premier lien : il ne lit pas ses SMS.
-  const envoiJ7 = ETAPES.j7.envoi(patient);
+  const livraisonJ7 = patient.evenements?.find((e) => e.type === 'sms_envoye' && e.etape === 'j7');
+  const envoiJ7 = livraisonJ7 ? new Date(livraisonJ7.at) : null;
   const ouvert = patient.evenements?.some((e) => e.type === 'lien_ouvert');
-  if (!s.j7?.done && !ouvert && maintenant - envoiJ7 > 36 * 3600 * 1000) {
+  if (envoiJ7 && !s.j7?.done && !ouvert && maintenant - envoiJ7 > 36 * 3600 * 1000) {
     pousser({
       code: 'LIEN_NON_OUVERT', ton: 'amber', source: 'sms',
       titre: 'Lien jamais ouvert',

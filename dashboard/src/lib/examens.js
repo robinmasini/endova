@@ -56,6 +56,13 @@ export const ETAPES = {
     envoi: (p) => jourA(p.examen.date, p.examen.renforce ? -5 : -3, 9),
     sms: '{cabinet} : début du régime sans résidu aujourd’hui, jusqu’à l’examen. La liste des aliments autorisés est ici : {lien}',
   },
+  j2: {
+    id: 'j2',
+    titre: 'Contrôle des arrêts',
+    cle: () => 'J-2',
+    envoi: (p) => jourA(p.examen.date, -2, 10),
+    sms: '{cabinet} : votre examen est dans 2 jours, le {date} à {heure}. Vérifiez vos arrêts de traitement et votre rendez-vous d’anesthésie : {lien}',
+  },
   j1: {
     id: 'j1',
     titre: 'Première fraction de purge',
@@ -114,8 +121,8 @@ export const EXAMENS = {
     article: 'votre coloscopie',
     purge: true,
     anesthesie: 'AG',
-    etapes: ['j7', 'j3', 'j1', 'h5', 'h2'],
-    poids: { j7: 15, j3: 15, j1: 25, h5: 25, h2: 20 },
+    etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
+    poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Dépistage — test immunologique positif',
       'Surveillance après polypectomie',
@@ -132,8 +139,8 @@ export const EXAMENS = {
     article: 'votre coloscopie et gastroscopie',
     purge: true,
     anesthesie: 'AG',
-    etapes: ['j7', 'j3', 'j1', 'h5', 'h2'],
-    poids: { j7: 15, j3: 15, j1: 25, h5: 25, h2: 20 },
+    etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
+    poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Anémie ferriprive',
       'Bilan de douleurs abdominales',
@@ -147,8 +154,8 @@ export const EXAMENS = {
     article: 'votre gastroscopie',
     purge: false,
     anesthesie: 'AG',
-    etapes: ['j7', 'g1', 'h2'],
-    poids: { j7: 30, g1: 20, h2: 50 },
+    etapes: ['j7', 'j2', 'g1', 'h2'],
+    poids: { j7: 25, j2: 15, g1: 20, h2: 40 },
     indications: [
       'Épigastralgies, dyspepsie',
       'Reflux gastro-œsophagien',
@@ -164,8 +171,8 @@ export const EXAMENS = {
     article: 'votre rectosigmoïdoscopie',
     purge: false,
     anesthesie: 'SANS',
-    etapes: ['j7', 'r1', 'lav'],
-    poids: { j7: 30, r1: 10, lav: 60 },
+    etapes: ['j7', 'j2', 'r1', 'lav'],
+    poids: { j7: 25, j2: 10, r1: 10, lav: 55 },
     indications: ['Rectorragies', 'Surveillance de rectite', 'Contrôle d’anastomose'],
   },
 };

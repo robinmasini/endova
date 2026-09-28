@@ -343,7 +343,7 @@ export default function NouveauDossier() {
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <p className="text-sm font-semibold text-navy"><span className="text-magenta">{s.cle}</span> — {s.etape.titre}</p>
                     <p className={`text-[11px] ${s.envoi < new Date() ? 'font-semibold text-amber-700' : 'text-slate-500'}`}>
-                      {s.envoi < new Date() ? 'Échéance passée — envoi immédiat' : horodatage(s.envoi)}
+                      {s.envoi < new Date() ? 'Échéance passée — partira au prochain scan' : horodatage(s.envoi)}
                     </p>
                   </div>
                   <p className="mt-2 text-xs leading-relaxed text-slate-600">« {s.texte} »</p>

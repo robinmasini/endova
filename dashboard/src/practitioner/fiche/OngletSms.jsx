@@ -17,7 +17,7 @@ const MODELES = [
 const segments = (t) => Math.max(1, Math.ceil(t.length / 153));
 
 function Bulle({ item, onRenvoyer }) {
-  const planifie = item.statut === 'planifie';
+  const planifie = item.statut === 'planifie' || item.statut === 'a_envoyer';
   const s = item.statut ? STATUTS_SMS[item.statut] : null;
   return (
     <li className={`flex flex-col ${item.libre ? 'items-end' : 'items-start'}`}>
@@ -28,7 +28,9 @@ function Bulle({ item, onRenvoyer }) {
       <div
         className={`max-w-[34rem] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           planifie
-            ? 'border border-dashed border-navy/20 bg-white/40 text-slate-500'
+            ? item.statut === 'a_envoyer'
+              ? 'border border-dashed border-rose-300 bg-rose-50/50 text-slate-600'
+              : 'border border-dashed border-navy/20 bg-white/40 text-slate-500'
             : item.libre
               ? 'rounded-br-md bg-magenta text-white shadow-[0_6px_18px_-8px_rgba(147,43,156,0.6)]'
               : 'rounded-bl-md border border-white/80 bg-white/85 text-slate-800 shadow-[0_6px_18px_-10px_rgba(5,28,78,0.25)]'
@@ -39,7 +41,7 @@ function Bulle({ item, onRenvoyer }) {
       <div className="mt-1.5 flex flex-wrap items-center gap-2 px-1">
         <span className="flex items-center gap-1 text-[11px] text-slate-500">
           {planifie ? <Clock size={11} /> : null}
-          {planifie ? 'Programmé le ' : ''}{horodatage(item.at)}
+          {item.statut === 'a_envoyer' ? 'Échu le ' : planifie ? 'Programmé le ' : 'Délivré le '}{horodatage(item.at)}
         </span>
         {s ? <Pastille ton={s.ton}>{s.label}</Pastille> : null}
         {item.reponse ? <Pastille ton={item.reponse.ton}>Réponse : {item.reponse.texte}</Pastille> : null}
@@ -58,14 +60,14 @@ export default function OngletSms({ patient, cabinet }) {
   const plan = planSms(patient, cabinet);
 
   const fil = [
-    ...plan.map((s) => ({ at: s.envoi, cle: s.cle, titre: s.etape.titre, texte: s.texte, statut: s.statut, reponse: s.reponse, etape: s.etape })),
+    ...plan.map((s) => ({ at: s.delivre ?? s.envoi, cle: s.cle, titre: s.etape.titre, texte: s.texte, statut: s.statut, reponse: s.reponse, etape: s.etape })),
     ...(patient.evenements ?? [])
       .filter((e) => e.type === 'sms_libre' || e.type === 'sms_renvoye')
       .map((e) => ({ at: new Date(e.at), titre: e.type === 'sms_libre' ? `Message du cabinet · ${e.auteur}` : `Renvoi · ${e.auteur}`, texte: e.detail, libre: true })),
   ].sort((a, b) => a.at - b.at);
 
   const texte = rediger(brouillon, patient, cabinet);
-  const prochain = plan.find((s) => s.statut === 'planifie');
+  const prochain = plan.find((s) => s.statut === 'planifie' || s.statut === 'a_envoyer');
 
   function envoyer(e) {
     e.preventDefault();
@@ -135,10 +137,12 @@ export default function OngletSms({ patient, cabinet }) {
         {prochain ? (
           <Carte titre="Prochain envoi" icone={<Clock size={14} />}>
             <p className="text-sm font-semibold text-navy">{prochain.cle} — {prochain.etape.titre}</p>
-            <p className="mt-1 text-xs text-slate-600">{horodatage(prochain.envoi)}</p>
+            <p className="mt-1 text-xs text-slate-600">
+              {prochain.statut === 'a_envoyer' ? `Échu depuis le ${horodatage(prochain.envoi)} — partira au prochain scan` : horodatage(prochain.envoi)}
+            </p>
             <BoutonDiscret
               className="mt-3"
-              onClick={() => store.journaliser(patient.id, { type: 'sms_renvoye', titre: `SMS ${prochain.cle} envoyé en avance`, detail: prochain.texte })}
+              onClick={() => store.envoyerSms(patient.id, prochain)}
             >
               <Send size={12} /> Envoyer maintenant
             </BoutonDiscret>

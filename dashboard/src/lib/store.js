@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { semer, CABINET_SEED } from './seed.js';
+import { smsEchus } from './sms.js';
 
 /**
  * Persistance locale + diffusion inter-onglets.
@@ -9,9 +10,9 @@ import { semer, CABINET_SEED } from './seed.js';
  * BroadcastChannel. L'API reste volontairement étroite pour qu'un adaptateur
  * serveur puisse s'y substituer sans toucher l'interface.
  */
-// v2 : dossier structuré (identité, examen, terrain, administratif, journal).
+// v3 : dossier structuré, SMS délivrés par le scan (événements `sms_envoye`).
 // Les données v1 ne se convertissent pas proprement : on repart du jeu de démo.
-const CLE = 'endova.dossiers.v2';
+const CLE = 'endova.dossiers.v3';
 const canal = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('endova') : null;
 
 let etat = charger();
@@ -132,6 +133,34 @@ export const store = {
       delete reste[alerte.code];
       return avecEvenement({ ...p, alertesTraitees: reste }, { type: 'alerte_traitee', titre: `Alerte rouverte — ${alerte.titre}` });
     });
+  },
+
+  /**
+   * Scan SMS : délivre d'un coup tous les messages échus, patient par patient,
+   * et trace chaque envoi. Renvoie la liste de ce qui est parti.
+   */
+  scannerSms() {
+    const lot = smsEchus(etat.patients, etat.cabinet);
+    if (!lot.length) return [];
+    const at = maintenant();
+    const auteur = `Scan SMS · expéditeur ${etat.cabinet.expediteur}`;
+    const parPatient = new Map();
+    for (const s of lot) {
+      const evt = { at, type: 'sms_envoye', etape: s.etape.id, titre: `SMS ${s.cle} délivré — ${s.etape.titre}`, detail: s.texte, auteur };
+      parPatient.set(s.patient.id, [...(parPatient.get(s.patient.id) ?? []), evt]);
+    }
+    ecrire({
+      ...etat,
+      patients: etat.patients.map((p) => (parPatient.has(p.id) ? { ...p, evenements: [...(p.evenements ?? []), ...parPatient.get(p.id)] } : p)),
+    });
+    return lot;
+  },
+
+  /** Envoi d'un SMS de l'échéancier avant son heure, depuis la fiche. */
+  envoyerSms(id, sms) {
+    surPatient(id, (p) => avecEvenement(p, {
+      type: 'sms_envoye', etape: sms.etape.id, titre: `SMS ${sms.cle} délivré en avance — ${sms.etape.titre}`, detail: sms.texte,
+    }));
   },
 
   majCabinet(patch) {

@@ -13,6 +13,7 @@ export const TRAITEMENTS = [
     exemples: 'Eliquis, Xarelto, Lixiana, Pradaxa',
     consigne: 'Arrêt 48 h avant si une polypectomie est envisagée, davantage pour Pradaxa si la fonction rénale est altérée. Pas de relais.',
     question: 'Avez-vous reçu une consigne écrite d’arrêt ?',
+    controle: 'Dernière prise au plus tard 48 h avant l’examen, comme indiqué ?',
     critique: true,
   },
   {
@@ -21,6 +22,7 @@ export const TRAITEMENTS = [
     exemples: 'Previscan, Coumadine, Sintrom',
     consigne: 'Arrêt 5 jours avant, INR de contrôle la veille ; relais par héparine si le risque thrombotique est élevé.',
     question: 'Avez-vous reçu une consigne écrite d’arrêt et une ordonnance d’INR ?',
+    controle: 'Arrêté depuis 5 jours, avec la prise de sang (INR) prévue la veille ?',
     critique: true,
   },
   {
@@ -29,6 +31,7 @@ export const TRAITEMENTS = [
     exemples: 'Plavix, Efient, Brilique',
     consigne: 'Arrêt 5 jours avant (7 pour Efient), uniquement après avis du cardiologue. L’aspirine est maintenue.',
     question: 'Votre cardiologue vous a-t-il donné une consigne d’arrêt ?',
+    controle: 'Arrêté selon la consigne de votre cardiologue ?',
     critique: true,
   },
   {
@@ -37,6 +40,7 @@ export const TRAITEMENTS = [
     exemples: 'Kardégic, Aspirine Protect',
     consigne: 'Poursuite du traitement.',
     question: null,
+    controle: null,
     critique: false,
   },
   {
@@ -45,6 +49,7 @@ export const TRAITEMENTS = [
     exemples: 'Ozempic, Wegovy, Trulicity, Victoza, Mounjaro',
     consigne: 'Vidange gastrique ralentie : liquides clairs la veille, anesthésiste prévenu. Suspension de l’injection hebdomadaire selon son avis.',
     question: 'Avez-vous reçu une consigne pour votre injection ?',
+    controle: 'Injection suspendue selon la consigne reçue ?',
     critique: true,
     anesthesie: true,
   },
@@ -54,6 +59,7 @@ export const TRAITEMENTS = [
     exemples: 'Jardiance, Forxiga, Invokana',
     consigne: 'Arrêt 3 jours avant : le jeûne et la purge exposent à une acidocétose.',
     question: 'Avez-vous arrêté ce traitement 3 jours avant l’examen ?',
+    controle: 'Arrêté depuis au moins hier (3 jours avant l’examen) ?',
     critique: true,
   },
   {
@@ -62,6 +68,7 @@ export const TRAITEMENTS = [
     exemples: 'Insulines, Diamicron, Amarel',
     consigne: 'Doses adaptées la veille et le matin de l’examen : risque d’hypoglycémie pendant la purge et le jeûne.',
     question: 'Savez-vous comment adapter vos doses ?',
+    controle: 'Avez-vous la consigne d’adaptation de vos doses sous la main ?',
     critique: true,
   },
   {
@@ -70,6 +77,7 @@ export const TRAITEMENTS = [
     exemples: 'Tardyferon, Timoferol, Fumafer',
     consigne: 'Arrêt 7 jours avant : il colle à la muqueuse et noircit les selles.',
     question: 'Avez-vous arrêté votre fer ?',
+    controle: 'Toujours arrêté depuis une semaine ?',
     critique: false,
   },
 ];

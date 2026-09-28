@@ -5,8 +5,8 @@ import { ETAPES as CATALOGUE } from '../lib/examens.js';
 
 // Échéancier de la coloscopie, le cas le plus complet, pour la démonstration.
 const EXEMPLE = { examen: { renforce: false, schema: 'FRACTIONNE' } };
-const ETAPES = ['j7', 'j3', 'j1', 'h5', 'h2'].map((id) => ({ ...CATALOGUE[id], cle: CATALOGUE[id].cle(EXEMPLE) }));
-const HEURES = { j7: '10h00', j3: '09h00', j1: '18h00', h5: 'H-5', h2: 'H-2' };
+const ETAPES = ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'].map((id) => ({ ...CATALOGUE[id], cle: CATALOGUE[id].cle(EXEMPLE) }));
+const HEURES = { j7: '10h00', j3: '09h00', j2: '10h00', j1: '18h00', h5: 'H-5', h2: 'H-2' };
 import {
   AlertTriangle, ArrowLeft, Banknote, Check, ChevronRight, ListChecks,
   PhoneCall, ShieldCheck, Timer, UsersRound,
@@ -269,11 +269,11 @@ function Echeancier(t) {
       <div className="text-center" style={{ opacity: entre(phase(t, 0.02, 0.22), 0, 1) }}>
         <Oeil>L’échéancier</Oeil>
         <h2 className="mx-auto mt-4 max-w-2xl text-balance text-2xl font-bold tracking-tight text-navy sm:text-4xl">
-          Cinq messages, aux cinq moments qui décident de l’examen.
+          Six messages, aux six moments qui décident de l’examen.
         </h2>
       </div>
 
-      <div className="mt-12 grid gap-4 md:grid-cols-5">
+      <div className="mt-12 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
         {ETAPES.map((etape, i) => {
           const p = adoucir(phase(t, 0.16 + i * 0.1, 0.56 + i * 0.1));
           return (
