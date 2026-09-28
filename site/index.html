@@ -404,10 +404,10 @@ footer img{height:54px;width:auto}
 .nappe{position:absolute;inset:0;z-index:-1;pointer-events:none;filter:blur(60px) saturate(1.3)}
 .nappe i{position:absolute;display:block;border-radius:42% 58% 63% 37% / 45% 39% 61% 55%;opacity:.75;
   animation:derive 26s var(--e2) infinite alternate}
-.nappe i:nth-child(1){width:44vw;height:44vw;right:-10vw;top:30%;background:#932B9C}
+.nappe i:nth-child(1){width:42vw;height:42vw;left:29%;top:26%;background:#932B9C}
 .nappe i:nth-child(2){width:36vw;height:36vw;left:-10vw;top:6%;background:#1E2C7A;opacity:.6;animation-duration:31s;animation-delay:-8s}
 .nappe i:nth-child(3){width:30vw;height:30vw;left:34%;bottom:-16%;background:#3A2170;opacity:.6;animation-duration:23s;animation-delay:-4s}
-.nappe i:nth-child(4){width:24vw;height:24vw;right:4%;top:8%;background:#4B5CE0;opacity:.55;animation-duration:19s;animation-delay:-12s}
+.nappe i:nth-child(4){width:26vw;height:26vw;right:-6%;top:34%;background:#4B5CE0;opacity:.5;animation-duration:19s;animation-delay:-12s}
 @keyframes derive{
   0%{transform:translate(0,0) rotate(0) scale(1);border-radius:42% 58% 63% 37% / 45% 39% 61% 55%}
   50%{transform:translate(6vw,-4vw) rotate(40deg) scale(1.12);border-radius:61% 39% 44% 56% / 58% 62% 38% 42%}
@@ -449,8 +449,12 @@ footer img{height:54px;width:auto}
 .choisir:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
 .ruban{position:absolute;top:-13px;left:30px;padding:6px 13px;border-radius:999px;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--navy);background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-.offre-cabinet{border-color:rgba(230,168,240,.4)}
-.offre-cabinet .choisir{background:#fff;color:var(--navy);border-color:#fff}
+.offre-mesure .prix-devis{font-size:40px;letter-spacing:-.02em}
+.offre-mesure{border-style:dashed;border-color:rgba(255,255,255,.28)}
+.essai{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin:0 0 14px;padding:7px 12px;border-radius:999px;
+  font-family:var(--titre);font-weight:600;font-size:13px;color:#F4D3F8;background:rgba(230,168,240,.12);border:1px solid rgba(230,168,240,.3)}
+.essai .ico{width:15px;height:15px}
+.offre-signature .essai{color:var(--navy);background:rgba(255,255,255,.88);border-color:#fff}
 
 /* Signature : verre plus profond, teinté aux couleurs du logo, cerclé d'un
    liseré irisé qui tourne, et balayé par l'éclat déjà porté par la marque. */
@@ -769,7 +773,7 @@ select option{color:var(--navy)}
               <div><span>Mal préparés</span><i><em id="b-mal" class="mal"></em></i><b id="r-mal">26</b></div>
               <div><span>Rattrapés grâce au suivi</span><i><em id="b-ratt" class="ok"></em></i><b id="r-ratt">13</b></div>
             </div>
-            <p class="an">Soit <b id="r-an">49 920 €</b> par an — l'offre Cabinet remboursée <b id="r-roi">14</b> fois.</p>
+            <p class="an">Soit <b id="r-an">49 920 €</b> par an — l'offre Signature remboursée <b id="r-roi">8</b> fois.</p>
           </div>
         </div>
         <p class="mention-c ap">Estimation indicative. Le taux de rattrapage dépend de votre patientèle : nous le mesurons avec vous sur vos premières vacations.</p>
@@ -781,7 +785,7 @@ select option{color:var(--navy)}
       <div class="large">
         <p class="mono oeil ap">Tarifs</p>
         <h2 class="titre-s ap">Un examen sauvé par mois suffit à le payer.</h2>
-        <p class="lede ap">Par cabinet, sans engagement de durée. SMS inclus, mise en service accompagnée.</p>
+        <p class="lede ap">Par cabinet, sans engagement de durée. SMS inclus, mise en service accompagnée, et une semaine offerte pour commencer, quelle que soit la formule.</p>
 
         <div class="periode ap" role="group" aria-label="Période de facturation">
           <button type="button" class="on" data-periode="mois" aria-pressed="true">Mensuel</button>
@@ -792,8 +796,8 @@ select option{color:var(--navy)}
           <article class="offre ap">
             <p class="nom">Essentiel</p>
             <p class="pour">Le praticien installé seul</p>
-            <p class="prix"><span data-mois="149" data-an="124">149</span> € <small>HT / mois</small></p>
-            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 1 490 € HT par an">Facturé chaque mois</p>
+            <p class="prix"><span data-mois="179" data-an="149">179</span> € <small>HT / mois</small></p>
+            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 1 790 € HT par an">Facturé chaque mois</p>
             <ul>
               <li>1 praticien, jusqu'à 60 examens par mois</li>
               <li>Coloscopie et gastroscopie</li>
@@ -802,44 +806,47 @@ select option{color:var(--navy)}
               <li>Scan SMS : un geste par jour</li>
               <li>File d'appels avec phrases types</li>
             </ul>
+            <p class="essai"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> 1 semaine offerte</p>
             <a class="choisir" href="#contact" data-offre="Essentiel">Choisir Essentiel</a>
-          </article>
-
-          <article class="offre offre-cabinet ap">
-            <p class="ruban">Le plus choisi</p>
-            <p class="nom">Cabinet</p>
-            <p class="pour">Le cabinet de groupe</p>
-            <p class="prix"><span data-mois="290" data-an="242">290</span> € <small>HT / mois</small></p>
-            <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 2 900 € HT par an">Facturé chaque mois</p>
-            <ul>
-              <li>Jusqu'à 3 praticiens, 200 examens par mois</li>
-              <li>Tous les examens, dont la rectosigmoïdoscopie</li>
-              <li>Préparation renforcée pour les patients à risque</li>
-              <li>SMS au nom de votre cabinet</li>
-              <li>Traçabilité exportable, versable au dossier</li>
-              <li>Ordre de passage conseillé pour la vacation</li>
-            </ul>
-            <a class="choisir" href="#contact" data-offre="Cabinet">Choisir Cabinet</a>
           </article>
 
           <article class="offre offre-signature ap">
             <span class="iris" aria-hidden="true"></span>
             <span class="balayage" aria-hidden="true"></span>
-            <p class="ruban">Le plus complet</p>
+            <p class="ruban">Le plus choisi</p>
             <p class="nom">Signature</p>
-            <p class="pour">Les cabinets à fort volume</p>
+            <p class="pour">Le cabinet de groupe</p>
             <p class="prix"><span data-mois="490" data-an="408">490</span> € <small>HT / mois</small></p>
             <p class="fact" data-mois="Facturé chaque mois" data-an="Soit 4 900 € HT par an">Facturé chaque mois</p>
             <ul>
+              <li>Tout ce que contient l'offre Essentiel</li>
               <li>Praticiens et examens illimités</li>
-              <li>Tout ce que contient l'offre Cabinet</li>
-              <li>Protocoles et messages écrits sur mesure</li>
-              <li>Installation sur place, formation du secrétariat</li>
-              <li>Raccordement à vos outils existants, étudié avec vous</li>
-              <li>Un interlocuteur dédié, joignable directement</li>
-              <li>Bilan mensuel de la qualité des préparations</li>
+              <li>Tous les examens, dont la rectosigmoïdoscopie</li>
+              <li>Préparation renforcée pour les patients à risque</li>
+              <li>SMS au nom de votre cabinet</li>
+              <li>Traçabilité exportable, versable au dossier</li>
+              <li>Ordre de passage conseillé pour la vacation</li>
+              <li>Un interlocuteur dédié, bilan mensuel des préparations</li>
             </ul>
+            <p class="essai"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> 1 semaine offerte</p>
             <a class="choisir" href="#contact" data-offre="Signature">Choisir Signature</a>
+          </article>
+
+          <article class="offre offre-mesure ap">
+            <p class="nom">Sur mesure</p>
+            <p class="pour">Plusieurs sites, centres d'endoscopie</p>
+            <p class="prix prix-devis">Sur devis</p>
+            <p class="fact">Construit avec vous</p>
+            <ul>
+              <li>Tout ce que contient l'offre Signature</li>
+              <li>Plusieurs cabinets ou lieux d'examen</li>
+              <li>Protocoles et messages écrits sur mesure</li>
+              <li>Raccordement à vos outils existants, étudié avec vous</li>
+              <li>Installation sur place, formation du secrétariat</li>
+              <li>Volumes et conditions adaptés</li>
+            </ul>
+            <p class="essai"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> 1 semaine offerte</p>
+            <a class="choisir" href="#contact" data-offre="Sur mesure">Nous contacter</a>
           </article>
         </div>
         <p class="mention ap">Tarifs hors taxes, par cabinet. Au-delà du volume inclus, les examens supplémentaires sont facturés à l'unité.</p>
@@ -879,7 +886,7 @@ select option{color:var(--navy)}
               <div><label for="f-nb">Examens par semaine</label><input id="f-nb" name="nb" type="number" min="0" step="1"></div>
             </div>
             <div><label for="f-offre">Offre envisagée</label>
-              <select id="f-offre" name="offre"><option>Je ne sais pas encore</option><option>Essentiel</option><option>Cabinet</option><option>Signature</option></select>
+              <select id="f-offre" name="offre"><option>Je ne sais pas encore</option><option>Essentiel</option><option>Signature</option><option>Sur mesure</option></select>
             </div>
             <button class="btn btn-plein" type="submit" style="justify-self:start;margin-top:8px">Demander une démonstration</button>
           </form>
@@ -1217,7 +1224,7 @@ function calculer(){
   $('#r-tous').textContent=fmt(mois); $('#r-mal').textContent=fmt(mal); $('#r-ratt').textContent=fmt(sauves);
   $('#b-mal').style.width=(taux*100)+'%'; $('#b-ratt').style.width=(taux*ratt*100)+'%';
   $('#r-mois').textContent=fmt(euros); $('#r-an').textContent=fmt(euros*12)+' €';
-  $('#r-roi').textContent=Math.max(0,Math.floor(euros/290));
+  $('#r-roi').textContent=Math.max(0,Math.floor(euros/490));
   $$('.calc input[type=range]').forEach(i=>i.style.setProperty('--p',((i.value-i.min)/(i.max-i.min)*100)+'%'));
 }
 $$('.calc input[type=range]').forEach(i=>i.addEventListener('input',calculer)); calculer();
