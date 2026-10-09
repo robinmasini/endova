@@ -1,4 +1,4 @@
-import { etapesDe } from './examens.js';
+import { toutesEtapes } from './examens.js';
 import { examenDe, heure, jour, nomComplet } from './patient.js';
 import { resume } from './declarations.js';
 
@@ -26,6 +26,7 @@ export function rediger(modele, patient, cabinet) {
     lieu: patient.examen.lieu,
     tel: cabinet.telephone,
     lien: `endova.fr/p/${patient.token}`,
+    delaiResultats: cabinet.delaiResultats ?? 'quinze jours',
   };
   return modele.replace(/\{(\w+)\}/g, (m, k) => valeurs[k] ?? m);
 }
@@ -38,7 +39,9 @@ export function rediger(modele, patient, cabinet) {
  * « à envoyer ». Le reste du statut se lit dans le dossier.
  */
 export function planSms(patient, cabinet, maintenant = new Date()) {
-  const etapes = etapesDe(patient);
+  // Préparation ET suites : un SMS de surveillance à J+2 est un envoi comme un
+  // autre, il doit figurer au plan et au calendrier.
+  const etapes = toutesEtapes(patient);
   const evts = patient.evenements ?? [];
   const ouvertures = evts.filter((e) => e.type === 'lien_ouvert').map((e) => new Date(e.at));
 
@@ -46,7 +49,7 @@ export function planSms(patient, cabinet, maintenant = new Date()) {
     const envoi = etape.envoi(patient);
     const livraison = evts.find((e) => e.type === 'sms_envoye' && e.etape === etape.id);
     const delivre = livraison ? new Date(livraison.at) : null;
-    const suivant = etapes[i + 1]?.envoi(patient) ?? new Date(patient.examen.date);
+    const suivant = etapes[i + 1]?.envoi(patient) ?? new Date(envoi.getTime() + 7 * 24 * HEURE);
     const e = patient.etapes[etape.id];
     let statut = 'planifie';
     if (e?.done) statut = 'repondu';

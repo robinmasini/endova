@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
-  AlertTriangle, CheckCircle2, XCircle, Circle, RefreshCw, ArrowDownWideNarrow, CalendarX, Syringe, Undo2, ListChecks,
+  AlertTriangle, CheckCircle2, XCircle, Circle, RefreshCw, ArrowDownWideNarrow, CalendarX, Syringe, Undo2, ListChecks, Clock,
 } from '../../components/icones.js';
 import SchemaDigestif from '../../components/SchemaDigestif.jsx';
 import { AnneauScore, TONS } from '../../components/ui.jsx';
 import { store } from '../../lib/store.js';
 import { calculerScore, statutRisque, alertes } from '../../lib/score.js';
-import { etapesDe } from '../../lib/examens.js';
+import { etapesDe, etapesApres } from '../../lib/examens.js';
 import { resume, lignes } from '../../lib/declarations.js';
 import { examenDe, horodatage } from '../../lib/patient.js';
 import { Carte, Pastille, BoutonDiscret } from './elements.jsx';
@@ -152,7 +152,7 @@ export default function OngletPreparation({ patient }) {
           )}
         </Carte>
 
-        <Carte titre="Étapes de l’échéancier" icone={<ListChecks size={14} />}>
+        <Carte titre="Chronologie du dossier" icone={<ListChecks size={14} />}>
           <ol className="relative space-y-3">
             {etapes.map((e) => {
               const r = resume(patient, e.id);
@@ -188,14 +188,25 @@ export default function OngletPreparation({ patient }) {
                 </li>
               );
             })}
-            {/* Le jour J clôt l'échéancier : Endova passe la main à l'équipe d'endoscopie. */}
-            <li className="flex items-center gap-3 rounded-xl border border-dashed border-navy/15 p-3.5">
+            {/* Le jour J n'arrête pas le suivi : il le fait basculer de la préparation vers les suites. */}
+            <li className="flex items-center gap-3 rounded-xl border border-navy/20 bg-navy/[0.04] p-3.5">
               <span className="flex size-[17px] shrink-0 items-center justify-center rounded-full bg-navy text-[8px] font-bold text-white">J</span>
               <div className="min-w-0">
                 <p className="truncate text-sm text-navy"><span className="font-bold">Jour J</span> — {examenDe(patient).label}</p>
-                <p className="text-[11px] text-slate-500">{horodatage(patient.examen.date)} · {patient.examen.lieu}. Fin du suivi Endova.</p>
+                <p className="text-[11px] text-slate-500">{horodatage(patient.examen.date)} · {patient.examen.lieu}. La préparation s’arrête ici, le suivi continue.</p>
               </div>
             </li>
+
+            {/* Les suites : SMS informatifs, sans réponse attendue, donc hors index de préparation. */}
+            {etapesApres(patient).map((e) => (
+              <li key={e.id} className="flex items-center gap-3 rounded-xl border border-dashed border-navy/15 bg-white/40 p-3.5">
+                <Clock size={17} className="shrink-0 text-slate-400" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-navy"><span className="font-bold">{e.cle(patient)}</span> — {e.titre}</p>
+                  <p className="text-[11px] text-slate-500">SMS prévu le {horodatage(e.envoi(patient))} · pour information, sans réponse attendue</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </Carte>
       </div>

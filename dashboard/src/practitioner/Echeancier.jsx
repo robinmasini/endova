@@ -1,13 +1,20 @@
 import { Link } from 'react-router-dom';
 import { Check, Clock, Send, AlertTriangle, Eye } from '../components/icones.js';
 import { useDossiers } from '../lib/store.js';
-import { ETAPES, etapesDe, joursAvant } from '../lib/examens.js';
+import { ETAPES, toutesEtapes, joursAvant } from '../lib/examens.js';
 import { planSms, prochainsEnvois } from '../lib/sms.js';
 import { heure, horodatage, nomComplet } from '../lib/patient.js';
 import { EnTete } from './Coquille.jsx';
 
 /** Ordre chronologique du catalogue : une colonne n'apparaît que si un examen l'utilise. */
-const ORDRE = ['j7', 'j3', 'j2', 'g1', 'r1', 'j1', 'h5', 'lav', 'h2'];
+// L'ordre d'affichage des colonnes : la préparation, puis les suites. Un dossier
+// dont l'examen est passé reste au calendrier tant que ses suites courent.
+const ORDRE = ['j7', 'j3', 'j2', 'g1', 'r1', 'j1', 'h5', 'lav', 'h2', 's0', 's2', 's7'];
+
+const BANDES = [
+  { cle: 'avant', apres: false, titre: 'Avant l’examen', sous: 'La préparation : c’est elle qui décide de la lisibilité du côlon.' },
+  { cle: 'apres', apres: true, titre: 'Après l’examen', sous: 'Les suites : reprise, saignement différé, reprise des traitements.' },
+];
 
 const STYLE = {
   repondu: 'border-emerald-400/50 bg-emerald-50/70 text-emerald-700',
@@ -43,13 +50,13 @@ export default function Echeancier() {
   const { patients, cabinet } = useDossiers();
   const aVenir = patients.filter((p) => joursAvant(p) >= 0);
   const plans = aVenir.map((p) => ({ patient: p, plan: planSms(p, cabinet) }));
-  const utilisees = ORDRE.filter((id) => aVenir.some((p) => etapesDe(p).some((e) => e.id === id)));
+  const utilisees = ORDRE.filter((id) => aVenir.some((p) => toutesEtapes(p).some((e) => e.id === id)));
   const envois = prochainsEnvois(aVenir, cabinet);
   const nonOuverts = plans.flatMap(({ patient, plan }) => plan.filter((s) => s.statut === 'envoye').map((s) => ({ patient, s })));
 
   return (
     <>
-      <EnTete titre="Échéancier SMS" question="Ce qui est parti, ce qui a été lu, ce qui attend le scan — de J-7 jusqu’au jour J." />
+      <EnTete titre="Échéancier SMS" question="Ce qui est parti, ce qui a été lu, ce qui attend le scan — de J-7 jusqu’à J+7." />
 
       <div className="px-5 pt-6 sm:px-8">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
@@ -85,26 +92,43 @@ export default function Echeancier() {
           </section>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-8">
-          {utilisees.map((id) => {
-            const etape = ETAPES[id];
-            const lignes = plans
-              .map(({ patient, plan }) => ({ patient, sms: plan.find((s) => s.etape.id === id) }))
-              .filter((l) => l.sms)
-              .sort((a, b) => a.sms.envoi - b.sms.envoi);
-            return (
-              <section key={id} className="rounded-2xl border border-navy/[0.07] bg-white/60 p-4 backdrop-blur-2xl">
-                <div className="border-b border-navy/[0.07] pb-3">
-                  <p className="text-sm font-bold text-navy">{etape.titre}</p>
-                  <p className="mt-0.5 text-[11px] text-slate-600">{lignes.length} patient{lignes.length > 1 ? 's' : ''}</p>
-                </div>
-                <div className="mt-3 space-y-1.5">
-                  {lignes.map(({ patient, sms }) => <Jeton key={patient.id} patient={patient} sms={sms} />)}
-                </div>
-              </section>
-            );
-          })}
-        </div>
+        {BANDES.map(({ cle, titre, sous, apres }) => {
+          const ids = utilisees.filter((id) => Boolean(ETAPES[id].apres) === apres);
+          if (!ids.length) return null;
+          return (
+            <div key={cle} className="mt-7">
+              <div className="mb-3 flex items-baseline gap-3">
+                <h2 className="shrink-0 text-xs font-semibold uppercase tracking-wider text-navy">{titre}</h2>
+                <span className="h-px flex-1 bg-navy/10" />
+                <p className="hidden shrink-0 text-[11px] text-slate-500 lg:block">{sous}</p>
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(12.5rem,1fr))] items-start gap-4">
+                {ids.map((id) => {
+                  const etape = ETAPES[id];
+                  const lignes = plans
+                    .map(({ patient, plan }) => ({ patient, sms: plan.find((s) => s.etape.id === id) }))
+                    .filter((l) => l.sms)
+                    .sort((a, b) => a.sms.envoi - b.sms.envoi);
+                  // Un même palier tombe à deux repères selon le schéma du dossier : J-5 si la
+                  // préparation est renforcée, J-3 sinon. On montre les deux plutôt que de trancher.
+                  const reperes = [...new Set(lignes.map(({ patient }) => etape.cle(patient)))].join(' / ');
+                  return (
+                    <section key={id} className={`rounded-2xl border p-4 backdrop-blur-2xl ${apres ? 'border-navy/10 bg-navy/[0.035]' : 'border-navy/[0.07] bg-white/60'}`}>
+                      <div className="border-b border-navy/[0.07] pb-3">
+                        <span className="inline-block rounded-md bg-navy/[0.08] px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-navy">{reperes}</span>
+                        <p className="mt-1.5 text-sm font-bold text-navy">{etape.titre}</p>
+                        <p className="mt-0.5 text-[11px] text-slate-600">{lignes.length} patient{lignes.length > 1 ? 's' : ''}</p>
+                      </div>
+                      <div className="mt-3 space-y-1.5">
+                        {lignes.map(({ patient, sms }) => <Jeton key={patient.id} patient={patient} sms={sms} />)}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
 
         <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[11px] text-slate-600">
           {[['repondu', 'Répondu'], ['incident', 'Répondu avec incident'], ['ouvert', 'Lien ouvert'], ['envoye', 'Délivré, non ouvert'], ['a_envoyer', 'Échu, en attente du scan'], ['planifie', 'Programmé']].map(([k, l]) => {

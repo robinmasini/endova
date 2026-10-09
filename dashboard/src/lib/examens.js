@@ -101,6 +101,33 @@ export const ETAPES = {
     envoi: (p) => jourA(p.examen.date, -1, 18),
     sms: '{cabinet} : votre examen a lieu demain à {heure}. Vérifiez que vous avez vos deux lavements : {lien}',
   },
+  s0: {
+    id: 's0',
+    apres: true,
+    informatif: true,
+    titre: 'Sortie',
+    cle: () => 'J+0 soir',
+    envoi: (p) => new Date(new Date(p.examen.date).getTime() + 8 * HEURE),
+    sms: '{cabinet} : reprise alimentaire légère ce soir. Pas de conduite ni de décision importante avant demain, et quelqu’un auprès de vous cette nuit. Douleur vive, fièvre ou saignement : {tel}. Détail : {lien}',
+  },
+  s2: {
+    id: 's2',
+    apres: true,
+    informatif: true,
+    titre: 'Surveillance',
+    cle: () => 'J+2',
+    envoi: (p) => jourA(p.examen.date, 2, 10),
+    sms: '{cabinet} : avez-vous constaté du sang dans vos selles depuis l’examen ? Même peu abondant, appelez-nous au {tel}. C’est la période où cela peut survenir.',
+  },
+  s7: {
+    id: 's7',
+    apres: true,
+    informatif: true,
+    titre: 'Reprise des traitements & résultats',
+    cle: () => 'J+7',
+    envoi: (p) => jourA(p.examen.date, 7, 10),
+    sms: '{cabinet} : avez-vous bien repris les traitements que vous aviez interrompus, selon la consigne reçue ? En cas de doute : {tel}. Vos résultats vous parviennent sous {delaiResultats}.',
+  },
   lav: {
     id: 'lav',
     titre: 'Lavements',
@@ -122,6 +149,7 @@ export const EXAMENS = {
     purge: true,
     anesthesie: 'AG',
     etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
+    apres: ['s0', 's2', 's7'],
     poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Dépistage — test immunologique positif',
@@ -140,6 +168,7 @@ export const EXAMENS = {
     purge: true,
     anesthesie: 'AG',
     etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
+    apres: ['s0', 's2', 's7'],
     poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Anémie ferriprive',
@@ -155,6 +184,7 @@ export const EXAMENS = {
     purge: false,
     anesthesie: 'AG',
     etapes: ['j7', 'j2', 'g1', 'h2'],
+    apres: ['s0', 's7'],
     poids: { j7: 25, j2: 15, g1: 20, h2: 40 },
     indications: [
       'Épigastralgies, dyspepsie',
@@ -172,6 +202,7 @@ export const EXAMENS = {
     purge: false,
     anesthesie: 'SANS',
     etapes: ['j7', 'j2', 'r1', 'lav'],
+    apres: ['s0'],
     poids: { j7: 25, j2: 10, r1: 10, lav: 55 },
     indications: ['Rectorragies', 'Surveillance de rectite', 'Contrôle d’anastomose'],
   },
@@ -183,6 +214,21 @@ export function etapesDe(patient) {
   const ids = [...ex.etapes];
   if (patient.examen.type === 'RECTO' && ANESTHESIES[patient.examen.anesthesie]?.jeune) ids.push('h2');
   return ids.map((id) => ETAPES[id]);
+}
+
+/**
+ * Les étapes qui suivent l'examen. Le risque ne s'arrête pas au bloc, il y
+ * commence : hémorragie post-polypectomie jusqu'à quatorze jours, reprise de
+ * l'anticoagulant oubliée, conduite reprise trop tôt. Elles sont informatives et
+ * restent hors du score, qui mesure ce qui s'est joué avant.
+ */
+export function etapesApres(patient) {
+  return (EXAMENS[patient.examen.type].apres ?? []).map((id) => ETAPES[id]);
+}
+
+/** Tout l'échéancier, préparation puis suites. Pour les SMS et le calendrier. */
+export function toutesEtapes(patient) {
+  return [...etapesDe(patient), ...etapesApres(patient)];
 }
 
 /** Pondération ramenée à 100 sur les seules étapes de l'examen. */

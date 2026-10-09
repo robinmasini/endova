@@ -55,7 +55,7 @@ function Onglet({ section: { to, fin, label, icone: Icone, compteur }, compteurs
       end={fin}
       className={({ isActive }) =>
         `flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] transition-colors ${
-          isActive ? 'font-semibold text-magenta' : 'font-medium text-slate-600'
+          isActive ? 'font-semibold text-navy' : 'font-medium text-slate-600'
         }`
       }
     >
@@ -118,7 +118,7 @@ export default function Coquille() {
                     className={({ isActive }) =>
                       `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
                         isActive
-                          ? 'bg-magenta/[0.09] font-semibold text-magenta'
+                          ? 'bg-navy/[0.07] font-semibold text-navy'
                           : 'font-medium text-slate-700 hover:bg-navy/[0.04] hover:text-navy'
                       }`
                     }
