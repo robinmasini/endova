@@ -1,7 +1,7 @@
-import { etapesDe, poidsDe, joursAvant } from './examens.js';
+import { etapesDe, poidsDe, joursAvant, schemaConseille, SCHEMAS } from './examens.js';
 import { traitement, comorbidite } from './terrain.js';
 import { PROTOCOLES } from './protocols.js';
-import { anesthesieDe, examenDe } from './patient.js';
+import { anesthesieDe, examenDe, heure } from './patient.js';
 
 /**
  * Index de préparation — « score Endova ».
@@ -105,6 +105,26 @@ export function alertes(patient, maintenant = new Date()) {
       detail: `Terrain : ${ci.map((c) => comorbidite(c).label).join(', ')}.`,
       action: 'Revoir la prescription de préparation et rappeler le patient avec la nouvelle ordonnance',
     });
+  }
+
+  // — Fenêtre de tir. L'ESGE demande que la purge se termine 3 à 5 h avant
+  //   l'endoscopie : au-delà, l'intestin grêle a le temps de re-salir le côlon
+  //   droit, là où se cachent les lésions planes. C'est le schéma qui décide,
+  //   et le schéma dépend de l'heure. Il est proposé à la création du dossier,
+  //   mais rien ne le revérifie si l'heure de l'examen bouge ensuite.
+  if (examenDe(patient).purge && patient.examen.schema && j >= 0) {
+    const conseille = schemaConseille(patient.examen.date);
+    if (patient.examen.schema !== conseille) {
+      const h = heure(patient.examen.date);
+      pousser({
+        code: 'SCHEMA_INADAPTE', ton: 'amber', source: 'dossier',
+        titre: `Schéma « ${SCHEMAS[patient.examen.schema].label} » pour un examen de ${new Date(patient.examen.date).getHours() >= 13 ? 'l’après-midi' : 'la matinée'}`,
+        detail: conseille === 'JOUR_MEME'
+          ? `Examen à ${h}. En fractionné, la première dose tombe la veille à 18 h : plus de vingt heures avant le passage de l'endoscope, le temps qu'il faut au côlon droit pour se re-salir.`
+          : `Examen à ${h}. En jour même, la première dose tomberait neuf heures avant, soit au cœur de la nuit, et la seconde avant l'aube.`,
+        action: `Basculer sur le schéma « ${SCHEMAS[conseille].label} », ou documenter la raison du choix`,
+      });
+    }
   }
 
   // — Déclarations J-7 : traitements.
