@@ -44,6 +44,7 @@ export const SCHEMAS = {
 export const ETAPES = {
   j7: {
     id: 'j7',
+    pourquoi: 'Sept jours, c’est ce qu’il faut pour arrêter le fer et les antiagrégants, retirer l’ordonnance de purge et trouver un accompagnant. Passé J-5, ces décisions ne se rattrapent plus.',
     titre: 'Logistique & traitements',
     cle: () => 'J-7',
     envoi: (p) => jourA(p.examen.date, -7, 10),
@@ -51,6 +52,7 @@ export const ETAPES = {
   },
   j3: {
     id: 'j3',
+    pourquoi: 'L’ESGE demande au moins la veille sans résidu. Le cabinet étend à trois jours, cinq si la préparation est renforcée : constipation, échec antérieur, opiacés.',
     titre: 'Régime sans résidu',
     cle: (p) => (p.examen.renforce ? 'J-5' : 'J-3'),
     envoi: (p) => jourA(p.examen.date, p.examen.renforce ? -5 : -3, 9),
@@ -58,6 +60,7 @@ export const ETAPES = {
   },
   j2: {
     id: 'j2',
+    pourquoi: 'Dernier moment utile : la consultation d’anesthésie doit avoir eu lieu au moins 48 h avant, et un arrêt de traitement oublié se rattrape encore.',
     titre: 'Contrôle des arrêts',
     cle: () => 'J-2',
     envoi: (p) => jourA(p.examen.date, -2, 10),
@@ -65,6 +68,7 @@ export const ETAPES = {
   },
   j1: {
     id: 'j1',
+    pourquoi: 'La dose fractionnée nettoie mieux que la dose unique, en particulier le côlon droit. C’est le point le mieux établi de toute la préparation colique.',
     titre: 'Première fraction de purge',
     cle: (p) => (p.examen.schema === 'JOUR_MEME' ? 'H-9' : 'J-1'),
     envoi: (p) =>
@@ -75,6 +79,7 @@ export const ETAPES = {
   },
   h5: {
     id: 'h5',
+    pourquoi: 'Le contrôle de l’effluent tombe ici parce qu’il reste du temps : à H-5, un lavement de secours ou un décalage en fin de vacation sont encore possibles. À H-2, il n’y a plus de recours.',
     titre: 'Seconde fraction & contrôle',
     cle: () => 'H-5',
     envoi: (p) => new Date(new Date(p.examen.date).getTime() - 5 * HEURE),
@@ -82,6 +87,7 @@ export const ETAPES = {
   },
   h2: {
     id: 'h2',
+    pourquoi: 'Deux heures de jeûne pour les liquides clairs, conformément aux usages d’anesthésie. Le tabac compte aussi : il augmente les sécrétions gastriques.',
     titre: 'Verrou de jeûne',
     cle: () => 'H-2',
     envoi: (p) => new Date(new Date(p.examen.date).getTime() - 2 * HEURE),
@@ -89,6 +95,7 @@ export const ETAPES = {
   },
   g1: {
     id: 'g1',
+    pourquoi: 'Sans purge, le jeûne fait toute la préparation : six heures pour les solides, deux pour les liquides clairs.',
     titre: 'Consignes de jeûne',
     cle: () => 'J-1',
     envoi: (p) => jourA(p.examen.date, -1, 18),
@@ -96,6 +103,7 @@ export const ETAPES = {
   },
   r1: {
     id: 'r1',
+    pourquoi: 'Les lavements se font le matin même. Le SMS de la veille ne sert qu’à vérifier que le patient les a entre les mains.',
     titre: 'Rappel & lavements',
     cle: () => 'J-1',
     envoi: (p) => jourA(p.examen.date, -1, 18),
@@ -103,6 +111,7 @@ export const ETAPES = {
   },
   s0: {
     id: 's0',
+    pourquoi: 'Après sédation, le jugement reste altéré plusieurs heures : pas de conduite, pas de décision engageante, et quelqu’un à la maison la première nuit.',
     apres: true,
     informatif: true,
     titre: 'Sortie',
@@ -112,6 +121,7 @@ export const ETAPES = {
   },
   s2: {
     id: 's2',
+    pourquoi: 'L’hémorragie après polypectomie est le plus souvent différée. Le risque se concentre sur les premiers jours et reste possible jusqu’à deux semaines : le patient est rentré chez lui, et c’est lui qui doit savoir quoi regarder.',
     apres: true,
     informatif: true,
     titre: 'Surveillance',
@@ -121,6 +131,7 @@ export const ETAPES = {
   },
   s7: {
     id: 's7',
+    pourquoi: 'Personne ne vérifie qu’un anticoagulant interrompu a bien été repris. C’est le trou le plus dangereux du parcours, et le seul qui se referme par une simple question.',
     apres: true,
     informatif: true,
     titre: 'Reprise des traitements & résultats',
@@ -130,6 +141,7 @@ export const ETAPES = {
   },
   lav: {
     id: 'lav',
+    pourquoi: 'Trois heures avant : le temps de refaire un lavement si le premier ne ramène pas clair.',
     titre: 'Lavements',
     cle: () => 'H-3',
     envoi: (p) => new Date(new Date(p.examen.date).getTime() - 3 * HEURE),

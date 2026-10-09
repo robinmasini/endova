@@ -71,6 +71,24 @@ function Cabinet() {
   );
 }
 
+/** Une étape du catalogue : son repère, son titre, son poids, et pourquoi elle existe. */
+const DOSSIER_TYPE = { examen: { renforce: false, schema: 'FRACTIONNE' } };
+
+function Palier({ id, points, apres = false }) {
+  const e = ETAPES[id];
+  return (
+    <li className="flex gap-3">
+      <span className={`mt-0.5 w-14 shrink-0 rounded-md px-1.5 py-0.5 text-center text-[10px] font-bold ${apres ? 'bg-navy/[0.06] text-slate-600' : 'bg-navy/[0.08] text-navy'}`}>
+        {e.cle(DOSSIER_TYPE)}
+      </span>
+      <div className="min-w-0">
+        <p className="text-xs font-semibold text-navy">{e.titre} <span className="font-normal text-slate-500">· {points}</span></p>
+        <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">{e.pourquoi}</p>
+      </div>
+    </li>
+  );
+}
+
 export default function Reglages() {
   return (
     <>
@@ -79,7 +97,10 @@ export default function Reglages() {
       <div className="grid gap-4 px-5 pt-6 sm:px-8 xl:grid-cols-2">
         <Cabinet />
 
-        <Bloc titre="Examens et échéanciers" icone={<ListChecks size={14} />} note="Les points de chaque étape composent l’index de préparation sur 100.">
+        <Bloc
+          titre="Examens et échéanciers" icone={<ListChecks size={14} />}
+          note="Chaque étape porte la raison de son existence et de son heure. Ces consignes doivent être relues et validées par le prescripteur avant toute mise en service."
+        >
           <div className="space-y-3">
             {Object.values(EXAMENS).map((ex) => (
               <div key={ex.id} className="rounded-xl border border-navy/[0.07] bg-white/60 p-4">
@@ -87,13 +108,21 @@ export default function Reglages() {
                   <p className="text-sm font-semibold text-navy">{ex.label}</p>
                   <p className="text-[11px] text-slate-600">{ex.purge ? 'Purge colique' : ex.id === 'RECTO' ? 'Lavements' : 'Jeûne seul'} · {ANESTHESIES[ex.anesthesie].label.toLowerCase()} par défaut</p>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {ex.etapes.map((id) => (
-                    <span key={id} className="rounded-lg border border-navy/[0.08] bg-white/80 px-2.5 py-1 text-[11px] text-slate-700">
-                      <span className="font-bold text-navy">{ETAPES[id].cle({ examen: { renforce: false, schema: 'FRACTIONNE' } })}</span> {ETAPES[id].titre} · {ex.poids[id]} pts
-                    </span>
-                  ))}
-                </div>
+
+                <ol className="mt-3 space-y-2.5">
+                  {ex.etapes.map((id) => <Palier key={id} id={id} points={`${ex.poids[id]} pts`} />)}
+                </ol>
+
+                {ex.apres?.length ? (
+                  <div className="mt-3 border-t border-navy/[0.07] pt-3">
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                      Après l’examen · pour information, hors index
+                    </p>
+                    <ol className="space-y-2.5">
+                      {ex.apres.map((id) => <Palier key={id} id={id} points="0 pt" apres />)}
+                    </ol>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
