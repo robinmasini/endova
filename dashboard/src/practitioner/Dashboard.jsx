@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AlertTriangle, ChevronRight, ListChecks, PhoneCall, ShieldCheck, UsersRound, CalendarDays, Send, Plus, Banknote, Settings,
@@ -10,6 +11,7 @@ import { prochainsEnvois, smsEchus } from '../lib/sms.js';
 import { examenDe, heure, jourCourt, nomComplet } from '../lib/patient.js';
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
+import Jalon from '../components/Jalon.jsx';
 
 /** Tuile flottante : elle se détache du fond, la valeur prime sur l'habillage. */
 function Data({ libelle, valeur, unite, detail, ton = 'marque', icone }) {
@@ -77,10 +79,39 @@ function Ligne({ patient, rang }) {
   );
 }
 
+/**
+ * Les dossiers rangés par le repère de l'étape où ils se trouvent.
+ *
+ * Un dossier dont la préparation est close n'a plus d'étape en cours : il
+ * attend le jour J, et c'est son repère. Rien au-delà, l'outil est
+ * préopératoire.
+ */
+function parJalon(patients) {
+  const groupes = new Map();
+  for (const p of patients) {
+    const etape = etapesDe(p).find((e) => !p.etapes[e.id]?.done);
+    const cle = etape ? etape.cle(p) : 'J-J';
+    // Rang : l'écart entre l'envoi du SMS et l'examen, donc négatif. Le plus
+    // lointain passe en premier, le jour J ferme la marche.
+    const rang = etape ? etape.envoi(p) - new Date(p.examen.date) : 0;
+    const g = groupes.get(cle) ?? { cle, rang, patients: [] };
+    g.rang = Math.min(g.rang, rang);
+    g.patients.push(p);
+    groupes.set(cle, g);
+  }
+  for (const g of groupes.values()) {
+    g.patients.sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
+  }
+  return [...groupes.values()].sort((a, b) => a.rang - b.rang);
+}
+
 export default function Dashboard() {
   const { patients, cabinet } = useDossiers();
   const aVenir = patients.filter((p) => joursAvant(p) >= 0);
   const file = fileDAppels(aVenir);
+  const jalons = parJalon(aVenir);
+  const [filtre, setFiltre] = useState(null);
+  const selection = jalons.find((j) => j.cle === filtre)?.patients ?? [];
 
   const duJour = aVenir.filter((p) => joursAvant(p) === 0).sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
   const semaine = aVenir.filter((p) => joursAvant(p) > 0 && joursAvant(p) <= 7).sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
@@ -155,6 +186,37 @@ export default function Dashboard() {
             ton={duJour.length && prets === duJour.length ? 'emerald' : 'amber'} icone={<ShieldCheck size={15} />}
           />
         </div>
+
+        {jalons.length ? (
+          <section className="mt-8">
+            <Titre icone={<ListChecks size={14} />}>Où en sont les patients</Titre>
+            <div className="flex flex-wrap gap-2.5">
+              {jalons.map(({ cle, patients: groupe }) => (
+                <button
+                  key={cle}
+                  type="button"
+                  onClick={() => setFiltre(filtre === cle ? null : cle)}
+                  aria-pressed={filtre === cle}
+                  aria-label={`${cle} — ${groupe.length} patient${groupe.length > 1 ? 's' : ''}`}
+                  className="rounded-full transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40"
+                >
+                  <Jalon taille="m" ton={filtre === cle ? 'plein' : 'clair'}>{cle}</Jalon>
+                </button>
+              ))}
+            </div>
+            {filtre ? (
+              <div className="mt-4 rise">
+                <p className="mb-2.5 text-[11px] text-slate-600">
+                  {selection.length} patient{selection.length > 1 ? 's' : ''}{' '}
+                  {filtre === 'J-J' ? 'dont la préparation est close, en attente de l’examen' : `à l’étape ${filtre}`}
+                </p>
+                <div className="space-y-2">{selection.map((p) => <Ligne key={p.id} patient={p} />)}</div>
+              </div>
+            ) : (
+              <p className="mt-3 text-[11px] text-slate-500">Touchez un jalon pour voir les patients qui s’y trouvent.</p>
+            )}
+          </section>
+        ) : null}
 
         <section className="mt-8">
           <Titre
