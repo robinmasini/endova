@@ -131,7 +131,7 @@ export const ETAPES = {
       ],
       question: {
         cle: 'arretAcide',
-        titre: 'Avez-vous arrêté votre traitement anti-acide ?',
+        titre: 'Avez-vous arrêté ce traitement ?',
         oui: 'Oui, je l’ai arrêté',
         non: 'Non, je le prends encore',
         nonDetail: 'Dites-le maintenant : l’examen devra probablement être décalé.',
@@ -154,7 +154,7 @@ export const ETAPES = {
       ],
       question: {
         cle: 'arretAcide',
-        titre: 'Avez-vous arrêté votre traitement anti-acide ?',
+        titre: 'Avez-vous arrêté ce traitement ?',
         oui: 'Oui, je l’ai arrêté',
         non: 'Non, je le prends encore',
         nonDetail: 'Le test serait ininterprétable : appelez-nous pour le décaler.',
@@ -177,7 +177,7 @@ export const ETAPES = {
       ],
       question: {
         cle: 'sansAntibiotique',
-        titre: 'Avez-vous pris un antibiotique depuis quatre semaines ?',
+        titre: 'Un antibiotique depuis un mois ?',
         oui: 'Non, aucun',
         non: 'Oui, j’en ai pris',
         nonDetail: 'Indiquez-le : le test devra être repoussé pour rester fiable.',
@@ -201,7 +201,7 @@ export const ETAPES = {
       ],
       question: {
         cle: 'preparationPrise',
-        titre: 'Avez-vous pris la préparation hier soir ?',
+        titre: 'La préparation d’hier soir',
         oui: 'Oui, en entier',
         non: 'Non, ou seulement en partie',
         nonDetail: 'Le grêle risque d’être illisible : appelez-nous avant de venir.',
