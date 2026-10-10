@@ -13,19 +13,45 @@ import { smsEchus } from './sms.js';
 // v3 : dossier structuré, SMS délivrés par le scan (événements `sms_envoye`).
 // Les données v1 ne se convertissent pas proprement : on repart du jeu de démo.
 const CLE = 'endova.dossiers.v3';
+// Numéro de la graine : à incrémenter dès que `semer()` change de contenu.
+const GRAINE = 2;
 const canal = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('endova') : null;
 
 let etat = charger();
 const abonnes = new Set();
 
 function neuf() {
-  return { patients: semer(), cabinet: structuredClone(CABINET_SEED) };
+  return { patients: semer(), cabinet: structuredClone(CABINET_SEED), graine: GRAINE };
+}
+
+/**
+ * Le jeu de démonstration est daté par rapport au jour où il a été semé. Une
+ * fois enregistré dans le navigateur il ne bouge plus : quelques jours plus
+ * tard tous ses examens sont passés, et le tableau de bord — qui ne montre que
+ * ce qui est à venir — se vide entièrement. On le resème donc quand il a
+ * vieilli, ou quand la graine a changé de contenu.
+ *
+ * Une seule réserve, mais elle est absolue : si le cabinet a créé le moindre
+ * dossier, on ne touche à rien. Mieux vaut une démonstration périmée qu'un
+ * jeu de faux patients réinjecté dans de vraies données.
+ */
+function rafraichir(etat) {
+  const frais = semer();
+  const demo = new Set(frais.map((p) => p.id));
+  const patients = etat.patients ?? [];
+  if (patients.some((p) => !demo.has(p.id))) return etat;
+
+  const perime = etat.graine !== GRAINE
+    || (patients.length > 0 && patients.every((p) => new Date(p.examen.date) < new Date()));
+  if (!perime) return etat;
+
+  return { patients: frais, cabinet: etat.cabinet ?? structuredClone(CABINET_SEED), graine: GRAINE };
 }
 
 function charger() {
   try {
     const brut = localStorage.getItem(CLE);
-    if (brut) return JSON.parse(brut);
+    if (brut) return rafraichir(JSON.parse(brut));
   } catch {
     // Mode privé ou stockage bloqué : on repart du jeu de démonstration.
   }
