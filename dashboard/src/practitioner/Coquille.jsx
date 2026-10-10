@@ -14,7 +14,7 @@ const GROUPES = [
     titre: 'Suivi',
     sections: [
       { to: '/', fin: true, label: 'Accueil', complet: 'Tableau de bord', icone: LayoutDashboard, mobile: 0 },
-      { to: '/rappels', label: 'Rappels', complet: 'À rappeler', icone: PhoneCall, compteur: 'rappels', mobile: 1 },
+      { to: '/rappels', label: 'Rappels', complet: 'Alertes', icone: PhoneCall, compteur: 'rappels', mobile: 1 },
       { to: '/vacations', label: 'Vacations', complet: 'Vacations', icone: CalendarDays },
     ],
   },

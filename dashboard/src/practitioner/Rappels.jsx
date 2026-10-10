@@ -31,7 +31,7 @@ export default function Rappels() {
   return (
     <>
       <EnTete
-        titre="À rappeler"
+        titre="Alertes"
         question="Un patient, un appel : tous ses motifs regroupés, et la phrase à lui dire. Une alerte traitée sort de la file."
       />
       <div className="px-5 pt-6 sm:px-8">

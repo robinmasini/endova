@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  AlertTriangle, ChevronRight, ListChecks, PhoneCall, ShieldCheck, UsersRound, CalendarDays, Send, Plus, Banknote, Settings,
+  AlertTriangle, ChevronRight, ListChecks, ShieldCheck, UsersRound, CalendarDays, Send, Plus, Banknote, Settings,
 } from '../components/icones.js';
 import { useDossiers } from '../lib/store.js';
-import FileRappels, { fileDAppels } from './FileRappels.jsx';
 import { calculerScore, statutRisque, alertesActives } from '../lib/score.js';
 import { etapesDe, joursAvant } from '../lib/examens.js';
 import { prochainsEnvois, smsEchus } from '../lib/sms.js';
@@ -13,11 +12,24 @@ import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
 import Jalon from '../components/Jalon.jsx';
 
-/** Tuile flottante : elle se détache du fond, la valeur prime sur l'habillage. */
-function Data({ libelle, valeur, unite, detail, ton = 'marque', icone }) {
+/**
+ * Tuile de tête. Elle montre un chiffre et, quand elle en porte un, filtre la
+ * liste sur les dossiers qu'elle compte. Une tuile d'alerte se teinte de rouge :
+ * c'est la seule du tableau qu'on ne doit pas pouvoir ne pas voir.
+ */
+function Data({ libelle, valeur, unite, detail, ton = 'marque', icone, onClick, actif }) {
   const t = TONS[ton];
+  const alerte = ton === 'ruby';
+  const Balise = onClick ? 'button' : 'div';
+  const peau = alerte
+    ? 'border-rose-300 bg-rose-50/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_16px_36px_-10px_rgba(190,18,60,0.26)]'
+    : 'border-white/70 bg-white/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.95),0_2px_4px_0_rgba(5,28,78,0.04),0_16px_36px_-10px_rgba(5,28,78,0.14)]';
+  const marque = actif ? (alerte ? 'ring-2 ring-rose-500/70' : 'ring-2 ring-navy/45') : '';
   return (
-    <div className="relative rounded-2xl border border-white/70 bg-white/70 p-5 backdrop-blur-2xl backdrop-saturate-[180%] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.95),0_2px_4px_0_rgba(5,28,78,0.04),0_16px_36px_-10px_rgba(5,28,78,0.14)] transition-transform duration-300 hover:-translate-y-0.5">
+    <Balise
+      {...(onClick ? { type: 'button', onClick, 'aria-pressed': actif } : {})}
+      className={`relative w-full rounded-2xl border p-5 text-left backdrop-blur-2xl backdrop-saturate-[180%] transition-all duration-300 ${peau} ${marque} ${onClick ? 'hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40' : ''}`}
+    >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">{libelle}</p>
         <span className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${t.fond} ${t.texte}`}>
@@ -31,7 +43,7 @@ function Data({ libelle, valeur, unite, detail, ton = 'marque', icone }) {
         {unite ? <span className="text-xs font-medium text-slate-600">{unite}</span> : null}
       </p>
       <p className="mt-1.5 text-[11px] leading-relaxed text-slate-600">{detail}</p>
-    </div>
+    </Balise>
   );
 }
 
@@ -108,10 +120,15 @@ function parJalon(patients) {
 export default function Dashboard() {
   const { patients, cabinet } = useDossiers();
   const aVenir = patients.filter((p) => joursAvant(p) >= 0);
-  const file = fileDAppels(aVenir);
   const jalons = parJalon(aVenir);
   const [filtre, setFiltre] = useState(null);
-  const selection = jalons.find((j) => j.cle === filtre)?.patients ?? [];
+
+  // Un dossier est « actif » quand son examen est dans les quatorze jours.
+  // Au-delà, l'échéancier a commencé mais rien ne se joue encore.
+  const actifs = aVenir.filter((p) => joursAvant(p) <= 14);
+  const enAlerte = aVenir.filter((p) => alertesActives(p).length > 0);
+
+  const basculer = (cle) => setFiltre(filtre === cle ? null : cle);
 
   const duJour = aVenir.filter((p) => joursAvant(p) === 0).sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
   const semaine = aVenir.filter((p) => joursAvant(p) > 0 && joursAvant(p) <= 7).sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
@@ -139,6 +156,17 @@ export default function Dashboard() {
   const aDeplacer = conseille.filter((p, i) => p.id !== duJour[i].id).length;
   const interceptes = aVenir.filter((p) => alertesActives(p).some((a) => a.ton === 'ruby')).length;
 
+  // Les vues du tableau : chaque tuile et chaque jalon désigne une liste.
+  const VUES = {
+    actifs: { libelle: 'en préparation active — examen dans les quatorze jours', liste: actifs },
+    alertes: { libelle: 'en alerte', liste: enAlerte },
+    jour: { libelle: 'dont l’examen a lieu aujourd’hui', liste: duJour },
+  };
+  const vue = filtre?.startsWith('jalon:')
+    ? { libelle: `à l’étape ${filtre.slice(6)}`, liste: jalons.find((j) => j.cle === filtre.slice(6))?.patients ?? [] }
+    : VUES[filtre] ?? { libelle: 'au total', liste: aVenir };
+  const selection = [...vue.liste].sort((a, b) => new Date(a.examen.date) - new Date(b.examen.date));
+
   return (
     <>
       <EnTete
@@ -165,14 +193,16 @@ export default function Dashboard() {
         ) : null}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Data
-            libelle="Préparations en cours" valeur={enCours} unite={`/ ${aVenir.length}`}
-            detail="Patients dont l’échéancier SMS n’est pas terminé"
+            libelle="Préparations en cours" valeur={actifs.length} unite={`/ ${aVenir.length}`}
+            detail="Examen dans les quatorze jours"
             icone={<UsersRound size={15} />}
+            onClick={() => basculer('actifs')} actif={filtre === 'actifs'}
           />
           <Data
-            libelle="À rappeler" valeur={file.length}
-            detail={file.length ? 'Un appel par patient, motifs regroupés' : 'Aucun écart en attente'}
-            ton={file.length ? 'ruby' : 'emerald'} icone={<PhoneCall size={15} />}
+            libelle="Alertes" valeur={enAlerte.length}
+            detail={enAlerte.length ? 'Dossiers à reprendre avant l’examen' : 'Aucun écart en attente'}
+            ton={enAlerte.length ? 'ruby' : 'emerald'} icone={<AlertTriangle size={15} />}
+            onClick={() => basculer('alertes')} actif={filtre === 'alertes'}
           />
           <Data
             libelle="Conformité des déclarations" valeur={conformite ?? '—'} unite={conformite === null ? '' : '%'}
@@ -184,49 +214,48 @@ export default function Dashboard() {
             libelle="Vacation du jour" valeur={`${prets}/${duJour.length}`}
             detail="Patients prêts pour leur examen aujourd’hui"
             ton={duJour.length && prets === duJour.length ? 'emerald' : 'amber'} icone={<ShieldCheck size={15} />}
+            onClick={duJour.length ? () => basculer('jour') : undefined} actif={filtre === 'jour'}
           />
         </div>
 
-        {jalons.length ? (
-          <section className="mt-8">
-            <Titre icone={<ListChecks size={14} />}>Où en sont les patients</Titre>
+        <section className="mt-8">
+          <Titre
+            icone={<ListChecks size={14} />}
+            action={filtre ? (
+              <button type="button" onClick={() => setFiltre(null)} className="text-[11px] font-medium text-navy hover:underline">
+                Tout afficher
+              </button>
+            ) : null}
+          >
+            Où en sont les patients
+          </Titre>
+
+          {jalons.length ? (
             <div className="flex flex-wrap gap-2.5">
               {jalons.map(({ cle, patients: groupe }) => (
                 <button
                   key={cle}
                   type="button"
-                  onClick={() => setFiltre(filtre === cle ? null : cle)}
-                  aria-pressed={filtre === cle}
+                  onClick={() => basculer(`jalon:${cle}`)}
+                  aria-pressed={filtre === `jalon:${cle}`}
                   aria-label={`${cle} — ${groupe.length} patient${groupe.length > 1 ? 's' : ''}`}
                   className="rounded-full transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40"
                 >
-                  <Jalon taille="m" ton={filtre === cle ? 'plein' : 'clair'}>{cle}</Jalon>
+                  <Jalon taille="m" ton={filtre === `jalon:${cle}` ? 'plein' : 'clair'}>{cle}</Jalon>
                 </button>
               ))}
             </div>
-            {filtre ? (
-              <div className="mt-4 rise">
-                <p className="mb-2.5 text-[11px] text-slate-600">
-                  {selection.length} patient{selection.length > 1 ? 's' : ''}{' '}
-                  {filtre === 'J-J' ? 'dont la préparation est close, en attente de l’examen' : `à l’étape ${filtre}`}
-                </p>
-                <div className="space-y-2">{selection.map((p) => <Ligne key={p.id} patient={p} />)}</div>
-              </div>
-            ) : (
-              <p className="mt-3 text-[11px] text-slate-500">Touchez un jalon pour voir les patients qui s’y trouvent.</p>
-            )}
-          </section>
-        ) : null}
+          ) : null}
 
-        <section className="mt-8">
-          <Titre
-            icone={<PhoneCall size={14} />}
-            action={file.length > 3 ? <Link to="/rappels" className="text-[11px] font-medium text-navy hover:underline">Voir les {file.length} rappels →</Link> : null}
-          >
-            À rappeler
-            {file.length ? <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white">{file.length}</span> : null}
-          </Titre>
-          <FileRappels file={file.slice(0, 3)} />
+          <p className="mt-4 mb-2.5 text-[11px] text-slate-600">
+            {selection.length} patient{selection.length > 1 ? 's' : ''}{' '}
+            {filtre === 'jalon:J-J' ? 'dont la préparation est close, en attente de l’examen' : vue.libelle}
+          </p>
+          {selection.length ? (
+            <div className="space-y-2 rise">{selection.map((p) => <Ligne key={p.id} patient={p} />)}</div>
+          ) : (
+            <p className="rounded-xl border border-navy/[0.07] bg-white/60 p-5 text-sm text-slate-600">Aucun dossier dans cette vue.</p>
+          )}
         </section>
 
         <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_24rem]">
