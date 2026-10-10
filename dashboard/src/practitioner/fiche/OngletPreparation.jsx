@@ -6,10 +6,11 @@ import SchemaDigestif from '../../components/SchemaDigestif.jsx';
 import { AnneauScore, TONS } from '../../components/ui.jsx';
 import { store } from '../../lib/store.js';
 import { calculerScore, statutRisque, alertes } from '../../lib/score.js';
-import { etapesDe, etapesApres } from '../../lib/examens.js';
+import { etapesDe } from '../../lib/examens.js';
 import { resume, lignes } from '../../lib/declarations.js';
 import { examenDe, horodatage } from '../../lib/patient.js';
 import { Carte, Pastille, BoutonDiscret } from './elements.jsx';
+import Jalon from '../../components/Jalon.jsx';
 
 const ICONE = { emerald: CheckCircle2, amber: AlertTriangle, ruby: XCircle, neutre: Circle, marque: Circle };
 const SOURCE = { patient: 'Déclaré par le patient', dossier: 'Terrain du dossier', cabinet: 'Suivi du cabinet', sms: 'Suivi SMS' };
@@ -128,7 +129,7 @@ export default function OngletPreparation({ patient }) {
             <div className="min-w-0 flex-1 space-y-2">
               {etapes.map((e) => (
                 <div key={e.id} className="flex items-center gap-2.5">
-                  <span className="w-9 shrink-0 text-[10px] font-bold uppercase text-slate-600">{e.cle(patient)}</span>
+                  <Jalon taille="xs" ton="sourd" className="w-[4.6rem] justify-start">{e.cle(patient)}</Jalon>
                   <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-navy/[0.07]">
                     <span
                       className={`block h-full rounded-full transition-all duration-500 ${detail[e.id] === poids[e.id] ? 'bg-emerald-500' : detail[e.id] > 0 ? 'bg-amber-500' : 'bg-transparent'}`}
@@ -165,8 +166,8 @@ export default function OngletPreparation({ patient }) {
                     <div className="flex min-w-0 items-center gap-3">
                       <Icone size={17} className={`shrink-0 ${TONS[r.ton].texte}`} />
                       <div className="min-w-0">
-                        <p className="truncate text-sm text-navy">
-                          <span className="font-bold">{e.cle(patient)}</span> — {e.titre}
+                        <p className="flex items-center gap-2 truncate text-sm text-navy">
+                          <Jalon taille="xs">{e.cle(patient)}</Jalon> {e.titre}
                         </p>
                         <p className="text-[11px] text-slate-500">
                           {d?.at ? `Répondu le ${horodatage(d.at)}` : `${envoi > new Date() ? 'SMS prévu le' : 'SMS envoyé le'} ${horodatage(envoi)}`}
@@ -188,31 +189,21 @@ export default function OngletPreparation({ patient }) {
                 </li>
               );
             })}
-            {/* Le jour J n'arrête pas le suivi : il le fait basculer de la préparation vers les suites. */}
+            {/* Le jour J referme l'échéancier : Endova est un outil préopératoire,
+                il passe la main à l'équipe d'endoscopie. */}
             <li className="flex items-center gap-3 rounded-xl border border-navy/20 bg-navy/[0.04] p-3.5">
-              <span className="flex size-[17px] shrink-0 items-center justify-center rounded-full bg-navy text-[8px] font-bold text-white">J</span>
+              <Jalon taille="xs" ton="plein">J-J</Jalon>
               <div className="min-w-0">
-                <p className="truncate text-sm text-navy"><span className="font-bold">Jour J</span> — {examenDe(patient).label}</p>
-                <p className="text-[11px] text-slate-500">{horodatage(patient.examen.date)} · {patient.examen.lieu}. La préparation s’arrête ici, le suivi continue.</p>
+                <p className="truncate text-sm font-semibold text-navy">{examenDe(patient).label}</p>
+                <p className="text-[11px] text-slate-500">{horodatage(patient.examen.date)} · {patient.examen.lieu}. Fin du suivi Endova.</p>
               </div>
             </li>
-
-            {/* Les suites : SMS informatifs, sans réponse attendue, donc hors index de préparation. */}
-            {etapesApres(patient).map((e) => (
-              <li key={e.id} className="flex items-center gap-3 rounded-xl border border-dashed border-navy/15 bg-white/40 p-3.5">
-                <Clock size={17} className="shrink-0 text-slate-400" />
-                <div className="min-w-0">
-                  <p className="truncate text-sm text-navy"><span className="font-bold">{e.cle(patient)}</span> — {e.titre}</p>
-                  <p className="text-[11px] text-slate-500">SMS prévu le {horodatage(e.envoi(patient))} · pour information, sans réponse attendue</p>
-                </div>
-              </li>
-            ))}
           </ol>
         </Carte>
       </div>
 
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-5">
-        {examenDe(patient).purge ? (
+        {examenDe(patient).projection ? (
           <Carte titre="Projection anatomique">
             <SchemaDigestif patient={patient} />
           </Carte>

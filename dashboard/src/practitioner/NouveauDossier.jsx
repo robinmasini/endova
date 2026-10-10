@@ -135,7 +135,7 @@ export default function NouveauDossier() {
 
   const a = f.identite.naissance ? age(brouillon) : 0;
   const ci = ex.purge ? PROTOCOLES[f.examen.protocole].contreIndications.filter((c) => f.terrain.comorbidites.includes(c)) : [];
-  const conseilRenforce = ex.purge && !f.examen.renforce && renforceConseille(brouillon, a);
+  const conseilRenforce = ex.fractions && !f.examen.renforce && renforceConseille(brouillon, a);
 
   function choisirExamen(type) {
     const e = EXAMENS[type];
@@ -216,7 +216,7 @@ export default function NouveauDossier() {
           <Carte titre="Examen prescrit" icone={<Stethoscope size={14} />}>
             <div className="grid gap-2 sm:grid-cols-4">
               {Object.values(EXAMENS).map((e) => (
-                <Choix key={e.id} actif={f.examen.type === e.id} onClick={() => choisirExamen(e.id)} detail={e.purge ? 'Avec purge' : e.id === 'RECTO' ? 'Lavements' : 'Jeûne seul'}>
+                <Choix key={e.id} actif={f.examen.type === e.id} onClick={() => choisirExamen(e.id)} detail={e.preparation}>
                   {e.label}
                 </Choix>
               ))}
@@ -256,25 +256,29 @@ export default function NouveauDossier() {
 
             {ex.purge ? (
               <div className="mt-5 border-t border-navy/[0.07] pt-5">
-                <p className="mb-2.5 text-xs font-medium text-slate-700">Préparation colique</p>
+                <p className="mb-2.5 text-xs font-medium text-slate-700">Préparation prescrite</p>
                 <div className="grid gap-2 sm:grid-cols-4">
                   {Object.values(PROTOCOLES).map((p) => (
                     <Choix key={p.id} actif={f.examen.protocole === p.id} onClick={() => maj('examen', { protocole: p.id })} detail={p.famille}>{p.nom}</Choix>
                   ))}
                 </div>
-                <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                  {Object.values(SCHEMAS).map((s) => (
-                    <Choix key={s.id} actif={f.examen.schema === s.id} onClick={() => maj('examen', { schema: s.id })} detail={s.detail}>{s.label}</Choix>
-                  ))}
-                </div>
-                <div className="mt-4">
-                  <Case
-                    actif={f.examen.renforce}
-                    onClick={() => maj('examen', { renforce: !f.examen.renforce })}
-                    titre="Préparation renforcée"
-                    detail="Régime sans résidu sur 5 jours au lieu de 3, pour les patients à risque de préparation insuffisante."
-                  />
-                </div>
+                {ex.fractions ? (
+                  <>
+                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                      {Object.values(SCHEMAS).map((s) => (
+                        <Choix key={s.id} actif={f.examen.schema === s.id} onClick={() => maj('examen', { schema: s.id })} detail={s.detail}>{s.label}</Choix>
+                      ))}
+                    </div>
+                    <div className="mt-4">
+                      <Case
+                        actif={f.examen.renforce}
+                        onClick={() => maj('examen', { renforce: !f.examen.renforce })}
+                        titre="Préparation renforcée"
+                        detail="Régime sans résidu sur 5 jours au lieu de 3, pour les patients à risque de préparation insuffisante."
+                      />
+                    </div>
+                  </>
+                ) : null}
               </div>
             ) : null}
           </Carte>

@@ -1,6 +1,10 @@
 /**
  * Types d'examen pris en charge par le cabinet, et l'échéancier propre à chacun.
  *
+ * RÈGLE : Endova est un outil préopératoire. L'échéancier court de J-28 au plus
+ * tôt jusqu'au jour J, et s'arrête là. Aucune étape ne porte de repère au-delà :
+ * ce qui suit l'examen appartient à l'équipe d'endoscopie, pas à cet outil.
+ *
  * Une gastroscopie ne se prépare pas comme une coloscopie : pas de purge, pas de
  * régime, mais un jeûne strict et des traitements à surveiller (GLP-1, SGLT2).
  * Une rectosigmoïdoscopie se prépare par lavements, souvent sans anesthésie.
@@ -109,36 +113,104 @@ export const ETAPES = {
     envoi: (p) => jourA(p.examen.date, -1, 18),
     sms: '{cabinet} : votre examen a lieu demain à {heure}. Vérifiez que vous avez vos deux lavements : {lien}',
   },
-  s0: {
-    id: 's0',
-    pourquoi: 'Après sédation, le jugement reste altéré plusieurs heures : pas de conduite, pas de décision engageante, et quelqu’un à la maison la première nuit.',
-    apres: true,
-    informatif: true,
-    titre: 'Sortie',
-    cle: () => 'J+0 soir',
-    envoi: (p) => new Date(new Date(p.examen.date).getTime() + 8 * HEURE),
-    sms: '{cabinet} : reprise alimentaire légère ce soir. Pas de conduite ni de décision importante avant demain, et quelqu’un auprès de vous cette nuit. Douleur vive, fièvre ou saignement : {tel}. Détail : {lien}',
+  // — Fenêtres de sevrage. Certains examens ne mesurent rien si un traitement
+  //   court encore : ce n'est pas une précaution, c'est la condition du résultat.
+  ipp7: {
+    id: 'ipp7',
+    pourquoi: 'Une pH-métrie sous inhibiteur de la pompe à protons mesure le médicament, pas la maladie. Le délai admis est de sept jours ; trois pour les anti-H2, vingt-quatre heures pour les pansements.',
+    titre: 'Arrêt des anti-acides',
+    cle: () => 'J-7',
+    envoi: (p) => jourA(p.examen.date, -7, 10),
+    sms: '{cabinet} : votre examen a lieu le {date}. À partir d’aujourd’hui, arrêtez votre traitement anti-acide — sinon la mesure sera ininterprétable. Détail : {lien}',
+    consigne: {
+      points: [
+        ['Pill', 'Arrêtez les IPP dès aujourd’hui', 'Oméprazole, ésoméprazole, pantoprazole, lansoprazole, rabéprazole — tout nom finissant par « -prazole ».'],
+        ['Clock', 'Anti-H2 : trois jours avant', 'Ranitidine, famotidine, cimétidine.'],
+        ['GlassWater', 'Pansements et alginates : la veille', 'Gaviscon, Maalox, Phosphalugel — autorisés jusqu’à vingt-quatre heures avant.'],
+        ['AlertTriangle', 'Les brûlures vont revenir', 'C’est attendu, et c’est précisément ce que l’examen doit enregistrer. Si elles deviennent insupportables, appelez le cabinet plutôt que de reprendre le traitement.'],
+      ],
+      question: {
+        cle: 'arretAcide',
+        titre: 'Avez-vous arrêté votre traitement anti-acide ?',
+        oui: 'Oui, je l’ai arrêté',
+        non: 'Non, je le prends encore',
+        nonDetail: 'Dites-le maintenant : l’examen devra probablement être décalé.',
+      },
+      engagement: 'J’ai lu les délais d’arrêt et je les respecte.',
+    },
   },
-  s2: {
-    id: 's2',
-    pourquoi: 'L’hémorragie après polypectomie est le plus souvent différée. Le risque se concentre sur les premiers jours et reste possible jusqu’à deux semaines : le patient est rentré chez lui, et c’est lui qui doit savoir quoi regarder.',
-    apres: true,
-    informatif: true,
-    titre: 'Surveillance',
-    cle: () => 'J+2',
-    envoi: (p) => jourA(p.examen.date, 2, 10),
-    sms: '{cabinet} : avez-vous constaté du sang dans vos selles depuis l’examen ? Même peu abondant, appelez-nous au {tel}. C’est la période où cela peut survenir.',
+  ipp14: {
+    id: 'ipp14',
+    pourquoi: 'Un inhibiteur de la pompe à protons fait disparaître Helicobacter pylori du test sans l’éradiquer : le résultat revient négatif à tort. Le délai admis est de deux semaines.',
+    titre: 'Arrêt des anti-acides',
+    cle: () => 'J-14',
+    envoi: (p) => jourA(p.examen.date, -14, 10),
+    sms: '{cabinet} : votre test respiratoire a lieu le {date}. Arrêtez dès aujourd’hui tout traitement anti-acide, sans quoi le test serait faussement négatif. Détail : {lien}',
+    consigne: {
+      points: [
+        ['Pill', 'Arrêtez les IPP dès aujourd’hui', 'Tout nom finissant par « -prazole ». Deux semaines sans, c’est la condition d’un test fiable.'],
+        ['GlassWater', 'Pansements et alginates autorisés', 'Gaviscon, Maalox : ils ne faussent pas le test.'],
+        ['AlertTriangle', 'Un test faussement négatif se paie plus tard', 'Une bactérie déclarée absente ne sera pas traitée, et continuera son travail sur la muqueuse.'],
+      ],
+      question: {
+        cle: 'arretAcide',
+        titre: 'Avez-vous arrêté votre traitement anti-acide ?',
+        oui: 'Oui, je l’ai arrêté',
+        non: 'Non, je le prends encore',
+        nonDetail: 'Le test serait ininterprétable : appelez-nous pour le décaler.',
+      },
+      engagement: 'J’ai compris que le test est faux si je reprends ce traitement.',
+    },
   },
-  s7: {
-    id: 's7',
-    pourquoi: 'Personne ne vérifie qu’un anticoagulant interrompu a bien été repris. C’est le trou le plus dangereux du parcours, et le seul qui se referme par une simple question.',
-    apres: true,
-    informatif: true,
-    titre: 'Reprise des traitements & résultats',
-    cle: () => 'J+7',
-    envoi: (p) => jourA(p.examen.date, 7, 10),
-    sms: '{cabinet} : avez-vous bien repris les traitements que vous aviez interrompus, selon la consigne reçue ? En cas de doute : {tel}. Vos résultats vous parviennent sous {delaiResultats}.',
+  atb28: {
+    id: 'atb28',
+    pourquoi: 'Un antibiotique ou un sel de bismuth, même pris pour autre chose, suffit à rendre le test négatif sans éradiquer la bactérie. Le délai admis est de quatre semaines.',
+    titre: 'Arrêt des antibiotiques',
+    cle: () => 'J-28',
+    envoi: (p) => jourA(p.examen.date, -28, 10),
+    sms: '{cabinet} : votre test respiratoire est prévu le {date}. Aucun antibiotique ni sel de bismuth d’ici là — même prescrit pour autre chose. Détail : {lien}',
+    consigne: {
+      points: [
+        ['Pill', 'Aucun antibiotique pendant quatre semaines', 'Pour une angine, une cystite, une dent : prévenez-nous avant de commencer, le test sera décalé.'],
+        ['Pill', 'Ni sel de bismuth', 'Pylera et apparentés.'],
+        ['Info', 'Les autres traitements continuent', 'Sauf avis contraire de votre médecin, le reste de vos médicaments ne change pas.'],
+      ],
+      question: {
+        cle: 'sansAntibiotique',
+        titre: 'Avez-vous pris un antibiotique depuis quatre semaines ?',
+        oui: 'Non, aucun',
+        non: 'Oui, j’en ai pris',
+        nonDetail: 'Indiquez-le : le test devra être repoussé pour rester fiable.',
+      },
+      engagement: 'Je préviendrai le cabinet si un antibiotique m’est prescrit d’ici l’examen.',
+    },
   },
+  vc1: {
+    id: 'vc1',
+    pourquoi: 'La capsule n’a pas de canal de lavage : ce qu’elle rencontre, elle le photographie. Une purge la veille est le seul moyen de dégager la muqueuse du grêle.',
+    titre: 'Préparation de la veille',
+    cle: () => 'J-1',
+    envoi: (p) => jourA(p.examen.date, -1, 12),
+    sms: '{cabinet} : à partir de midi, liquides clairs uniquement, puis la préparation ce soir. À jeun à partir de minuit. Le détail est ici : {lien}',
+    consigne: {
+      points: [
+        ['Salad', 'Liquides clairs à partir de midi', 'Eau, bouillon filtré, thé ou café sans lait, jus sans pulpe. Rien de coloré en rouge ou violet.'],
+        ['GlassWater', 'La préparation prescrite, ce soir', 'Buvez-la lentement, en suivant l’ordonnance remise par le cabinet.'],
+        ['Clock', 'À jeun à partir de minuit', 'Plus rien, pas même de l’eau, jusqu’à l’ingestion de la capsule.'],
+        ['Info', 'Après l’ingestion, au cabinet', 'Vous pourrez boire deux heures après, et prendre un repas léger quatre heures après. Gardez l’enregistreur allumé et sur vous.'],
+      ],
+      question: {
+        cle: 'preparationPrise',
+        titre: 'Avez-vous pris la préparation hier soir ?',
+        oui: 'Oui, en entier',
+        non: 'Non, ou seulement en partie',
+        nonDetail: 'Le grêle risque d’être illisible : appelez-nous avant de venir.',
+      },
+      engagement: 'J’ai compris que je dois être à jeun depuis minuit.',
+    },
+  },
+
+  // — Suites propres à certains gestes.
   lav: {
     id: 'lav',
     pourquoi: 'Trois heures avant : le temps de refaire un lavement si le premier ne ramène pas clair.',
@@ -158,10 +230,12 @@ export const EXAMENS = {
     id: 'COLO',
     label: 'Coloscopie',
     article: 'votre coloscopie',
+    preparation: 'Purge colique',
     purge: true,
+    fractions: true,
+    projection: true,
     anesthesie: 'AG',
     etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
-    apres: ['s0', 's2', 's7'],
     poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Dépistage — test immunologique positif',
@@ -177,10 +251,12 @@ export const EXAMENS = {
     id: 'COLO_GASTRO',
     label: 'Coloscopie + gastroscopie',
     article: 'votre coloscopie et gastroscopie',
+    preparation: 'Purge colique',
     purge: true,
+    fractions: true,
+    projection: true,
     anesthesie: 'AG',
     etapes: ['j7', 'j3', 'j2', 'j1', 'h5', 'h2'],
-    apres: ['s0', 's2', 's7'],
     poids: { j7: 12, j3: 13, j2: 10, j1: 25, h5: 22, h2: 18 },
     indications: [
       'Anémie ferriprive',
@@ -193,10 +269,10 @@ export const EXAMENS = {
     id: 'GASTRO',
     label: 'Gastroscopie',
     article: 'votre gastroscopie',
+    preparation: 'Jeûne seul',
     purge: false,
     anesthesie: 'AG',
     etapes: ['j7', 'j2', 'g1', 'h2'],
-    apres: ['s0', 's7'],
     poids: { j7: 25, j2: 15, g1: 20, h2: 40 },
     indications: [
       'Épigastralgies, dyspepsie',
@@ -211,12 +287,101 @@ export const EXAMENS = {
     id: 'RECTO',
     label: 'Rectosigmoïdoscopie',
     article: 'votre rectosigmoïdoscopie',
+    preparation: 'Lavements',
     purge: false,
     anesthesie: 'SANS',
     etapes: ['j7', 'j2', 'r1', 'lav'],
-    apres: ['s0'],
     poids: { j7: 25, j2: 10, r1: 10, lav: 55 },
     indications: ['Rectorragies', 'Surveillance de rectite', 'Contrôle d’anastomose'],
+  },
+  EUS: {
+    id: 'EUS',
+    label: 'Écho-endoscopie',
+    article: 'votre écho-endoscopie',
+    preparation: 'Jeûne seul',
+    purge: false,
+    anesthesie: 'AG',
+    etapes: ['j7', 'j2', 'g1', 'h2'],
+    poids: { j7: 22, j2: 20, g1: 18, h2: 40 },
+    indications: [
+      'Bilan d’extension d’une tumeur digestive',
+      'Exploration du pancréas',
+      'Lithiase de la voie biliaire principale',
+      'Tumeur sous-muqueuse',
+      'Ponction écho-guidée',
+    ],
+  },
+  CPRE: {
+    id: 'CPRE',
+    label: 'CPRE — voies biliaires',
+    article: 'votre CPRE',
+    preparation: 'Jeûne seul',
+    purge: false,
+    anesthesie: 'AG',
+    etapes: ['j7', 'j2', 'g1', 'h2'],
+    // La sphinctérotomie est un geste à haut risque hémorragique : le contrôle
+    // des arrêts de traitement pèse plus lourd ici que partout ailleurs.
+    poids: { j7: 20, j2: 26, g1: 14, h2: 40 },
+    indications: [
+      'Calcul de la voie biliaire principale',
+      'Sténose biliaire',
+      'Pose ou changement de prothèse',
+      'Angiocholite',
+      'Fuite biliaire après chirurgie',
+    ],
+  },
+  CAPSULE: {
+    id: 'CAPSULE',
+    label: 'Vidéocapsule du grêle',
+    article: 'votre vidéocapsule',
+    preparation: 'Purge du grêle',
+    purge: true,
+    // Une purge, mais pas le schéma fractionné de la coloscopie, et pas de
+    // projection colique : la capsule explore le grêle.
+    fractions: false,
+    projection: false,
+    anesthesie: 'SANS',
+    etapes: ['j7', 'j2', 'vc1', 'h2'],
+    poids: { j7: 20, j2: 15, vc1: 35, h2: 30 },
+    indications: [
+      'Saignement digestif inexpliqué',
+      'Anémie ferriprive sans cause retrouvée',
+      'Suspicion de maladie de Crohn du grêle',
+      'Surveillance de polypose',
+      'Maladie cœliaque compliquée',
+    ],
+  },
+  PHMETRIE: {
+    id: 'PHMETRIE',
+    label: 'pH-métrie œsophagienne',
+    article: 'votre pH-métrie',
+    preparation: 'Sevrage anti-acide',
+    purge: false,
+    anesthesie: 'SANS',
+    etapes: ['ipp7', 'j2', 'g1'],
+    poids: { ipp7: 45, j2: 20, g1: 35 },
+    indications: [
+      'Reflux résistant au traitement',
+      'Bilan avant chirurgie anti-reflux',
+      'Douleurs thoraciques non cardiaques',
+      'Toux ou laryngite chroniques',
+    ],
+  },
+  HPYLORI: {
+    id: 'HPYLORI',
+    label: 'Test respiratoire — H. pylori',
+    article: 'votre test respiratoire',
+    preparation: 'Sevrage anti-acide',
+    purge: false,
+    anesthesie: 'SANS',
+    etapes: ['atb28', 'ipp14', 'g1'],
+    poids: { atb28: 30, ipp14: 40, g1: 30 },
+    indications: [
+      'Contrôle d’éradication d’Helicobacter pylori',
+      'Dyspepsie non explorée',
+      'Avant un traitement par AINS au long cours',
+      'Antécédent familial de cancer gastrique',
+    ],
   },
 };
 
@@ -228,20 +393,6 @@ export function etapesDe(patient) {
   return ids.map((id) => ETAPES[id]);
 }
 
-/**
- * Les étapes qui suivent l'examen. Le risque ne s'arrête pas au bloc, il y
- * commence : hémorragie post-polypectomie jusqu'à quatorze jours, reprise de
- * l'anticoagulant oubliée, conduite reprise trop tôt. Elles sont informatives et
- * restent hors du score, qui mesure ce qui s'est joué avant.
- */
-export function etapesApres(patient) {
-  return (EXAMENS[patient.examen.type].apres ?? []).map((id) => ETAPES[id]);
-}
-
-/** Tout l'échéancier, préparation puis suites. Pour les SMS et le calendrier. */
-export function toutesEtapes(patient) {
-  return [...etapesDe(patient), ...etapesApres(patient)];
-}
 
 /** Pondération ramenée à 100 sur les seules étapes de l'examen. */
 export function poidsDe(patient) {

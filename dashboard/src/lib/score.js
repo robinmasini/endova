@@ -43,13 +43,27 @@ const CREDITS = {
   },
 };
 
+/**
+ * Les étapes de consigne se notent toutes de la même façon : la réponse
+ * attendue vaut tout, la réponse contraire ne vaut rien. Inutile d'écrire une
+ * règle par sevrage — c'est le catalogue qui porte la question.
+ */
+function creditConsigne(etape, e) {
+  const q = etape.consigne?.question;
+  if (!q) return e.compris ? 1 : 0;
+  return e[q.cle] === true ? 1 : 0;
+}
+
 export function calculerScore(patient) {
   const poids = poidsDe(patient);
   const detail = {};
   let acquisPossible = 0;
   for (const etape of etapesDe(patient)) {
     const e = patient.etapes[etape.id];
-    const credit = e?.done ? Math.max(0, Math.min(1, CREDITS[etape.id](e, patient))) : 0;
+    const regle = CREDITS[etape.id];
+    const credit = e?.done
+      ? Math.max(0, Math.min(1, regle ? regle(e, patient) : creditConsigne(etape, e)))
+      : 0;
     detail[etape.id] = Math.round(credit * poids[etape.id]);
     if (e?.done) acquisPossible += poids[etape.id];
   }
@@ -112,7 +126,7 @@ export function alertes(patient, maintenant = new Date()) {
   //   droit, là où se cachent les lésions planes. C'est le schéma qui décide,
   //   et le schéma dépend de l'heure. Il est proposé à la création du dossier,
   //   mais rien ne le revérifie si l'heure de l'examen bouge ensuite.
-  if (examenDe(patient).purge && patient.examen.schema && j >= 0) {
+  if (examenDe(patient).fractions && patient.examen.schema && j >= 0) {
     const conseille = schemaConseille(patient.examen.date);
     if (patient.examen.schema !== conseille) {
       const h = heure(patient.examen.date);

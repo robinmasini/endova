@@ -46,7 +46,7 @@ Concrètement, pour passer au réel il manque :
 Ce qui est réel aujourd'hui, en revanche : le modèle. Les examens, les
 échéanciers, les poids de l'index de préparation, les protocoles de purge avec
 leurs contre-indications, les traitements à arrêter et leurs délais, les
-alertes, le calcul du Boston prévisionnel, la chronologie de J-7 à J+7. Tout
+alertes, le calcul du Boston prévisionnel, la chronologie, de J-28 au jour J. Tout
 cela est écrit, vérifié, et se branchera tel quel sur un serveur le jour venu.
 
 L'application est une maquette fonctionnelle, pas une coquille : ce qu'elle

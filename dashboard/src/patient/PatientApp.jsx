@@ -6,6 +6,7 @@ import { etapesDe } from '../lib/examens.js';
 import { calculerScore } from '../lib/score.js';
 import { anneeNaissance, examenDe, anesthesieDe, protocoleDe, heure, jour, horodatage, nomComplet } from '../lib/patient.js';
 import GlassCard from '../components/GlassCard.jsx';
+import Jalon from '../components/Jalon.jsx';
 import { Badge, Bouton, Libelle, Marque, TONS } from '../components/ui.jsx';
 import EtapeJ7 from './EtapeJ7.jsx';
 import EtapeJ3 from './EtapeJ3.jsx';
@@ -15,8 +16,14 @@ import EtapeH5 from './EtapeH5.jsx';
 import EtapeH2 from './EtapeH2.jsx';
 import EtapeG1 from './EtapeG1.jsx';
 import EtapeLavements, { EtapeR1 } from './EtapeLavements.jsx';
+import EtapeConsigne from './EtapeConsigne.jsx';
 
-const ECRANS = { j7: EtapeJ7, j3: EtapeJ3, j2: EtapeJ2, j1: EtapeJ1, h5: EtapeH5, h2: EtapeH2, g1: EtapeG1, r1: EtapeR1, lav: EtapeLavements };
+const ECRANS = {
+  j7: EtapeJ7, j3: EtapeJ3, j2: EtapeJ2, j1: EtapeJ1, h5: EtapeH5, h2: EtapeH2,
+  g1: EtapeG1, r1: EtapeR1, lav: EtapeLavements,
+  // Les sevrages partagent un seul écran : leur contenu vit dans le catalogue.
+  ipp7: EtapeConsigne, ipp14: EtapeConsigne, atb28: EtapeConsigne, vc1: EtapeConsigne,
+};
 
 /**
  * Porte d'entrée du lien SMS : pas de mot de passe, mais une seconde preuve.
@@ -98,7 +105,7 @@ function LigneEtape({ etape, patient, etat, statut, onOuvrir }) {
       <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${TONS[ton].bord} ${TONS[ton].fond}`}>
         {fait ? <Check size={15} className="text-emerald-700" strokeWidth={3} />
           : verrouille ? <Lock size={14} className="text-slate-600" />
-          : <span className="text-[11px] font-bold text-navy">{etape.cle(patient)}</span>}
+          : <Jalon taille="xs">{etape.cle(patient)}</Jalon>}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-slate-900">{etape.titre}</span>
@@ -143,7 +150,7 @@ export default function PatientApp() {
 
   if (etapeActive) {
     const Ecran = ECRANS[etapeActive];
-    return <Ecran patient={patient} protocole={protocole} onFermer={() => setEtapeActive(null)} />;
+    return <Ecran patient={patient} etapeId={etapeActive} protocole={protocole} onFermer={() => setEtapeActive(null)} />;
   }
 
   const date = patient.examen.date;

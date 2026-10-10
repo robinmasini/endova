@@ -7,6 +7,7 @@ import { EXAMENS, etapesDe, joursAvant } from '../lib/examens.js';
 import { age, examenDe, heure, jourCourt, echeance, nomComplet } from '../lib/patient.js';
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
+import Jalon from '../components/Jalon.jsx';
 
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -57,7 +58,12 @@ function Rangee({ patient }) {
       <div className="hidden min-w-0 sm:block">
         <p className="flex items-center gap-1.5 text-xs text-slate-600">
           {courante ? <Clock size={12} className="shrink-0 text-navy" /> : <Check size={12} strokeWidth={3} className="shrink-0 text-emerald-700" />}
-          <span className="truncate">{courante ? `${courante.cle(patient)} — ${courante.titre}` : 'Préparation terminée'}</span>
+          {courante ? (
+            <span className="flex min-w-0 items-center gap-1.5">
+              <Jalon taille="xs">{courante.cle(patient)}</Jalon>
+              <span className="truncate">{courante.titre}</span>
+            </span>
+          ) : <span className="truncate">Préparation terminée</span>}
         </p>
         <div className="mt-1.5 flex gap-1">
           {etapes.map((e, i) => (

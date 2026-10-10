@@ -265,45 +265,58 @@ service.
 
 ---
 
-## État au 9 octobre 2026 — ce qui est passé dans le code
+## État au 10 octobre 2026 — ce qui est passé dans le code
 
-Cette note a été écrite comme une analyse. Une partie est maintenant
-implémentée ; le reste attend un arbitrage médical. Voici la frontière, pour
-qu'elle ne se perde pas.
+Cette note a été écrite comme une analyse. Une partie est implémentée, une
+partie a été écartée par une décision de produit. Voici la frontière.
+
+### La règle qui prime : Endova est préopératoire
+
+L'échéancier court de la fenêtre de sevrage la plus lointaine jusqu'au jour J,
+et s'arrête là. Ce que dit la section 2 de cette note — le trou après l'examen,
+le saignement différé, la reprise de l'anticoagulant — reste cliniquement vrai,
+mais **n'appartient pas à cet outil**. Un arc post-examen avait été construit le
+9 octobre ; il a été retiré le 10. Ce qui suit l'examen revient à l'équipe
+d'endoscopie.
+
+La règle est inscrite en tête de `lib/examens.js`, là où elle se lit.
 
 ### Implémenté et vérifié
 
 | Section | Ce qui a été fait | Où |
 | --- | --- | --- |
-| § 2 — le trou après l'examen | Trois étapes de suites : `s0` (J+0 soir, reprise et conduite), `s2` (J+2, saignement différé), `s7` (J+7, reprise des traitements et délai de résultats). Attribuées par examen : coloscopie et coloscopie+gastroscopie en ont trois, la gastroscopie deux, la rectosigmoïdoscopie une seule. | `lib/examens.js` |
-| § 2 | Les suites entrent dans le plan SMS : neuf envois au lieu de six pour une coloscopie. | `lib/sms.js` |
-| § 2 | L'échéancier se lit en deux bandes, avant et après l'examen, chaque colonne portant son repère temporel. | `practitioner/Echeancier.jsx` |
-| § 2 | La fiche patient prolonge sa chronologie jusqu'à J+7. Le jour J n'est plus « la fin du suivi ». | `practitioner/fiche/OngletPreparation.jsx` |
-| § 3 — la fenêtre de tir | Alerte `SCHEMA_INADAPTE` : le schéma de purge est confronté à l'heure réelle de l'examen à chaque calcul d'alertes, et plus seulement au moment de la création du dossier. | `lib/score.js` |
+| § 3 — la fenêtre de tir | Alerte `SCHEMA_INADAPTE` : le schéma de purge est confronté à l'heure réelle de l'examen à chaque calcul, et plus seulement à la création du dossier. Limitée aux examens à purge fractionnée. | `lib/score.js` |
+| § 5 — les examens absents | Cinq examens entrent au catalogue : écho-endoscopie, CPRE, vidéocapsule du grêle, pH-métrie œsophagienne, test respiratoire à l'urée. | `lib/examens.js` |
+| § 5 | Quatre fenêtres de sevrage deviennent des étapes à part entière : arrêt des anti-acides à J-7 (pH-métrie) et à J-14 (test respiratoire), arrêt des antibiotiques à J-28, préparation de la veille pour la vidéocapsule. | `lib/examens.js` |
+| § 6 — la chronologie | Chaque étape porte la raison de son existence et de son heure, visible dans les réglages. | `lib/examens.js`, `practitioner/Reglages.jsx` |
 
-Les suites sont marquées `informatif: true` : aucune réponse n'est attendue,
-elles n'ouvrent pas d'écran dans l'application patient, et elles n'entrent pas
-dans l'index de préparation. `etapesDe()` — qui alimente le score — est
-inchangé, et les poids restent à 100 points pour chaque examen. C'était la
-condition pour que l'ajout ne déplace pas la mesure existante.
+Les quatre sevrages partagent un seul écran patient (`patient/EtapeConsigne.jsx`)
+piloté par le catalogue : le contenu vit dans `lib/examens.js`, l'écran n'en est
+que le rendu. Leur notation est générique — la réponse attendue vaut tout, la
+réponse contraire ne vaut rien — donc aucune règle par étape à maintenir.
+
+Trois drapeaux distinguent désormais ce que `purge` mélangeait : `purge` (une
+préparation est prescrite), `fractions` (le schéma fractionné de la coloscopie
+s'applique) et `projection` (la projection colique a un sens). Sans eux, une
+vidéocapsule aurait hérité du choix « fractionné / jour même » et d'un Boston
+colique, qui ne la concernent ni l'un ni l'autre.
 
 ### Non implémenté, et pourquoi
 
+**§ 2 — l'arc post-examen.** Écarté par décision de produit, voir ci-dessus.
+
 **§ 4 — la stratification du risque hémorragique du geste.** Elle suppose de
-savoir, avant l'examen, si une polypectomie est probable et de quelle taille.
-C'est une information que le dossier ne porte pas et qu'aucun SMS ne peut
-produire. Elle demande une décision du prescripteur sur ce qu'il veut saisir.
+savoir avant l'examen si une polypectomie est probable et de quelle taille.
+Le dossier ne porte pas cette information et aucun SMS ne peut la produire.
+Elle demande une décision du prescripteur sur ce qu'il veut saisir.
 
-**§ 5 — les examens absents** (vidéocapsule, pH-métrie, test respiratoire,
-écho-endoscopie). Le catalogue `EXAMENS` est bien la source unique : une
-entrée nouvelle apparaît d'elle-même dans la création de dossier, le filtre de
-la liste et les réglages. Mais chaque étape interactive demande son écran dans
-l'application patient (`ECRANS` dans `patient/PatientApp.jsx`), et surtout
-chaque protocole — volumes, délais, contre-indications — doit être validé par
-le prescripteur avant d'être écrit. La vidéocapsule est le cas le plus net :
-sa vraie valeur est dans les suites (confirmation de l'excrétion de la capsule,
-interdiction d'IRM tant qu'elle n'est pas éliminée), donc exactement sur
-l'arc qui vient d'être construit.
+**Les protocoles des nouveaux examens.** Les délais retenus — sept jours pour
+les IPP avant une pH-métrie, deux semaines avant un test respiratoire, quatre
+semaines pour les antibiotiques — sont ceux de la littérature courante. Ils
+n'ont pas été relus par un prescripteur. Rien de ce qui est écrit ici ne vaut
+consigne tant qu'un médecin ne l'a pas validé.
 
-**§ 7 — ce qui reste à trancher.** Inchangé. Rien de ce qui est écrit ici ne
-vaut consigne tant qu'un médecin ne l'a pas relu.
+**La logistique de la vidéocapsule** — heure d'ingestion au cabinet, retour de
+l'enregistreur — dépend de l'organisation du centre et n'est pas modélisée.
+
+**§ 7 — ce qui reste à trancher.** Inchangé.

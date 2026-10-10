@@ -260,6 +260,39 @@ export function semer() {
       administratif: { ordonnance: true },
       evenements: [cree(le(7, 10), MARCHAL)],
     }),
+
+    // — Au-delà de la coloscopie : chaque examen a sa préparation propre, et
+    //   c'est elle qui décide du résultat.
+    dossier({
+      id: 'p11', token: 'e7a1c3', numero: 'GE-2026-0404',
+      identite: { nom: 'Chevalier', prenom: 'Pascal', sexe: 'M', naissance: '1966-09-02', telephone: '+33639981211', medecinTraitant: 'Dr Roche' },
+      examen: { type: 'CPRE', indication: 'Calcul de la voie biliaire principale', date: le(2, 8, 30), lieu: PARC, operateur: MARCHAL },
+      terrain: { traitements: ['AOD'], antecedents: 'Fibrillation auriculaire sous apixaban' },
+      administratif: { ...complet, cpa: { faite: true, date: le(-5, 11).toISOString() } },
+      etapes: {
+        j7: { traitements: { AOD: true }, accompagnant: true },
+        j2: { traitements: { AOD: true }, cpa: true },
+      },
+      evenements: [cree(le(2, 8, 30), MARCHAL)],
+    }),
+    dossier({
+      id: 'p12', token: 'f3b9d7', numero: 'GE-2026-0407',
+      identite: { nom: 'Ferreira', prenom: 'Inès', naissance: '1992-11-23', telephone: '+33639981212', medecinTraitant: 'Dr Morel' },
+      examen: { type: 'CAPSULE', indication: 'Anémie ferriprive sans cause retrouvée', date: le(4, 9), lieu: SAINT_JUST, operateur: BENALI, anesthesie: 'SANS', protocole: 'MOVIPREP' },
+      terrain: { traitements: ['FER'], antecedents: 'Anémie microcytaire, bilan haut et bas négatif' },
+      administratif: { consentement: true, ordonnance: true },
+      etapes: { j7: { purgeRecuperee: true, traitements: { FER: false } } },
+      evenements: [cree(le(4, 9), BENALI)],
+    }),
+    dossier({
+      id: 'p13', token: 'a9c5e2', numero: 'GE-2026-0409',
+      identite: { nom: 'Bouchard', prenom: 'Théo', sexe: 'M', naissance: '1998-04-17', telephone: '+33639981213', medecinTraitant: 'Dr Faure' },
+      examen: { type: 'HPYLORI', indication: 'Contrôle d’éradication d’Helicobacter pylori', date: le(6, 8, 15), lieu: SAINT_JUST, operateur: BENALI, anesthesie: 'SANS' },
+      terrain: { antecedents: 'Ulcère duodénal traité, éradication à contrôler' },
+      administratif: { ordonnance: true },
+      etapes: { atb28: { compris: true, sansAntibiotique: true } },
+      evenements: [cree(le(6, 8, 15), BENALI)],
+    }),
   ];
 
   return bruts.map(horodater);

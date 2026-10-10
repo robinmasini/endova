@@ -1,6 +1,7 @@
 import { ArrowLeft, MessageSquare } from '../components/icones.js';
 import GlassCard from '../components/GlassCard.jsx';
 import { Libelle } from '../components/ui.jsx';
+import Jalon from '../components/Jalon.jsx';
 import { useCabinet } from '../lib/store.js';
 import { rediger } from '../lib/sms.js';
 import { horodatage } from '../lib/patient.js';
@@ -21,7 +22,10 @@ export default function Coque({ etape, patient, onFermer, children, pied, lectur
       </button>
 
       <div className="mt-5 rise">
-        <Libelle>{etape.cle(patient)} · SMS du {horodatage(etape.envoi(patient))}</Libelle>
+        <div className="flex items-center gap-2">
+          <Jalon taille="s">{etape.cle(patient)}</Jalon>
+          <Libelle>SMS du {horodatage(etape.envoi(patient))}</Libelle>
+        </div>
         <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-navy">{etape.titre}</h1>
       </div>
 

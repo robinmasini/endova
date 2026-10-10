@@ -5,6 +5,7 @@ import { EXAMENS, ETAPES, ANESTHESIES } from '../lib/examens.js';
 import { TRAITEMENTS, comorbidite } from '../lib/terrain.js';
 import { store, useCabinet } from '../lib/store.js';
 import { EnTete } from './Coquille.jsx';
+import Jalon from '../components/Jalon.jsx';
 
 function Bloc({ titre, icone, children, note, className = '' }) {
   return (
@@ -78,9 +79,7 @@ function Palier({ id, points, apres = false }) {
   const e = ETAPES[id];
   return (
     <li className="flex gap-3">
-      <span className={`mt-0.5 w-14 shrink-0 rounded-md px-1.5 py-0.5 text-center text-[10px] font-bold ${apres ? 'bg-navy/[0.06] text-slate-600' : 'bg-navy/[0.08] text-navy'}`}>
-        {e.cle(DOSSIER_TYPE)}
-      </span>
+      <Jalon taille="xs" ton={apres ? 'sourd' : 'clair'} className="mt-0.5">{e.cle(DOSSIER_TYPE)}</Jalon>
       <div className="min-w-0">
         <p className="text-xs font-semibold text-navy">{e.titre} <span className="font-normal text-slate-500">· {points}</span></p>
         <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600">{e.pourquoi}</p>

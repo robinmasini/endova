@@ -1,5 +1,6 @@
 import { ECHELLE_EVACUATION } from './protocols.js';
 import { traitement } from './terrain.js';
+import { ETAPES } from './examens.js';
 import { examenDe, anesthesieDe, protocoleDe, heure } from './patient.js';
 
 /**
@@ -9,6 +10,12 @@ import { examenDe, anesthesieDe, protocoleDe, heure } from './patient.js';
 export function resume(patient, id) {
   const e = patient.etapes[id];
   if (!e?.done) return { texte: 'En attente', ton: 'neutre' };
+  const q = ETAPES[id]?.consigne?.question;
+  if (q) {
+    if (e[q.cle] === true) return { texte: q.resume ?? 'Consigne suivie', ton: 'emerald' };
+    if (e[q.cle] === false) return { texte: q.resumeNon ?? 'Consigne non suivie', ton: 'ruby' };
+    return { texte: 'Non confirmé', ton: 'amber' };
+  }
   switch (id) {
     case 'j7': {
       const refus = Object.entries(e.traitements ?? {}).filter(([, ok]) => ok === false);
@@ -64,6 +71,15 @@ const oui = (b) => (b ? 'Oui' : 'Non');
 export function lignes(patient, id) {
   const e = patient.etapes[id];
   if (!e?.done) return [];
+  const consigne = ETAPES[id]?.consigne;
+  if (consigne) {
+    const q = consigne.question;
+    const out = [];
+    if (q) out.push([q.titre, e[q.cle] === true ? q.oui : e[q.cle] === false ? q.non : '—',
+      e[q.cle] === true ? 'emerald' : e[q.cle] === false ? 'ruby' : 'neutre']);
+    out.push(['Consignes lues', e.compris ? 'Oui' : 'Non', e.compris ? 'emerald' : 'amber']);
+    return out;
+  }
   switch (id) {
     case 'j7': {
       const out = [];
