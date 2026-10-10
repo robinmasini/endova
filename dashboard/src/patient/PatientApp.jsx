@@ -59,7 +59,7 @@ function Verrou({ patient, onOuvrir }) {
             }}
             placeholder="AAAA"
             aria-label="Année de naissance"
-            className={`w-full rounded-xl border bg-white/60 px-4 py-4 text-center text-2xl font-semibold tracking-[0.3em] text-navy outline-none transition-colors placeholder:text-slate-700 focus:border-magenta/50 ${
+            className={`w-full rounded-xl border bg-white/60 px-4 py-4 text-center text-2xl font-semibold tracking-[0.3em] text-navy outline-none transition-colors placeholder:text-slate-700 focus:border-navy/50 ${
               erreur ? 'border-rose-500/50' : 'border-navy/[0.09]'
             }`}
           />
@@ -91,14 +91,14 @@ function LigneEtape({ etape, patient, etat, statut, onOuvrir }) {
         verrouille
           ? 'cursor-not-allowed border-navy/[0.07] bg-white/40 opacity-55'
           : statut === 'actif'
-            ? 'border-magenta/30 bg-magenta/[0.06] shadow-[0_0_25px_rgba(6,182,212,0.12)] hover:bg-magenta/[0.11]'
+            ? 'border-navy/30 bg-navy/[0.06] shadow-[0_0_25px_rgba(6,182,212,0.12)] hover:bg-navy/[0.11]'
             : 'border-navy/[0.07] bg-white/55 hover:bg-white/80'
       }`}
     >
       <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${TONS[ton].bord} ${TONS[ton].fond}`}>
         {fait ? <Check size={15} className="text-emerald-700" strokeWidth={3} />
           : verrouille ? <Lock size={14} className="text-slate-600" />
-          : <span className="text-[11px] font-bold text-magenta">{etape.cle(patient)}</span>}
+          : <span className="text-[11px] font-bold text-navy">{etape.cle(patient)}</span>}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-slate-900">{etape.titre}</span>
@@ -127,7 +127,7 @@ export default function PatientApp() {
           <Marque taille="sm" />
           <p className="mt-5 text-sm text-slate-700">Ce lien n’est plus valide.</p>
           <p className="mt-2 text-xs text-slate-600">Contactez le secrétariat de votre gastro-entérologue au {cabinet.telephone}.</p>
-          <Link to="/" className="mt-5 inline-block text-xs text-magenta hover:underline">Vue cabinet</Link>
+          <Link to="/" className="mt-5 inline-block text-xs text-navy hover:underline">Vue cabinet</Link>
         </GlassCard>
       </div>
     );
@@ -153,7 +153,7 @@ export default function PatientApp() {
     <div className="mx-auto min-h-dvh w-full max-w-md px-5 pb-12 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
       <header className="flex items-center justify-between">
         <Marque />
-        <Link to="/" className="text-[11px] text-slate-600 transition-colors hover:text-magenta">Vue cabinet</Link>
+        <Link to="/" className="text-[11px] text-slate-600 transition-colors hover:text-navy">Vue cabinet</Link>
       </header>
 
       <GlassCard deep className="mt-6 p-6 rise">
@@ -171,7 +171,7 @@ export default function PatientApp() {
         </div>
         <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white/55">
           <div
-            className={`h-full rounded-full transition-all duration-700 ${total >= 80 ? 'bg-emerald-500' : total >= 50 ? 'bg-amber-500' : 'bg-magenta'}`}
+            className={`h-full rounded-full transition-all duration-700 ${total >= 80 ? 'bg-emerald-500' : total >= 50 ? 'bg-amber-500' : 'bg-navy'}`}
             style={{ width: `${Math.max(total, 2)}%` }}
           />
         </div>

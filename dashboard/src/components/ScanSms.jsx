@@ -25,7 +25,7 @@ function Resultat({ lot, prochain, onFermer }) {
         <div className="max-h-[70dvh] overflow-y-auto rounded-3xl border border-white/80 bg-white/95 p-6 shadow-[0_30px_80px_-20px_rgba(5,28,78,0.45)]">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className={`flex size-11 items-center justify-center rounded-2xl ${lot.length ? 'bg-magenta/[0.1] text-magenta' : 'bg-emerald-50 text-emerald-700'}`}>
+              <span className={`flex size-11 items-center justify-center rounded-2xl ${lot.length ? 'bg-navy/[0.1] text-navy' : 'bg-emerald-50 text-emerald-700'}`}>
                 {lot.length ? <Send size={19} /> : <CheckCircle2 size={19} />}
               </span>
               <div>
@@ -51,7 +51,7 @@ function Resultat({ lot, prochain, onFermer }) {
                     onClick={onFermer}
                     className="flex items-center gap-3 rounded-xl border border-navy/[0.07] bg-white/70 p-3 transition-colors hover:bg-white"
                   >
-                    <span className="w-10 shrink-0 text-xs font-bold text-magenta">{s.cle}</span>
+                    <span className="w-10 shrink-0 text-xs font-bold text-navy">{s.cle}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-navy">{nomComplet(s.patient)}</span>
                       <span className="block truncate text-[11px] text-slate-500">{s.etape.titre} · prévu {horodatage(s.envoi)}</span>
@@ -122,7 +122,7 @@ export default function ScanSms({ bureau = false }) {
           animationDuration: '1.1s',
         }}
       />
-      {enAttente && !scan ? <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full bg-magenta/20 [animation-duration:2.6s]" /> : null}
+      {enAttente && !scan ? <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full bg-navy/20 [animation-duration:2.6s]" /> : null}
       <img
         src={`${import.meta.env.BASE_URL}endova-glyphe.png`}
         alt=""
@@ -140,7 +140,7 @@ export default function ScanSms({ bureau = false }) {
     <>
       {bureau ? (
         <div className="fixed bottom-6 right-6 z-40 hidden items-center gap-3 md:flex print:!hidden">
-          <span className={`rounded-full border border-white/80 bg-white/85 px-3.5 py-2 text-xs font-semibold shadow-[0_8px_20px_-10px_rgba(5,28,78,0.35)] backdrop-blur-xl transition-colors ${enAttente ? 'text-magenta' : 'text-slate-600'}`}>
+          <span className={`rounded-full border border-white/80 bg-white/85 px-3.5 py-2 text-xs font-semibold shadow-[0_8px_20px_-10px_rgba(5,28,78,0.35)] backdrop-blur-xl transition-colors ${enAttente ? 'text-navy' : 'text-slate-600'}`}>
             {scan ? 'Envoi en cours…' : enAttente ? `Scan SMS · ${enAttente} à envoyer` : 'Scan SMS'}
           </span>
           {bouton}

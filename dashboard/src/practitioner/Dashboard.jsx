@@ -119,7 +119,7 @@ export default function Dashboard() {
         </Link>
         <Link
           to="/patients/nouveau"
-          className="inline-flex items-center gap-2 rounded-xl bg-magenta px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+          className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
         >
           <Plus size={14} /> Nouveau dossier
         </Link>
@@ -127,8 +127,8 @@ export default function Dashboard() {
 
       <div className="px-5 pt-6 sm:px-8">
         {echus ? (
-          <p className="mb-5 flex items-center gap-2.5 rounded-xl border border-magenta/30 bg-magenta/[0.06] px-4 py-3 text-sm text-navy">
-            <Send size={15} className="shrink-0 text-magenta" />
+          <p className="mb-5 flex items-center gap-2.5 rounded-xl border border-navy/30 bg-navy/[0.06] px-4 py-3 text-sm text-navy">
+            <Send size={15} className="shrink-0 text-navy" />
             <span><span className="font-semibold">{echus} SMS arrivé{echus > 1 ? 's' : ''} à échéance.</span> Touchez le bouton Endova pour les délivrer.</span>
           </p>
         ) : null}
@@ -159,7 +159,7 @@ export default function Dashboard() {
         <section className="mt-8">
           <Titre
             icone={<PhoneCall size={14} />}
-            action={file.length > 3 ? <Link to="/rappels" className="text-[11px] font-medium text-magenta hover:underline">Voir les {file.length} rappels →</Link> : null}
+            action={file.length > 3 ? <Link to="/rappels" className="text-[11px] font-medium text-navy hover:underline">Voir les {file.length} rappels →</Link> : null}
           >
             À rappeler
             {file.length ? <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white">{file.length}</span> : null}
@@ -169,7 +169,7 @@ export default function Dashboard() {
 
         <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1fr)_24rem]">
           <section>
-            <Titre icone={<CalendarDays size={14} />} action={<Link to="/vacations" className="text-[11px] font-medium text-magenta hover:underline">Toutes les vacations →</Link>}>Vacation du jour</Titre>
+            <Titre icone={<CalendarDays size={14} />} action={<Link to="/vacations" className="text-[11px] font-medium text-navy hover:underline">Toutes les vacations →</Link>}>Vacation du jour</Titre>
             {duJour.length ? (
               <>
                 {aDeplacer ? (

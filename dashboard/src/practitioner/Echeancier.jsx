@@ -19,7 +19,7 @@ const BANDES = [
 const STYLE = {
   repondu: 'border-emerald-400/50 bg-emerald-50/70 text-emerald-700',
   incident: 'border-rose-400/50 bg-rose-50/70 text-rose-700',
-  ouvert: 'border-magenta/35 bg-magenta/[0.08] text-magenta',
+  ouvert: 'border-navy/35 bg-navy/[0.08] text-navy',
   envoye: 'border-amber-400/50 bg-amber-50/70 text-amber-700',
   a_envoyer: 'border-dashed border-rose-400/60 bg-white/70 text-rose-700',
   planifie: 'border-navy/[0.07] bg-white/50 text-slate-500',
@@ -67,7 +67,7 @@ export default function Echeancier() {
                 {envois.map((s) => (
                   <li key={`${s.patient.id}-${s.etape.id}`} className="flex items-center gap-3 text-sm">
                     <span className="w-12 shrink-0 font-bold tabular-nums text-navy">{heure(s.envoi)}</span>
-                    <Link to={`/patients/${s.patient.id}?onglet=sms`} className="min-w-0 flex-1 truncate text-slate-700 hover:text-magenta">
+                    <Link to={`/patients/${s.patient.id}?onglet=sms`} className="min-w-0 flex-1 truncate text-slate-700 hover:text-navy">
                       {nomComplet(s.patient)} <span className="text-slate-400">· {s.cle} {s.etape.titre}</span>
                     </Link>
                   </li>
@@ -82,7 +82,7 @@ export default function Echeancier() {
                 {nonOuverts.map(({ patient, s }) => (
                   <li key={`${patient.id}-${s.etape.id}`} className="flex items-center gap-3 text-sm">
                     <span className="w-12 shrink-0 font-bold text-amber-700">{s.cle}</span>
-                    <Link to={`/patients/${patient.id}?onglet=sms`} className="min-w-0 flex-1 truncate text-slate-700 hover:text-magenta">
+                    <Link to={`/patients/${patient.id}?onglet=sms`} className="min-w-0 flex-1 truncate text-slate-700 hover:text-navy">
                       {nomComplet(patient)} <span className="text-slate-400">· envoyé {horodatage(s.envoi)}</span>
                     </Link>
                   </li>

@@ -32,7 +32,7 @@ function Bulle({ item, onRenvoyer }) {
               ? 'border border-dashed border-rose-300 bg-rose-50/50 text-slate-600'
               : 'border border-dashed border-navy/20 bg-white/40 text-slate-500'
             : item.libre
-              ? 'rounded-br-md bg-magenta text-white shadow-[0_6px_18px_-8px_rgba(147,43,156,0.6)]'
+              ? 'rounded-br-md bg-navy text-white shadow-[0_6px_18px_-8px_rgba(147,43,156,0.6)]'
               : 'rounded-bl-md border border-white/80 bg-white/85 text-slate-800 shadow-[0_6px_18px_-10px_rgba(5,28,78,0.25)]'
         }`}
       >
@@ -46,7 +46,7 @@ function Bulle({ item, onRenvoyer }) {
         {s ? <Pastille ton={s.ton}>{s.label}</Pastille> : null}
         {item.reponse ? <Pastille ton={item.reponse.ton}>Réponse : {item.reponse.texte}</Pastille> : null}
         {!planifie && !item.libre && item.statut !== 'repondu' ? (
-          <button type="button" onClick={onRenvoyer} className="inline-flex items-center gap-1 text-[11px] font-medium text-magenta hover:underline">
+          <button type="button" onClick={onRenvoyer} className="inline-flex items-center gap-1 text-[11px] font-medium text-navy hover:underline">
             <RefreshCw size={11} /> Renvoyer
           </button>
         ) : null}
@@ -97,7 +97,7 @@ export default function OngletSms({ patient, cabinet }) {
                 key={m.label}
                 type="button"
                 onClick={() => setBrouillon(m.texte)}
-                className="rounded-full border border-navy/[0.09] bg-white/70 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-magenta/30 hover:text-magenta"
+                className="rounded-full border border-navy/[0.09] bg-white/70 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-navy/30 hover:text-navy"
               >
                 {m.label}
               </button>
@@ -108,7 +108,7 @@ export default function OngletSms({ patient, cabinet }) {
             onChange={(e) => setBrouillon(e.target.value)}
             rows={3}
             placeholder="Écrire au patient…"
-            className="w-full resize-none rounded-xl border border-navy/[0.1] bg-white/80 p-3 text-sm text-navy outline-none placeholder:text-slate-400 focus:border-magenta/50"
+            className="w-full resize-none rounded-xl border border-navy/[0.1] bg-white/80 p-3 text-sm text-navy outline-none placeholder:text-slate-400 focus:border-navy/50"
           />
           <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
             <p className="text-[11px] text-slate-500">
@@ -117,7 +117,7 @@ export default function OngletSms({ patient, cabinet }) {
             <button
               type="submit"
               disabled={!brouillon.trim()}
-              className="inline-flex items-center gap-2 rounded-xl bg-magenta px-4 py-2.5 text-xs font-semibold text-white transition-all hover:brightness-110 disabled:opacity-40"
+              className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white transition-all hover:brightness-110 disabled:opacity-40"
             >
               <Send size={13} /> Envoyer
             </button>

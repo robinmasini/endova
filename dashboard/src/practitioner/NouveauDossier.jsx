@@ -17,13 +17,13 @@ const PAS = [
   { id: 'recap', label: 'Échéancier', icone: Send },
 ];
 
-const champ = 'w-full rounded-xl border border-navy/[0.1] bg-white/80 px-3.5 py-2.5 text-sm text-navy outline-none transition-colors placeholder:text-slate-400 focus:border-magenta/50';
+const champ = 'w-full rounded-xl border border-navy/[0.1] bg-white/80 px-3.5 py-2.5 text-sm text-navy outline-none transition-colors placeholder:text-slate-400 focus:border-navy/50';
 
 function Etiquette({ libelle, children, requis, className = '' }) {
   return (
     <label className={`block ${className}`}>
       <span className="mb-1.5 block text-xs font-medium text-slate-700">
-        {libelle}{requis ? <span className="text-magenta"> *</span> : null}
+        {libelle}{requis ? <span className="text-navy"> *</span> : null}
       </span>
       {children}
     </label>
@@ -37,7 +37,7 @@ function Choix({ actif, onClick, children, detail }) {
       onClick={onClick}
       aria-pressed={actif}
       className={`rounded-xl border px-3.5 py-2.5 text-left text-sm transition-colors ${
-        actif ? 'border-magenta/40 bg-magenta/[0.08] font-semibold text-magenta' : 'border-navy/[0.09] bg-white/70 font-medium text-slate-700 hover:bg-white'
+        actif ? 'border-navy/40 bg-navy/[0.08] font-semibold text-navy' : 'border-navy/[0.09] bg-white/70 font-medium text-slate-700 hover:bg-white'
       }`}
     >
       {children}
@@ -53,10 +53,10 @@ function Case({ actif, onClick, titre, detail }) {
       onClick={onClick}
       aria-pressed={actif}
       className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-colors ${
-        actif ? 'border-magenta/35 bg-magenta/[0.06]' : 'border-navy/[0.08] bg-white/60 hover:bg-white'
+        actif ? 'border-navy/35 bg-navy/[0.06]' : 'border-navy/[0.08] bg-white/60 hover:bg-white'
       }`}
     >
-      <span className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border ${actif ? 'border-magenta bg-magenta text-white' : 'border-navy/20 bg-white'}`}>
+      <span className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border ${actif ? 'border-navy bg-navy text-white' : 'border-navy/20 bg-white'}`}>
         {actif ? <Check size={11} strokeWidth={3} /> : null}
       </span>
       <span className="min-w-0">
@@ -178,11 +178,11 @@ export default function NouveauDossier() {
                 disabled={i > pas && !valide.slice(0, i).every(Boolean)}
                 onClick={() => setPas(i)}
                 className={`flex w-full flex-col items-start gap-1.5 rounded-xl border px-3 py-2.5 text-left transition-colors disabled:opacity-50 ${
-                  i === pas ? 'border-magenta/40 bg-magenta/[0.07]' : 'border-navy/[0.08] bg-white/60 hover:bg-white'
+                  i === pas ? 'border-navy/40 bg-navy/[0.07]' : 'border-navy/[0.08] bg-white/60 hover:bg-white'
                 }`}
               >
-                <span className={`h-1 w-full rounded-full ${i <= pas ? 'bg-magenta' : 'bg-navy/[0.08]'}`} />
-                <span className={`flex items-center gap-1.5 text-xs font-semibold ${i === pas ? 'text-magenta' : 'text-slate-600'}`}>
+                <span className={`h-1 w-full rounded-full ${i <= pas ? 'bg-navy' : 'bg-navy/[0.08]'}`} />
+                <span className={`flex items-center gap-1.5 text-xs font-semibold ${i === pas ? 'text-navy' : 'text-slate-600'}`}>
                   <p.icone size={13} /> <span className="hidden sm:inline">{i + 1}. </span>{p.label}
                 </span>
               </button>
@@ -303,9 +303,9 @@ export default function NouveauDossier() {
                   ))}
                 </div>
                 {conseilRenforce ? (
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-magenta/30 bg-magenta/[0.06] p-3">
-                    <p className="text-xs text-slate-700"><span className="font-semibold text-magenta">Préparation renforcée conseillée</span> pour ce profil.</p>
-                    <button type="button" onClick={() => maj('examen', { renforce: true })} className="rounded-lg border border-magenta/35 bg-white px-3 py-1.5 text-xs font-semibold text-magenta">Activer</button>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-navy/30 bg-navy/[0.06] p-3">
+                    <p className="text-xs text-slate-700"><span className="font-semibold text-navy">Préparation renforcée conseillée</span> pour ce profil.</p>
+                    <button type="button" onClick={() => maj('examen', { renforce: true })} className="rounded-lg border border-navy/35 bg-white px-3 py-1.5 text-xs font-semibold text-navy">Activer</button>
                   </div>
                 ) : null}
               </Carte>
@@ -341,7 +341,7 @@ export default function NouveauDossier() {
               {plan.map((s) => (
                 <li key={s.etape.id} className="rounded-xl border border-navy/[0.08] bg-white/65 p-3.5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <p className="text-sm font-semibold text-navy"><span className="text-magenta">{s.cle}</span> — {s.etape.titre}</p>
+                    <p className="text-sm font-semibold text-navy"><span className="text-navy">{s.cle}</span> — {s.etape.titre}</p>
                     <p className={`text-[11px] ${s.envoi < new Date() ? 'font-semibold text-amber-700' : 'text-slate-500'}`}>
                       {s.envoi < new Date() ? 'Échéance passée — partira au prochain scan' : horodatage(s.envoi)}
                     </p>
@@ -375,7 +375,7 @@ export default function NouveauDossier() {
             <button
               type="button"
               onClick={enregistrer}
-              className="inline-flex items-center gap-2 rounded-xl bg-magenta px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
             >
               <Check size={15} /> {existant ? 'Enregistrer les modifications' : 'Créer le dossier et programmer les SMS'}
             </button>

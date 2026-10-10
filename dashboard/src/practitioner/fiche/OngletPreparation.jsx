@@ -52,7 +52,7 @@ function Alerte({ patient, alerte }) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Ce qui a été fait (facultatif)"
-            className="min-w-0 flex-1 rounded-lg border border-navy/[0.1] bg-white px-3 py-2 text-xs text-navy outline-none focus:border-magenta/50"
+            className="min-w-0 flex-1 rounded-lg border border-navy/[0.1] bg-white px-3 py-2 text-xs text-navy outline-none focus:border-navy/50"
           />
           <button type="submit" className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700">
             Marquer comme traitée

@@ -29,7 +29,7 @@ export function EtapeR1({ patient, onFermer }) {
     >
       <GlassCard className="p-5">
         <p className="flex items-start gap-2 text-xs leading-relaxed text-slate-700">
-          <Info size={14} className="mt-0.5 shrink-0 text-magenta" />
+          <Info size={14} className="mt-0.5 shrink-0 text-navy" />
           Pas de purge à boire : l’examen ne regarde que le rectum et le sigmoïde. Deux lavements rectaux suffisent,
           faits le matin même. Vous pouvez manger normalement aujourd’hui.
         </p>

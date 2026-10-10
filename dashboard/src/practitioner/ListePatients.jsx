@@ -56,7 +56,7 @@ function Rangee({ patient }) {
 
       <div className="hidden min-w-0 sm:block">
         <p className="flex items-center gap-1.5 text-xs text-slate-600">
-          {courante ? <Clock size={12} className="shrink-0 text-magenta" /> : <Check size={12} strokeWidth={3} className="shrink-0 text-emerald-700" />}
+          {courante ? <Clock size={12} className="shrink-0 text-navy" /> : <Check size={12} strokeWidth={3} className="shrink-0 text-emerald-700" />}
           <span className="truncate">{courante ? `${courante.cle(patient)} — ${courante.titre}` : 'Préparation terminée'}</span>
         </p>
         <div className="mt-1.5 flex gap-1">
@@ -122,7 +122,7 @@ export default function ListePatients() {
       <EnTete titre="Patients" question={`${patients.length} dossiers, classés par date d’examen.`}>
         <Link
           to="/patients/nouveau"
-          className="inline-flex items-center gap-2 rounded-xl bg-magenta px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+          className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
         >
           <Plus size={14} /> Nouveau dossier
         </Link>
@@ -137,7 +137,7 @@ export default function ListePatients() {
               onChange={(e) => setQ(e.target.value)}
               placeholder="Nom, examen, indication, n° de dossier…"
               aria-label="Rechercher un patient"
-              className="w-full rounded-xl border border-navy/[0.09] bg-white/70 py-3 pl-10 pr-4 text-sm text-navy outline-none transition-colors placeholder:text-slate-500 focus:border-magenta/50"
+              className="w-full rounded-xl border border-navy/[0.09] bg-white/70 py-3 pl-10 pr-4 text-sm text-navy outline-none transition-colors placeholder:text-slate-500 focus:border-navy/50"
             />
           </div>
           <div className="flex gap-2 overflow-x-auto">
@@ -148,7 +148,7 @@ export default function ListePatients() {
                 onClick={() => setFiltre(f.id)}
                 className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-medium transition-colors ${
                   filtre === f.id
-                    ? 'border-magenta/40 bg-magenta/[0.1] text-magenta'
+                    ? 'border-navy/40 bg-navy/[0.1] text-navy'
                     : 'border-navy/[0.09] bg-white/60 text-slate-600 hover:text-navy'
                 }`}
               >

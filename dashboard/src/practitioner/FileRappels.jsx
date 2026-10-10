@@ -100,7 +100,7 @@ function Carte({ patient, motifs }) {
           </Link>
           <a
             href={`tel:${patient.identite.telephone}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-magenta/35 bg-magenta/[0.09] px-3 py-2 text-xs font-semibold text-magenta transition-all hover:brightness-95"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-navy/35 bg-navy/[0.09] px-3 py-2 text-xs font-semibold text-navy transition-all hover:brightness-95"
           >
             <PhoneCall size={13} /> Appeler
           </a>

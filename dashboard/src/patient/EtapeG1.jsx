@@ -42,14 +42,14 @@ export default function EtapeG1({ patient, onFermer }) {
       <GlassCard deep className="p-5">
         <ol className="space-y-4">
           <li className="flex gap-3">
-            <Clock size={18} className="mt-0.5 shrink-0 text-magenta" />
+            <Clock size={18} className="mt-0.5 shrink-0 text-navy" />
             <div>
               <p className="text-sm font-semibold text-navy">Dernier repas léger avant {limiteSolides(patient)}</p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">Ensuite, plus aucun aliment solide, ni lait, ni chewing-gum.</p>
             </div>
           </li>
           <li className="flex gap-3">
-            <GlassWater size={18} className="mt-0.5 shrink-0 text-magenta" />
+            <GlassWater size={18} className="mt-0.5 shrink-0 text-navy" />
             <div>
               <p className="text-sm font-semibold text-navy">Liquides clairs jusqu’à {heure(examen - 2 * H)}</p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">Eau, thé ou café sans lait, jus sans pulpe. Pas d’alcool.</p>

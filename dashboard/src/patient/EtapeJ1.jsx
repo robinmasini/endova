@@ -75,7 +75,7 @@ export default function EtapeJ1({ patient, protocole, onFermer }) {
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-navy">{protocole.nom}</p>
             <p className="mt-1 text-xs leading-relaxed text-slate-600">{protocole.volumeFraction}</p>
-            <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-magenta">
+            <p className="mt-2.5 flex items-center gap-1.5 text-[11px] text-navy">
               <Timer size={12} /> 1 verre toutes les {protocole.intervalleMin} minutes
             </p>
           </div>
@@ -110,9 +110,9 @@ export default function EtapeJ1({ patient, protocole, onFermer }) {
           <button
             type="button"
             onClick={boire}
-            className="group w-full rounded-2xl border border-magenta/30 bg-magenta/[0.07] p-7 text-center shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-2xl transition-all duration-300 hover:bg-magenta/[0.12] active:scale-[0.98] rise"
+            className="group w-full rounded-2xl border border-navy/30 bg-navy/[0.07] p-7 text-center shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-2xl transition-all duration-300 hover:bg-navy/[0.12] active:scale-[0.98] rise"
           >
-            <GlassWater size={30} className="mx-auto text-magenta transition-transform group-hover:scale-110" />
+            <GlassWater size={30} className="mx-auto text-navy transition-transform group-hover:scale-110" />
             <p className="mt-3 text-base font-semibold text-navy">J’ai bu le verre {bus + 1}</p>
             <p className="mt-1.5 text-xs text-slate-600">Lentement, par petites gorgées, sans vous forcer</p>
           </button>

@@ -42,7 +42,7 @@ export default function Rappels() {
               type="button"
               onClick={() => setFiltre(f.id)}
               className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-medium transition-colors ${
-                filtre === f.id ? 'border-magenta/40 bg-magenta/[0.1] text-magenta' : 'border-navy/[0.09] bg-white/60 text-slate-600 hover:text-navy'
+                filtre === f.id ? 'border-navy/40 bg-navy/[0.1] text-navy' : 'border-navy/[0.09] bg-white/60 text-slate-600 hover:text-navy'
               }`}
             >
               {f.label} <span className="tabular-nums opacity-70">{file.filter(garde[f.id]).length}</span>

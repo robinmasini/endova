@@ -18,7 +18,7 @@ function Bloc({ titre, icone, children, note, className = '' }) {
   );
 }
 
-const champ = 'w-full rounded-xl border border-navy/[0.1] bg-white/80 px-3.5 py-2.5 text-sm text-navy outline-none focus:border-magenta/50';
+const champ = 'w-full rounded-xl border border-navy/[0.1] bg-white/80 px-3.5 py-2.5 text-sm text-navy outline-none focus:border-navy/50';
 
 function Cabinet() {
   const cabinet = useCabinet();

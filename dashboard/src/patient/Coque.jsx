@@ -26,7 +26,7 @@ export default function Coque({ etape, patient, onFermer, children, pied, lectur
       </div>
 
       <GlassCard className="mt-5 p-4 rise">
-        <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-magenta">
+        <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-navy">
           <MessageSquare size={12} /> SMS reçu
         </p>
         <p className="mt-2 text-xs leading-relaxed text-slate-700">{sms}</p>

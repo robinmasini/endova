@@ -101,7 +101,7 @@ export default function OngletDossier({ patient }) {
           <Champ libelle="Naissance">{dateLongue(identite.naissance)} · {a} ans</Champ>
           <Champ libelle="Sexe">{{ F: 'Femme', M: 'Homme' }[identite.sexe]}</Champ>
           <Champ libelle="Téléphone">
-            <a href={`tel:${identite.telephone}`} className="hover:text-magenta">{telephoneLisible(identite.telephone)}</a>
+            <a href={`tel:${identite.telephone}`} className="hover:text-navy">{telephoneLisible(identite.telephone)}</a>
           </Champ>
           <Champ libelle="E-mail">{identite.email}</Champ>
           <Champ libelle="Médecin traitant">{identite.medecinTraitant}</Champ>
@@ -113,7 +113,7 @@ export default function OngletDossier({ patient }) {
         titre="Examen"
         icone={<Stethoscope size={14} />}
         action={
-          <Link to={`/patients/${patient.id}/modifier`} className="inline-flex items-center gap-1.5 text-xs font-medium text-magenta hover:underline print:hidden">
+          <Link to={`/patients/${patient.id}/modifier`} className="inline-flex items-center gap-1.5 text-xs font-medium text-navy hover:underline print:hidden">
             <PenLine size={12} /> Modifier
           </Link>
         }
@@ -182,14 +182,14 @@ export default function OngletDossier({ patient }) {
               <p className="text-sm text-slate-600">Aucun facteur connu.</p>
             )}
             {suggerer ? (
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-magenta/30 bg-magenta/[0.06] p-3">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-navy/30 bg-navy/[0.06] p-3">
                 <p className="text-xs leading-relaxed text-slate-700">
-                  <span className="font-semibold text-magenta">Préparation renforcée conseillée.</span> Régime sans résidu sur 5 jours au lieu de 3.
+                  <span className="font-semibold text-navy">Préparation renforcée conseillée.</span> Régime sans résidu sur 5 jours au lieu de 3.
                 </p>
                 <button
                   type="button"
                   onClick={() => store.majDossier(patient.id, { examen: { renforce: true } }, { type: 'modification', titre: 'Préparation renforcée activée', detail: 'Régime sans résidu avancé à J-5' })}
-                  className="rounded-lg border border-magenta/35 bg-white px-3 py-1.5 text-xs font-semibold text-magenta hover:bg-magenta/[0.05]"
+                  className="rounded-lg border border-navy/35 bg-white px-3 py-1.5 text-xs font-semibold text-navy hover:bg-navy/[0.05]"
                 >
                   Activer
                 </button>

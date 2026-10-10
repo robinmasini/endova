@@ -91,7 +91,7 @@ export default function EtapeJ3({ patient, onFermer }) {
     >
       <GlassCard className="p-5">
         <p className="flex items-start gap-2 text-xs leading-relaxed text-slate-700">
-          <Info size={14} className="mt-0.5 shrink-0 text-magenta" />
+          <Info size={14} className="mt-0.5 shrink-0 text-navy" />
           <span>
             Le critère n’est pas calorique, il est mécanique : une graine de kiwi ou un pépin de tomate survit
             intact jusqu’au côlon, bouche le canal d’aspiration de l’endoscope et masque la muqueuse.
@@ -117,7 +117,7 @@ export default function EtapeJ3({ patient, onFermer }) {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Tapez un aliment : kiwi, riz, pain…"
             aria-label="Rechercher un aliment"
-            className="w-full rounded-xl border border-navy/[0.09] bg-white/60 py-3.5 pl-10 pr-4 text-sm text-navy outline-none transition-colors placeholder:text-slate-600 focus:border-magenta/50"
+            className="w-full rounded-xl border border-navy/[0.09] bg-white/60 py-3.5 pl-10 pr-4 text-sm text-navy outline-none transition-colors placeholder:text-slate-600 focus:border-navy/50"
           />
         </div>
 
@@ -133,7 +133,7 @@ export default function EtapeJ3({ patient, onFermer }) {
               onClick={() => setFiltre(f.id)}
               className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
                 filtre === f.id
-                  ? 'border-magenta/40 bg-magenta/10 text-magenta'
+                  ? 'border-navy/40 bg-navy/10 text-navy'
                   : 'border-navy/[0.09] bg-white/55 text-slate-600 hover:text-navy'
               }`}
             >

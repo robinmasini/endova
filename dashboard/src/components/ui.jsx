@@ -9,7 +9,7 @@ export const TONS = {
   emerald: { texte: 'text-emerald-700', bord: 'border-emerald-400/50', fond: 'bg-emerald-50/80', trait: 'bg-emerald-500', brut: '#059669' },
   amber: { texte: 'text-amber-700', bord: 'border-amber-400/55', fond: 'bg-amber-50/80', trait: 'bg-amber-500', brut: '#D97706' },
   ruby: { texte: 'text-rose-700', bord: 'border-rose-400/55', fond: 'bg-rose-50/80', trait: 'bg-rose-500', brut: '#BE123C' },
-  marque: { texte: 'text-magenta', bord: 'border-magenta/35', fond: 'bg-magenta/[0.07]', trait: 'bg-magenta', brut: '#932B9C' },
+  marque: { texte: 'text-navy', bord: 'border-navy/35', fond: 'bg-navy/[0.07]', trait: 'bg-navy', brut: '#932B9C' },
   neutre: { texte: 'text-slate-600', bord: 'border-navy/10', fond: 'bg-navy/[0.035]', trait: 'bg-slate-400', brut: '#64748B' },
 };
 

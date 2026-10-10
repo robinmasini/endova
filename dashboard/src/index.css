@@ -47,10 +47,10 @@ body::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(48rem 34rem at 8% -6%, rgba(147, 43, 156, 0.16), transparent 62%),
-    radial-gradient(42rem 42rem at 96% 4%, rgba(82, 35, 127, 0.14), transparent 60%),
+    radial-gradient(48rem 34rem at 8% -6%, rgba(11, 42, 99, 0.15), transparent 62%),
+    radial-gradient(42rem 42rem at 96% 4%, rgba(5, 28, 78, 0.11), transparent 60%),
     radial-gradient(52rem 38rem at 28% 104%, rgba(11, 42, 99, 0.13), transparent 64%),
-    radial-gradient(36rem 30rem at 82% 78%, rgba(147, 43, 156, 0.09), transparent 62%);
+    radial-gradient(36rem 30rem at 82% 78%, rgba(147, 43, 156, 0.05), transparent 62%);
 }
 
 /* Réfraction : liseré clair en haut, ombre courte au contact, ombre longue portée. */
@@ -149,4 +149,4 @@ body::before {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(5, 28, 78, 0.28); background-clip: content-box; }
 
-::selection { background: rgba(147, 43, 156, 0.18); }
+::selection { background: rgba(5, 28, 78, 0.16); }

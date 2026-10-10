@@ -1,24 +1,32 @@
 {
-  "name": "Endova — Préparation colique",
+  "name": "Endova — Suivi préopératoire",
   "short_name": "Endova",
+  "id": "/dashboard/",
   "start_url": "/dashboard/",
+  "scope": "/dashboard/",
   "display": "standalone",
-  "background_color": "#F4F5FA",
-  "theme_color": "#F4F5FA",
-  "description": "Accompagnement pas-à-pas de la préparation avant coloscopie.",
+  "background_color": "#FFFFFF",
+  "theme_color": "#051C4E",
+  "description": "Suivi de la préparation aux examens d’endoscopie digestive, de J-7 à J+7.",
+  "lang": "fr",
   "icons": [
     {
-      "src": "/dashboard/favicon.png",
-      "sizes": "256x256",
+      "src": "/dashboard/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/dashboard/endova-touch.png",
-      "sizes": "180x180",
+      "src": "/dashboard/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/dashboard/icon-maskable-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "scope": "/dashboard/"
+  ]
 }

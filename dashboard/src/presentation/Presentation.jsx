@@ -48,7 +48,7 @@ function Verre({ children, className = '', style }) {
 
 function Oeil({ children }) {
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-magenta">{children}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-navy">{children}</p>
   );
 }
 
@@ -286,7 +286,7 @@ function Echeancier(t) {
               }}
             >
               <div className="flex items-baseline justify-between gap-2">
-                <p className="font-marque text-lg font-bold text-magenta">{etape.cle}</p>
+                <p className="font-marque text-lg font-bold text-navy">{etape.cle}</p>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">{HEURES[etape.id]}</p>
               </div>
               <p className="mt-2 text-sm font-semibold leading-snug text-navy">{etape.titre}</p>
@@ -337,7 +337,7 @@ function Terrain(t) {
             [ListChecks, 'Échelle visuelle d’évacuation dérivée du score de Boston'],
           ].map(([Icone, texte]) => (
             <li key={texte} className="flex items-start gap-3 text-sm leading-relaxed text-slate-800">
-              <Icone size={17} className="mt-0.5 shrink-0 text-magenta" />
+              <Icone size={17} className="mt-0.5 shrink-0 text-navy" />
               {texte}
             </li>
           ))}
@@ -365,7 +365,7 @@ function Terrain(t) {
                 e.etat === 'fait'
                   ? 'border-emerald-400/50 bg-emerald-50/80'
                   : e.etat === 'actif'
-                    ? 'border-magenta/40 bg-magenta/[0.08]'
+                    ? 'border-navy/40 bg-navy/[0.08]'
                     : 'border-navy/[0.07] bg-white/60 opacity-60';
               return (
                 <div
@@ -419,7 +419,7 @@ function Pilotage(t) {
                 style={{ transform: `translateY(${entre(q, 24, 0)}px)`, opacity: entre(q, 0, 1) }}
               >
                 <p className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-wider text-slate-600">
-                  {k.libelle} <span className="text-magenta">{k.icone}</span>
+                  {k.libelle} <span className="text-navy">{k.icone}</span>
                 </p>
                 <p className={`mt-2.5 text-2xl font-extrabold tracking-tight ${k.ton ?? 'text-navy'}`}>{k.valeur}</p>
               </div>
@@ -478,7 +478,7 @@ function Cloture(t) {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-xl border border-magenta/35 bg-magenta/[0.09] px-5 py-3.5 text-sm font-semibold text-magenta transition-all hover:brightness-95"
+            className="inline-flex items-center gap-2 rounded-xl border border-navy/35 bg-navy/[0.09] px-5 py-3.5 text-sm font-semibold text-navy transition-all hover:brightness-95"
           >
             <Banknote size={16} /> Voir le tableau de bord
           </Link>

@@ -33,7 +33,7 @@ export default function FichePage() {
     return (
       <div className="px-5 pt-16 text-center sm:px-8">
         <p className="text-sm text-slate-700">Ce dossier n’existe pas ou a été archivé.</p>
-        <Link to="/patients" className="mt-3 inline-block text-xs font-medium text-magenta hover:underline">
+        <Link to="/patients" className="mt-3 inline-block text-xs font-medium text-navy hover:underline">
           Retour à la liste des patients
         </Link>
       </div>
@@ -92,7 +92,7 @@ export default function FichePage() {
             <div className="flex w-full shrink-0 gap-2 sm:w-auto print:hidden">
               <a
                 href={`tel:${patient.identite.telephone}`}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-magenta/35 bg-magenta/[0.08] px-3.5 py-2.5 text-xs font-semibold text-magenta transition-all hover:brightness-95 sm:flex-none"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-navy/35 bg-navy/[0.08] px-3.5 py-2.5 text-xs font-semibold text-navy transition-all hover:brightness-95 sm:flex-none"
               >
                 <PhoneCall size={14} /> Appeler
               </a>
@@ -133,7 +133,7 @@ export default function FichePage() {
                   onClick={() => choisir(o.id)}
                   aria-current={actif ? 'page' : undefined}
                   className={`flex shrink-0 items-center gap-2 border-b-2 px-3.5 pb-3 pt-1 text-sm transition-colors ${
-                    actif ? 'border-magenta font-semibold text-magenta' : 'border-transparent font-medium text-slate-600 hover:text-navy'
+                    actif ? 'border-navy font-semibold text-navy' : 'border-transparent font-medium text-slate-600 hover:text-navy'
                   }`}
                 >
                   <o.icone size={15} />

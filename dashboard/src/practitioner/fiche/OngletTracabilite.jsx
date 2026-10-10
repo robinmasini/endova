@@ -36,7 +36,7 @@ function TracerAppel({ patient }) {
               onClick={() => setIssue(i)}
               aria-pressed={issue === i}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                issue === i ? 'border-magenta/40 bg-magenta/[0.09] text-magenta' : 'border-navy/[0.09] bg-white/70 text-slate-600 hover:text-navy'
+                issue === i ? 'border-navy/40 bg-navy/[0.09] text-navy' : 'border-navy/[0.09] bg-white/70 text-slate-600 hover:text-navy'
               }`}
             >
               {i}
@@ -48,7 +48,7 @@ function TracerAppel({ patient }) {
           onChange={(e) => setNote(e.target.value)}
           rows={3}
           placeholder="Ce qui a été dit, la consigne donnée…"
-          className="w-full resize-none rounded-xl border border-navy/[0.1] bg-white/80 p-3 text-sm text-navy outline-none placeholder:text-slate-400 focus:border-magenta/50"
+          className="w-full resize-none rounded-xl border border-navy/[0.1] bg-white/80 p-3 text-sm text-navy outline-none placeholder:text-slate-400 focus:border-navy/50"
         />
         <button type="submit" className="w-full rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white transition-all hover:brightness-125">
           {ok ? 'Appel tracé ✓' : 'Enregistrer l’appel'}
@@ -105,7 +105,7 @@ export default function OngletTracabilite({ patient, cabinet }) {
               type="button"
               onClick={() => setFiltre(k)}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                filtre === k ? 'border-magenta/40 bg-magenta/[0.09] text-magenta' : 'border-navy/[0.09] bg-white/70 text-slate-600 hover:text-navy'
+                filtre === k ? 'border-navy/40 bg-navy/[0.09] text-navy' : 'border-navy/[0.09] bg-white/70 text-slate-600 hover:text-navy'
               }`}
             >
               {label} <span className="tabular-nums opacity-60">{n}</span>
