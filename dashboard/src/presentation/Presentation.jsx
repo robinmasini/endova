@@ -177,7 +177,7 @@ function Revelation(t) {
           opacity: entre(a, 0, 1),
         }}
       >
-        <img src={`${import.meta.env.BASE_URL}endova-mark.png`} alt="" className="size-28 rounded-[2rem] sm:size-36" />
+        <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className="size-28 sm:size-36" />
       </div>
 
       <p
@@ -465,7 +465,7 @@ function Cloture(t) {
         }}
       >
         <div className="brillance relative mx-auto block w-fit overflow-hidden rounded-[1.5rem]">
-          <img src={`${import.meta.env.BASE_URL}endova-mark.png`} alt="" className="size-20 rounded-[1.5rem]" />
+          <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className="size-20" />
         </div>
         <h2 className="mt-7 text-balance text-2xl font-bold tracking-tight text-navy sm:text-4xl">
           Un créneau sauvé paie plusieurs mois d’abonnement.

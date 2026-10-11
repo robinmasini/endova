@@ -95,7 +95,7 @@ export default function Coquille() {
             le E et le A tombent sur ses bords, quelle que soit la taille. */}
         <div className="flex flex-col items-center px-5 pb-7 pt-[calc(env(safe-area-inset-top,0px)+1.75rem)]">
           <span className="brillance relative block overflow-hidden rounded-[1.75rem]">
-            <img src={`${import.meta.env.BASE_URL}endova-mark.png`} alt="" className="size-28 rounded-[1.75rem]" />
+            <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className="size-28" />
           </span>
           <p
             aria-label="Endova"
