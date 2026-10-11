@@ -90,7 +90,7 @@ function initial(patient, cabinet) {
   const d = new Date();
   d.setDate(d.getDate() + 14);
   return {
-    identite: { nom: '', prenom: '', naissance: '', sexe: 'F', telephone: '', email: '', medecinTraitant: '' },
+    identite: { nom: '', prenom: '', naissance: '', telephone: '', email: '', medecinTraitant: '' },
     examen: {
       type: 'COLO', indication: EXAMENS.COLO.indications[0], jour: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, heure: '09:00',
       lieu: cabinet.lieux[0], operateur: cabinet.praticiens[0], anesthesie: 'AG', protocole: 'MOVIPREP', schema: 'FRACTIONNE', renforce: false,
@@ -196,12 +196,6 @@ export default function NouveauDossier() {
               <Etiquette libelle="Nom" requis><input className={champ} value={f.identite.nom} onChange={(e) => maj('identite', { nom: e.target.value })} autoFocus /></Etiquette>
               <Etiquette libelle="Prénom" requis><input className={champ} value={f.identite.prenom} onChange={(e) => maj('identite', { prenom: e.target.value })} /></Etiquette>
               <Etiquette libelle="Date de naissance" requis><input type="date" className={champ} value={f.identite.naissance} onChange={(e) => maj('identite', { naissance: e.target.value })} /></Etiquette>
-              <Etiquette libelle="Sexe">
-                <div className="grid grid-cols-2 gap-2">
-                  <Choix actif={f.identite.sexe === 'F'} onClick={() => maj('identite', { sexe: 'F' })}>Femme</Choix>
-                  <Choix actif={f.identite.sexe === 'M'} onClick={() => maj('identite', { sexe: 'M' })}>Homme</Choix>
-                </div>
-              </Etiquette>
               <Etiquette libelle="Téléphone portable" requis>
                 <input type="tel" inputMode="tel" className={champ} placeholder="06 12 34 56 78" value={f.identite.telephone} onChange={(e) => maj('identite', { telephone: e.target.value })} />
               </Etiquette>

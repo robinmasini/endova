@@ -99,7 +99,6 @@ export default function OngletDossier({ patient }) {
           <Champ libelle="Nom">{identite.nom.toUpperCase()}</Champ>
           <Champ libelle="Prénom">{identite.prenom}</Champ>
           <Champ libelle="Naissance">{dateLongue(identite.naissance)} · {a} ans</Champ>
-          <Champ libelle="Sexe">{{ F: 'Femme', M: 'Homme' }[identite.sexe]}</Champ>
           <Champ libelle="Téléphone">
             <a href={`tel:${identite.telephone}`} className="hover:text-navy">{telephoneLisible(identite.telephone)}</a>
           </Champ>

@@ -57,7 +57,7 @@ function dossier({ id, token, numero, identite, examen, terrain = {}, administra
     id,
     token,
     numero,
-    identite: { sexe: 'F', email: '', medecinTraitant: '', ...identite },
+    identite: { email: '', medecinTraitant: '', ...identite },
     examen: { anesthesie: 'AG', schema: 'FRACTIONNE', renforce: false, protocole: null, ...examen, date: examen.date.toISOString() },
     terrain: { traitements: [], facteurs: [], comorbidites: [], allergies: '', antecedents: '', ...terrain },
     administratif: { ...vierge, ...administratif },
@@ -144,7 +144,7 @@ export function semer() {
     }),
     dossier({
       id: 'p2', token: 'b2e9d4', numero: 'GE-2026-0384',
-      identite: { nom: 'Nkemba', prenom: 'Joseph', sexe: 'M', naissance: '1955-09-02', telephone: '+33639981202', medecinTraitant: 'Dr Lambert' },
+      identite: { nom: 'Nkemba', prenom: 'Joseph', naissance: '1955-09-02', telephone: '+33639981202', medecinTraitant: 'Dr Lambert' },
       examen: { type: 'COLO_GASTRO', indication: 'Anémie ferriprive', date: d2, lieu: PARC, operateur: MARCHAL, protocole: 'PLENVU', renforce: true },
       terrain: { traitements: ['AOD', 'FER', 'INSULINE'], facteurs: ['DIABETE'], allergies: 'Pénicilline', antecedents: 'Fibrillation atriale, diabète de type 2' },
       administratif: { ...complet, cpa: { faite: true, date: le(-9, 14).toISOString() } },
@@ -180,7 +180,7 @@ export function semer() {
     }),
     dossier({
       id: 'p4', token: 'd9b6e3', numero: 'GE-2026-0389',
-      identite: { nom: 'Oliveira', prenom: 'Tiago', sexe: 'M', naissance: '1990-06-30', telephone: '+33639981204', medecinTraitant: 'Dr Morel' },
+      identite: { nom: 'Oliveira', prenom: 'Tiago', naissance: '1990-06-30', telephone: '+33639981204', medecinTraitant: 'Dr Morel' },
       examen: { type: 'COLO', indication: 'Rectorragies', date: d4, lieu: PARC, operateur: MARCHAL, protocole: 'EZICLEN' },
       administratif: { ...complet, cpa: { faite: true, date: le(-8, 11).toISOString() } },
       etapes: {
@@ -196,7 +196,7 @@ export function semer() {
     // — Demain, Centre Saint-Just, Dr Benali.
     dossier({
       id: 'p6', token: 'f1d2c8', numero: 'GE-2026-0392',
-      identite: { nom: 'Garnier', prenom: 'Henri', sexe: 'M', naissance: '1949-11-17', telephone: '+33639981206', medecinTraitant: 'Dr Roche' },
+      identite: { nom: 'Garnier', prenom: 'Henri', naissance: '1949-11-17', telephone: '+33639981206', medecinTraitant: 'Dr Roche' },
       examen: { type: 'GASTRO', indication: 'Épigastralgies, dyspepsie', date: le(1, 8, 45), lieu: SAINT_JUST, operateur: BENALI },
       terrain: { traitements: ['GLP1', 'SGLT2'], facteurs: ['DIABETE', 'OBESITE'], antecedents: 'Diabète de type 2, obésité' },
       administratif: { ...complet, cpa: { faite: true, date: le(-6, 16).toISOString() } },
@@ -222,7 +222,7 @@ export function semer() {
     // — Dans trois jours.
     dossier({
       id: 'p8', token: 'b8c4d1', numero: 'GE-2026-0395',
-      identite: { nom: 'Da Silva', prenom: 'Marc', sexe: 'M', naissance: '1963-12-04', telephone: '+33639981208', medecinTraitant: 'Dr Lambert' },
+      identite: { nom: 'Da Silva', prenom: 'Marc', naissance: '1963-12-04', telephone: '+33639981208', medecinTraitant: 'Dr Lambert' },
       examen: { type: 'COLO_GASTRO', indication: 'Bilan de douleurs abdominales', date: le(3, 9, 30), lieu: PARC, operateur: MARCHAL, protocole: 'MOVIPREP', renforce: true },
       terrain: { traitements: [], facteurs: ['CONSTIPATION', 'PSYCHOTROPES'], antecedents: 'Lombalgie chronique sous tramadol' },
       administratif: { consentement: true, ordonnance: true, bonAdmission: true },
@@ -244,7 +244,7 @@ export function semer() {
     // — Dans cinq jours : le premier SMS est parti il y a deux jours, jamais ouvert.
     dossier({
       id: 'p10', token: 'd4f8a2', numero: 'GE-2026-0398',
-      identite: { nom: 'Petit', prenom: 'Bernard', sexe: 'M', naissance: '1958-02-26', telephone: '+33639981210', medecinTraitant: 'Dr Faure' },
+      identite: { nom: 'Petit', prenom: 'Bernard', naissance: '1958-02-26', telephone: '+33639981210', medecinTraitant: 'Dr Faure' },
       examen: { type: 'COLO', indication: 'Antécédent familial de cancer colorectal', date: le(5, 8), lieu: PARC, operateur: MARCHAL, protocole: 'PLENVU' },
       terrain: { traitements: ['AVK'], antecedents: 'Valve mécanique aortique' },
       administratif: { cpa: { faite: true, date: le(-4, 15).toISOString() }, ordonnance: true },
@@ -265,7 +265,7 @@ export function semer() {
     //   c'est elle qui décide du résultat.
     dossier({
       id: 'p11', token: 'e7a1c3', numero: 'GE-2026-0404',
-      identite: { nom: 'Chevalier', prenom: 'Pascal', sexe: 'M', naissance: '1966-09-02', telephone: '+33639981211', medecinTraitant: 'Dr Roche' },
+      identite: { nom: 'Chevalier', prenom: 'Pascal', naissance: '1966-09-02', telephone: '+33639981211', medecinTraitant: 'Dr Roche' },
       examen: { type: 'CPRE', indication: 'Calcul de la voie biliaire principale', date: le(2, 8, 30), lieu: PARC, operateur: MARCHAL },
       terrain: { traitements: ['AOD'], antecedents: 'Fibrillation auriculaire sous apixaban' },
       administratif: { ...complet, cpa: { faite: true, date: le(-5, 11).toISOString() } },
@@ -286,7 +286,7 @@ export function semer() {
     }),
     dossier({
       id: 'p13', token: 'a9c5e2', numero: 'GE-2026-0409',
-      identite: { nom: 'Bouchard', prenom: 'Théo', sexe: 'M', naissance: '1998-04-17', telephone: '+33639981213', medecinTraitant: 'Dr Faure' },
+      identite: { nom: 'Bouchard', prenom: 'Théo', naissance: '1998-04-17', telephone: '+33639981213', medecinTraitant: 'Dr Faure' },
       examen: { type: 'HPYLORI', indication: 'Contrôle d’éradication d’Helicobacter pylori', date: le(6, 8, 15), lieu: SAINT_JUST, operateur: BENALI, anesthesie: 'SANS' },
       terrain: { antecedents: 'Ulcère duodénal traité, éradication à contrôler' },
       administratif: { ordonnance: true },
