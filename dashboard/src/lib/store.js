@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from 'react';
 import { semer, CABINET_SEED } from './seed.js';
 import { smsEchus } from './sms.js';
+import { supabaseConfigure } from './supabase.js';
+import { chargerEtat, enregistrerDossier, enregistrerCabinet, ajouterEvenements } from './distant.js';
 
 /**
  * Persistance locale + diffusion inter-onglets.
@@ -78,9 +80,38 @@ canal?.addEventListener('message', (e) => {
   }
 });
 
+/**
+ * Mode distant. La mémoire reste la vérité de l'écran — l'interface est
+ * synchrone et le restera — mais chaque écriture est poussée vers la base.
+ * Les envois ne sont pas attendus : une latence réseau ne doit pas figer une
+ * saisie. Un échec est retenu dans `dernierSouci` plutôt qu'avalé.
+ */
+let distant = null;          // { cabinetId } une fois la session ouverte
+let dernierSouci = null;
+const journauxPousses = new WeakMap();
+
+function pousser(promesse) {
+  promesse?.catch((e) => {
+    dernierSouci = e.message;
+    diffuser();
+  });
+}
+
+function pousserDossier(id) {
+  if (!distant) return;
+  const p = etat.patients.find((x) => x.id === id);
+  if (!p) return;
+  pousser(enregistrerDossier(p, distant.cabinetId));
+  // Le journal est en append-only : on n'envoie que les lignes jamais parties.
+  const deja = journauxPousses.get(p) ?? 0;
+  const neufs = (p.evenements ?? []).slice(deja);
+  journauxPousses.set(p, (p.evenements ?? []).length);
+  pousser(ajouterEvenements(id, neufs));
+}
+
 function ecrire(next) {
   etat = next;
-  persister();
+  if (!distant) persister();
   diffuser();
 }
 
@@ -97,7 +128,17 @@ const avecEvenement = (p, evt) => ({
   evenements: [...(p.evenements ?? []), { at: maintenant(), auteur: evt.auteur ?? etat.cabinet.utilisateur, ...evt }],
 });
 
-const jeton = () => Math.random().toString(16).slice(2, 8);
+/**
+ * Le jeton du lien SMS. Seize caractères tirés du générateur cryptographique :
+ * les six caractères de `Math.random()` précédents se parcouraient en entier,
+ * ce qui était sans conséquence tant que tout vivait dans le navigateur, et
+ * ne l'est plus du tout dès que le dossier est posé sur un serveur.
+ */
+function jeton() {
+  const octets = new Uint8Array(8);
+  crypto.getRandomValues(octets);
+  return [...octets].map((o) => o.toString(16).padStart(2, '0')).join('');
+}
 
 export const store = {
   /**
