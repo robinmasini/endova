@@ -38,14 +38,7 @@ export default function Connexion() {
     <div className="flex min-h-dvh items-center justify-center p-5">
       <GlassCard deep className="w-full max-w-sm p-7 rise">
         <img src={`${import.meta.env.BASE_URL}endova-logo.png`} alt="Endova" className="mx-auto h-20 w-auto" />
-        <h1 className="mt-6 text-center text-xl font-semibold tracking-tight text-navy">
-          {creer ? 'Créer un accès' : 'Logiciel du cabinet'}
-        </h1>
-        <p className="mt-2 text-center text-sm leading-relaxed text-slate-600">
-          Les dossiers contiennent des données de santé. L’accès est nominatif.
-        </p>
-
-        <form onSubmit={valider} className="mt-6 space-y-3">
+        <form onSubmit={valider} className="mt-8 space-y-3">
           <div>
             <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-slate-700">Adresse e-mail</label>
             <input

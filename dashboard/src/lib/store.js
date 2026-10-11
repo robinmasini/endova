@@ -97,16 +97,36 @@ function pousser(promesse) {
   });
 }
 
+// Une file par dossier : deux écritures rapprochées ne doivent pas se doubler.
+const chaines = new Map();
+
 function pousserDossier(id) {
   if (!distant) return;
   const p = etat.patients.find((x) => x.id === id);
   if (!p) return;
-  pousser(enregistrerDossier(p, distant.cabinetId));
-  // Le journal est en append-only : on n'envoie que les lignes jamais parties.
+  const cabinetId = distant.cabinetId;
+
+  // Le journal référence le dossier par clé étrangère : il part après lui, et
+  // seulement s'il est bien arrivé. En parallèle, le premier événement d'un
+  // dossier neuf se présenterait avant sa cible.
   const deja = journauxPousses.get(p) ?? 0;
   const neufs = (p.evenements ?? []).slice(deja);
-  journauxPousses.set(p, (p.evenements ?? []).length);
-  pousser(ajouterEvenements(id, neufs));
+
+  const suite = (chaines.get(id) ?? Promise.resolve())
+    .then(() => enregistrerDossier(p, cabinetId))
+    .then(async () => {
+      if (!neufs.length) return;
+      await ajouterEvenements(id, neufs);
+      // Le compteur n'avance qu'une fois les lignes écrites : un échec les
+      // laisse en attente du prochain envoi plutôt que de les perdre.
+      journauxPousses.set(p, deja + neufs.length);
+    })
+    .catch((e) => {
+      dernierSouci = e.message;
+      diffuser();
+    });
+
+  chaines.set(id, suite);
 }
 
 function ecrire(next) {
