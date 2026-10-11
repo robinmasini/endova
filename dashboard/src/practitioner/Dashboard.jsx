@@ -33,7 +33,7 @@ function Data({ libelle, valeur, unite, detail, ton = 'marque', icone, onClick, 
     >
       <div className="flex items-start justify-between gap-2 sm:gap-3">
         <p className="text-[10px] font-semibold uppercase leading-tight tracking-wider text-slate-600 sm:text-[11px]">{libelle}</p>
-        <span className={`flex size-7 shrink-0 items-center justify-center rounded-lg sm:size-8 ${t.fond} ${t.texte}`}>
+        <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl sm:size-11 ${t.fond} ${t.texte}`}>
           {icone}
         </span>
       </div>
@@ -204,25 +204,25 @@ export default function Dashboard() {
           <Data
             libelle="Préparations en cours" valeur={actifs.length} unite={`/ ${aVenir.length}`}
             detail="Examen dans les quatorze jours"
-            icone={<UsersRound size={15} />}
+            icone={<UsersRound size={21} />}
             onClick={() => basculer('actifs')} actif={filtre === 'actifs'}
           />
           <Data
             libelle="Alertes" valeur={enAlerte.length}
             detail={enAlerte.length ? 'Dossiers à reprendre avant l’examen' : 'Aucun écart en attente'}
-            ton={enAlerte.length ? 'ruby' : 'emerald'} icone={<AlertTriangle size={15} />}
+            ton={enAlerte.length ? 'ruby' : 'emerald'} icone={<AlertTriangle size={21} />}
             onClick={() => basculer('alertes')} actif={filtre === 'alertes'}
           />
           <Data
             libelle="Conformité des déclarations" valeur={conformite ?? '—'} unite={conformite === null ? '' : '%'}
             detail="Points acquis sur les étapes déjà échues"
             ton={conformite === null ? 'neutre' : conformite >= 80 ? 'emerald' : conformite >= 50 ? 'amber' : 'ruby'}
-            icone={<ListChecks size={15} />}
+            icone={<ListChecks size={21} />}
           />
           <Data
             libelle="Vacation du jour" valeur={`${prets}/${duJour.length}`}
             detail="Patients prêts pour leur examen aujourd’hui"
-            ton={duJour.length && prets === duJour.length ? 'emerald' : 'amber'} icone={<ShieldCheck size={15} />}
+            ton={duJour.length && prets === duJour.length ? 'emerald' : 'amber'} icone={<ShieldCheck size={21} />}
             onClick={duJour.length ? () => basculer('jour') : undefined} actif={filtre === 'jour'}
           />
         </div>
