@@ -172,6 +172,17 @@ export default function Coquille() {
         </div>
       </aside>
 
+      {/* Marque, sur mobile seulement : la barre latérale qui la porte
+          ailleurs est masquée sous md. */}
+      <div className="flex items-center border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
+        <img
+          src={`${import.meta.env.BASE_URL}lockup-mobile.png`}
+          alt="Endova × Cabinet Athènes"
+          className="h-7 w-auto select-none"
+          draggable={false}
+        />
+      </div>
+
       {/* Contenu — la marge basse laisse passer la barre mobile */}
       <main className="pb-24 md:pb-28">
         <Outlet />
