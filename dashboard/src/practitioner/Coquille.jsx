@@ -136,15 +136,15 @@ export default function Coquille() {
         </nav>
 
         <div className="border-t border-navy/[0.07] p-3">
-          <div className="flex items-center gap-2.5 px-2 pb-2">
+          <div className="flex flex-col items-center gap-2 px-2 pb-3">
             <img
               src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
               alt=""
               aria-hidden="true"
-              className="h-7 w-auto shrink-0 select-none"
+              className="h-11 w-auto select-none"
               draggable={false}
             />
-            <p className="min-w-0 text-[11px] leading-relaxed text-slate-500">
+            <p className="w-full text-center text-[11px] leading-relaxed text-slate-500">
               <span className="block truncate font-semibold text-slate-700">{cabinet.nomCourt}</span>
               {patients.length} dossiers en préparation
             </p>
@@ -153,7 +153,7 @@ export default function Coquille() {
             <button
               type="button"
               onClick={deconnexion}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
+              className="flex w-full items-center justify-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
             >
               <Lock size={13} /> Se déconnecter
             </button>
@@ -161,7 +161,7 @@ export default function Coquille() {
             <button
               type="button"
               onClick={() => store.reinitialiser()}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
+              className="flex w-full items-center justify-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
             >
               <RotateCcw size={13} /> Réinitialiser la démo
             </button>
