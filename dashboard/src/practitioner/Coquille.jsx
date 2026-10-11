@@ -5,6 +5,7 @@ import { supabaseConfigure } from '../lib/supabase.js';
 import { deconnexion } from '../lib/session.js';
 import { alertesActives } from '../lib/score.js';
 import ScanSms from '../components/ScanSms.jsx';
+import { Marque } from '../components/ui.jsx';
 import { joursAvant } from '../lib/examens.js';
 
 /**
@@ -173,12 +174,17 @@ export default function Coquille() {
       </aside>
 
       {/* Marque, sur mobile seulement : la barre latérale qui la porte
-          ailleurs est masquée sous md. */}
-      <div className="flex items-center border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
+          ailleurs est masquée sous md.
+          Le couple est composé ici, et non cuit dans une image : le mot-symbole
+          reste net quelle que soit la densité de l'écran, et aucune lettre ne
+          se fait rogner par le cadre. */}
+      <div className="flex items-center gap-4 border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
+        <Marque taille="lg" />
+        <span aria-hidden="true" className="h-9 w-px shrink-0 bg-navy/[0.12]" />
         <img
-          src={`${import.meta.env.BASE_URL}lockup-mobile.png`}
-          alt="Endova × Cabinet Athènes"
-          className="h-7 w-auto select-none"
+          src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
+          alt={cabinet.nomCourt}
+          className="h-11 w-auto select-none"
           draggable={false}
         />
       </div>
