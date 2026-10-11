@@ -91,7 +91,7 @@ img{max-width:100%;display:block}
   opacity:calc(.25 + .75*var(--k,1));
   background:radial-gradient(ellipse 78% 64% at 42% 50%,rgba(3,11,38,.72) 0%,rgba(3,11,38,.48) 46%,rgba(3,11,38,0) 76%);
 }
-.bande .dedans{position:relative;width:min(46ch,46vw);margin-left:clamp(28px,11vw,200px)}
+.bande .dedans{position:relative;width:min(43ch,40vw);margin-left:clamp(28px,16vw,300px)}
 .bande h2{font-size:clamp(28px,4.4vw,58px);color:#fff}
 .bande .sous{margin-top:18px;font-size:clamp(15px,1.5vw,20px);color:#E6D8EE;max-width:38ch;line-height:2.1}
 /* Dans un paragraphe, la pastille ne doit pas écraser la ligne. */
@@ -235,7 +235,8 @@ img{max-width:100%;display:block}
   border-radius:999px;background:#fff;border:1px solid rgba(5,28,78,.07);
   box-shadow:0 1px 2px rgba(5,28,78,.10),0 8px 20px -10px rgba(5,28,78,.28);
   font-family:var(--titre);font-weight:600;font-size:.78em;letter-spacing:.09em;
-  color:var(--accent);white-space:nowrap;line-height:1;vertical-align:middle}
+  color:var(--accent);white-space:nowrap;line-height:1;vertical-align:middle;
+  text-shadow:none}
 .jalon img{height:1.5em;width:auto;display:block}
 .jalon.plein{background:var(--accent);color:#fff;border-color:transparent;
   box-shadow:0 2px 10px -2px rgba(147,43,156,.5)}
@@ -596,15 +597,9 @@ select option{color:var(--navy)}
             <p class="lede">Il n'a rien caché. Personne ne lui a demandé.</p>
           </div>
         </div>
-        <div class="suite-jalons" aria-label="Échéancier d'une coloscopie, de J-7 au jour de l'examen">
-          <span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;3</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;2</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;1</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;5</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span>
-          <span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon plein"><img src="assets/glyphe-blanc.png" alt="">J&#8239;-&#8239;J</span>
-        </div>
-        <p class="lede" style="margin-top:16px">Six messages, six réponses, et le cabinet prévenu dès qu'une réponse sort du cadre. Le jour J, Endova passe la main.</p>
-
-        <div class="grille-3">
+                <div class="grille-3">
           <div class="verre chiffre"><div class="n" data-compte="25" data-suffixe=" %">0 %</div><p class="q">des coloscopies jugées mal préparées</p><p class="d">Score de Boston insuffisant</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="9" data-suffixe="">0</div><p class="q">examens au catalogue</p><p class="d">Chacun son échéancier, de la coloscopie au test respiratoire</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="6" data-suffixe=" SMS">0 SMS</div><p class="q">de préopératoire par patient</p><p class="d">De J-7 à H-2, délivrés d'un seul scan</p></div>
           <div class="verre chiffre"><div class="n" data-compte="4160" data-suffixe=" €">0 €</div><p class="q">rattrapés chaque mois</p><p class="d">Pour 30 examens par semaine, voir le calcul plus bas</p></div>
         </div>
       </div>
