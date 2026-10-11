@@ -16,6 +16,7 @@ import Rappels from './practitioner/Rappels.jsx';
 import Vacations from './practitioner/Vacations.jsx';
 import PatientApp from './patient/PatientApp.jsx';
 import Presentation from './presentation/Presentation.jsx';
+import Chargement from './components/Chargement.jsx';
 
 /**
  * La coquille du cabinet, derrière la session.
@@ -37,7 +38,7 @@ function CoquilleGardee() {
     if (phase === 'anonyme') store.fermerSession();
   }, [phase]);
 
-  if (phase === 'chargement' || (phase === 'connecte' && lien === 'attente')) return <div className="min-h-dvh" />;
+  if (phase === 'chargement' || (phase === 'connecte' && lien === 'attente')) return <Chargement />;
   if (phase === 'anonyme') return <Connexion />;
   if (lien === 'sans-cabinet') return <InstallationCabinet onInstalle={ouvrir} />;
   if (lien === 'erreur') {
