@@ -116,7 +116,7 @@ export function Marque({ taille = 'md', className = '' }) {
   const dim = { sm: 'size-7', md: 'size-9', lg: 'size-11' }[taille];
   const texte = { sm: 'text-[11px]', md: 'text-sm', lg: 'text-base' }[taille];
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
+    <div className={`flex items-center gap-4 ${className}`}>
       <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className={`${dim} shrink-0`} />
       <span className={`font-marque font-semibold tracking-[0.28em] text-navy ${texte}`}>ENDOVA</span>
     </div>

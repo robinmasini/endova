@@ -102,7 +102,7 @@ export default function Coquille() {
           </span>
           <p
             aria-label="Endova"
-            className="mt-3.5 flex w-28 justify-between font-marque text-[14px] font-semibold text-navy"
+            className="mt-5 flex w-28 justify-between font-marque text-[14px] font-semibold text-navy"
           >
             {[...'ENDOVA'].map((lettre, i) => (
               <span key={`${lettre}-${i}`} aria-hidden="true">{lettre}</span>
