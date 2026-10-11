@@ -23,7 +23,7 @@ const GROUPES = [
   {
     titre: 'Dossiers',
     sections: [
-      { to: '/patients', label: 'Patients', complet: 'Patients', icone: UsersRound, mobile: 2 },
+      { to: '/patients', label: 'Patients', complet: 'Patients', icone: UsersRound, mobile: 1 },
       { to: '/patients/nouveau', label: 'Nouveau', complet: 'Nouveau dossier', icone: Plus, fin: true },
     ],
   },
@@ -31,7 +31,7 @@ const GROUPES = [
     titre: 'Communication',
     sections: [
       { to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 },
-      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye, mobile: 1 },
+      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye, mobile: 2 },
     ],
   },
   {
