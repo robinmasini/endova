@@ -23,7 +23,7 @@ de cadre vide ni de mention « placeholder » à l'écran, la page reste montrab
 
 ## Colorimétrie
 
-Le dégradé de la marque va du magenta `#932B9C` au navy `#051C4E`. Éviter dans
+Le dégradé de la marque va du magenta `#C74BD6` au bleu `#0B2D79`. Éviter dans
 les plans tout vert clinique saturé ou tout cyan franc : ils entrent en conflit
 direct avec le violet du logo qui apparaît juste après, à la révélation.
 
