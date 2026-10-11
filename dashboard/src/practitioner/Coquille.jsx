@@ -5,7 +5,6 @@ import { supabaseConfigure } from '../lib/supabase.js';
 import { deconnexion } from '../lib/session.js';
 import { alertesActives } from '../lib/score.js';
 import ScanSms from '../components/ScanSms.jsx';
-import { Marque } from '../components/ui.jsx';
 import { joursAvant } from '../lib/examens.js';
 
 /**
@@ -175,11 +174,17 @@ export default function Coquille() {
 
       {/* Marque, sur mobile seulement : la barre latérale qui la porte
           ailleurs est masquée sous md.
-          Le couple est composé ici, et non cuit dans une image : le mot-symbole
-          reste net quelle que soit la densité de l'écran, et aucune lettre ne
-          se fait rogner par le cadre. */}
+          Le couple est composé ici, et non cuit dans une image : chaque marque
+          garde sa définition, et aucune ne se fait rogner par le cadre.
+          Le pictogramme porte seul le nom : la barre juste en dessous dit déjà
+          où l'on est, le mot-symbole n'ajouterait qu'une redite. */}
       <div className="flex items-center gap-4 border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
-        <Marque taille="lg" />
+        <img
+          src={`${import.meta.env.BASE_URL}endova-glyphe.png`}
+          alt="Endova"
+          className="h-12 w-auto select-none"
+          draggable={false}
+        />
         <span aria-hidden="true" className="h-9 w-px shrink-0 bg-navy/[0.12]" />
         <img
           src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
