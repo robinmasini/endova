@@ -29,21 +29,25 @@ function Data({ libelle, valeur, unite, detail, ton = 'marque', icone, onClick, 
   return (
     <Balise
       {...(onClick ? { type: 'button', onClick, 'aria-pressed': actif } : {})}
-      className={`relative w-full rounded-2xl border p-5 text-left backdrop-blur-2xl backdrop-saturate-[180%] transition-all duration-300 ${peau} ${marque} ${onClick ? 'hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40' : ''}`}
+      className={`relative flex aspect-square w-full flex-col rounded-2xl border p-4 text-left backdrop-blur-2xl backdrop-saturate-[180%] transition-all duration-300 sm:aspect-auto sm:p-5 ${peau} ${marque} ${onClick ? 'hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40' : ''}`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-600">{libelle}</p>
-        <span className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${t.fond} ${t.texte}`}>
+      <div className="flex items-start justify-between gap-2 sm:gap-3">
+        <p className="text-[10px] font-semibold uppercase leading-tight tracking-wider text-slate-600 sm:text-[11px]">{libelle}</p>
+        <span className={`flex size-7 shrink-0 items-center justify-center rounded-lg sm:size-8 ${t.fond} ${t.texte}`}>
           {icone}
         </span>
       </div>
-      <p className="mt-3 flex items-baseline gap-1.5">
-        <span className={`text-3xl font-extrabold tracking-tight ${ton === 'marque' ? 'text-navy' : t.texte}`}>
-          {valeur}
-        </span>
-        {unite ? <span className="text-xs font-medium text-slate-600">{unite}</span> : null}
-      </p>
-      <p className="mt-1.5 text-[11px] leading-relaxed text-slate-600">{detail}</p>
+      {/* Sur la tuile carrée, le chiffre et sa légende se calent en bas :
+          le libellé garde le haut, quelle que soit sa longueur. */}
+      <div className="mt-auto pt-3">
+        <p className="flex items-baseline gap-1.5">
+          <span className={`text-2xl font-extrabold tracking-tight sm:text-3xl ${ton === 'marque' ? 'text-navy' : t.texte}`}>
+            {valeur}
+          </span>
+          {unite ? <span className="text-xs font-medium text-slate-600">{unite}</span> : null}
+        </p>
+        <p className="mt-1 text-[10px] leading-snug text-slate-600 sm:mt-1.5 sm:text-[11px] sm:leading-relaxed">{detail}</p>
+      </div>
     </Balise>
   );
 }
@@ -196,7 +200,7 @@ export default function Dashboard() {
             <span><span className="font-semibold">{echus} SMS arrivé{echus > 1 ? 's' : ''} à échéance.</span> Touchez le bouton Endova pour les délivrer.</span>
           </p>
         ) : null}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <Data
             libelle="Préparations en cours" valeur={actifs.length} unite={`/ ${aVenir.length}`}
             detail="Examen dans les quatorze jours"

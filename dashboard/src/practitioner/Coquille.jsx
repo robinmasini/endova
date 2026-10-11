@@ -90,7 +90,12 @@ export default function Coquille() {
   };
 
   return (
-    <div className="min-h-dvh md:pl-60 print:pl-0">
+    // Sur téléphone, la coquille occupe la hauteur visible et ne défile pas :
+    // c'est le contenu qui défile à l'intérieur. Sans cela, la barre du bas,
+    // simplement « fixed », passe sous la barre d'outils du navigateur tant
+    // qu'on n'a pas fait défiler la page. Au-delà de md, le document reprend
+    // son défilement habituel.
+    <div className="flex h-dvh flex-col overflow-hidden md:block md:h-auto md:min-h-dvh md:overflow-visible md:pl-60 print:block print:h-auto print:overflow-visible print:pl-0">
       {/* Sidebar — desktop */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 print:!hidden flex-col border-r border-navy/[0.07] bg-white/60 backdrop-blur-2xl backdrop-saturate-[180%] md:flex">
         {/* Bloc de marque centré, à l'inverse des entrées de nav calées à gauche.
@@ -172,39 +177,43 @@ export default function Coquille() {
         </div>
       </aside>
 
-      {/* Marque, sur mobile seulement : la barre latérale qui la porte
-          ailleurs est masquée sous md.
-          Le couple est composé ici, et non cuit dans une image : chaque marque
-          garde sa définition, et aucune ne se fait rogner par le cadre.
-          Le pictogramme porte seul le nom : la barre juste en dessous dit déjà
-          où l'on est, le mot-symbole n'ajouterait qu'une redite. */}
-      <div className="flex items-center gap-4 border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
-        <img
-          src={`${import.meta.env.BASE_URL}endova-glyphe.png`}
-          alt="Endova"
-          className="h-12 w-auto select-none"
-          draggable={false}
-        />
-        <span aria-hidden="true" className="h-9 w-px shrink-0 bg-navy/[0.12]" />
-        <img
-          src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
-          alt={cabinet.nomCourt}
-          className="h-11 w-auto select-none"
-          draggable={false}
-        />
-      </div>
+      {/* Zone défilante. Le bandeau de marque est dedans : il s'efface vers le
+          haut comme auparavant, tandis que la barre du bas reste en place. */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain md:block md:min-h-0 md:flex-none md:overflow-visible print:block print:overflow-visible">
+        {/* Marque, sur mobile seulement : la barre latérale qui la porte
+            ailleurs est masquée sous md.
+            Le couple est composé ici, et non cuit dans une image : chaque marque
+            garde sa définition, et aucune ne se fait rogner par le cadre.
+            Le pictogramme porte seul le nom : la barre juste en dessous dit déjà
+            où l'on est, le mot-symbole n'ajouterait qu'une redite. */}
+        <div className="flex items-center gap-4 border-b border-navy/[0.07] px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.875rem)] md:hidden">
+          <img
+            src={`${import.meta.env.BASE_URL}endova-glyphe.png`}
+            alt="Endova"
+            className="h-12 w-auto select-none"
+            draggable={false}
+          />
+          <span aria-hidden="true" className="h-9 w-px shrink-0 bg-navy/[0.12]" />
+          <img
+            src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
+            alt={cabinet.nomCourt}
+            className="h-11 w-auto select-none"
+            draggable={false}
+          />
+        </div>
 
-      {/* Contenu — la marge basse laisse passer la barre mobile */}
-      <main className="pb-24 md:pb-28">
-        <Outlet />
-      </main>
+        {/* Contenu — la marge basse laisse passer le bouton surélevé */}
+        <main className="pb-12 md:pb-28">
+          <Outlet />
+        </main>
+      </div>
 
       {/* Scan SMS — bureau : même bouton, posé en bas à droite, toujours à portée. */}
       <ScanSms bureau />
 
       {/* Barre de navigation — mobile. La marque occupe le centre, en pastille
           surélevée : quatre sections se répartissent de part et d'autre. */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 print:hidden border-t border-navy/[0.07] bg-white/85 backdrop-blur-2xl backdrop-saturate-[180%] md:hidden">
+      <nav className="relative z-30 shrink-0 print:hidden border-t border-navy/[0.07] bg-white/85 backdrop-blur-2xl backdrop-saturate-[180%] md:hidden">
         <div className="flex items-stretch pb-[env(safe-area-inset-bottom,0px)]">
           {MOBILE.slice(0, 2).map((s) => <Onglet key={s.to} section={s} compteurs={compteurs} />)}
 
