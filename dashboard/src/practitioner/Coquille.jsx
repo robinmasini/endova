@@ -1,5 +1,5 @@
 import { NavLink, Navigate, Outlet, useSearchParams } from 'react-router-dom';
-import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus, Lock } from '../components/icones.js';
+import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus, Lock, Eye } from '../components/icones.js';
 import { useDossiers, store } from '../lib/store.js';
 import { supabaseConfigure } from '../lib/supabase.js';
 import { deconnexion } from '../lib/session.js';
@@ -29,7 +29,10 @@ const GROUPES = [
   },
   {
     titre: 'Communication',
-    sections: [{ to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 }],
+    sections: [
+      { to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 },
+      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye },
+    ],
   },
   {
     titre: 'Cabinet',

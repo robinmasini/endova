@@ -9,6 +9,7 @@ import Dashboard from './practitioner/Dashboard.jsx';
 import ListePatients from './practitioner/ListePatients.jsx';
 import Echeancier from './practitioner/Echeancier.jsx';
 import Reglages from './practitioner/Reglages.jsx';
+import ApercuSuivi from './practitioner/ApercuSuivi.jsx';
 import FichePage from './practitioner/fiche/FichePage.jsx';
 import NouveauDossier from './practitioner/NouveauDossier.jsx';
 import Rappels from './practitioner/Rappels.jsx';
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/rappels" element={<Rappels />} />
           <Route path="/vacations" element={<Vacations />} />
           <Route path="/echeancier" element={<Echeancier />} />
+          <Route path="/apercu" element={<ApercuSuivi />} />
           <Route path="/reglages" element={<Reglages />} />
         </Route>
         {/* Page commerciale : plein écran, sans coquille ni navigation d'app. */}

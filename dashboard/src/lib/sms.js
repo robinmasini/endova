@@ -38,8 +38,6 @@ export function rediger(modele, patient, cabinet) {
  * « à envoyer ». Le reste du statut se lit dans le dossier.
  */
 export function planSms(patient, cabinet, maintenant = new Date()) {
-  // Préparation ET suites : un SMS de surveillance à J+2 est un envoi comme un
-  // autre, il doit figurer au plan et au calendrier.
   const etapes = etapesDe(patient);
   const evts = patient.evenements ?? [];
   const ouvertures = evts.filter((e) => e.type === 'lien_ouvert').map((e) => new Date(e.at));
