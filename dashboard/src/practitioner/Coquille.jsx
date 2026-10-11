@@ -94,7 +94,7 @@ export default function Coquille() {
             Le mot-symbole est distribué sur la largeur exacte du pictogramme :
             le E et le A tombent sur ses bords, quelle que soit la taille. */}
         <div className="flex flex-col items-center px-5 pb-7 pt-[calc(env(safe-area-inset-top,0px)+1.75rem)]">
-          <span className="brillance relative block overflow-hidden rounded-[1.75rem]">
+          <span className="brillance relative block" style={{ '--glyphe': `url(${import.meta.env.BASE_URL}endova-glyphe.png)` }}>
             <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className="size-28" />
           </span>
           <p
@@ -141,7 +141,7 @@ export default function Coquille() {
               src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
               alt=""
               aria-hidden="true"
-              className="h-11 w-auto select-none"
+              className="h-20 w-auto select-none"
               draggable={false}
             />
             <p className="w-full text-center text-[11px] leading-relaxed text-slate-500">

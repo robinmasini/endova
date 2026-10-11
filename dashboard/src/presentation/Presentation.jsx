@@ -171,8 +171,9 @@ function Revelation(t) {
   return (
     <div className="mx-auto w-full max-w-4xl px-6 text-center" style={{ perspective: '1200px' }}>
       <div
-        className="brillance relative mx-auto block w-fit overflow-hidden rounded-[2rem]"
+        className="brillance relative mx-auto block w-fit"
         style={{
+          '--glyphe': `url(${import.meta.env.BASE_URL}endova-glyphe.png)`,
           transform: `translate3d(0, ${entre(a, 46, 0)}px, ${entre(a, -340, 0)}px) rotateX(${entre(a, 30, 0)}deg)`,
           opacity: entre(a, 0, 1),
         }}
@@ -464,7 +465,7 @@ function Cloture(t) {
           opacity: entre(p, 0, 1),
         }}
       >
-        <div className="brillance relative mx-auto block w-fit overflow-hidden rounded-[1.5rem]">
+        <div className="brillance relative mx-auto block w-fit" style={{ '--glyphe': `url(${import.meta.env.BASE_URL}endova-glyphe.png)` }}>
           <img src={`${import.meta.env.BASE_URL}endova-glyphe.png`} alt="" className="size-20" />
         </div>
         <h2 className="mt-7 text-balance text-2xl font-bold tracking-tight text-navy sm:text-4xl">

@@ -87,6 +87,20 @@ body::before {
   100% { transform: translateX(165%); opacity: 0; }
 }
 
+/* Le reflet épouse le glyphe : sans ce masque, il balaie le rectangle du
+   conteneur et dessine un carré lumineux là où il n'y a rien à éclairer.
+   L'adresse de l'image vient du JSX, qui seul connaît la base de déploiement. */
+.brillance {
+  -webkit-mask-image: var(--glyphe);
+  mask-image: var(--glyphe);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
 .brillance::after {
   content: "";
   position: absolute;
