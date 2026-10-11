@@ -8,6 +8,8 @@ import { age, examenDe, heure, jourCourt, echeance, nomComplet } from '../lib/pa
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
 import Jalon from '../components/Jalon.jsx';
+import TiroirPatient from '../components/TiroirPatient.jsx';
+import { retoursPatient, TON_PASTILLE } from '../lib/retours.js';
 
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -26,17 +28,20 @@ function avancement(patient) {
   return { faites, total: etapes.length, courante, etapes };
 }
 
-function Rangee({ patient }) {
+function Rangee({ patient, actif, onOuvrir }) {
   const { total } = calculerScore(patient);
   const statut = statutRisque(patient);
   const nb = alertesActives(patient).length;
   const { faites, total: nbEtapes, courante, etapes } = avancement(patient);
+  const retours = retoursPatient(patient);
 
   return (
-    <Link
-      to={`/patients/${patient.id}`}
-      className={`group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl border p-4 transition-all duration-200 hover:bg-white/85 sm:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_auto_auto] ${
-        nb ? 'border-rose-400/35 bg-rose-50/50' : 'border-navy/[0.07] bg-white/60'
+    <button
+      type="button"
+      onClick={() => onOuvrir(patient.id)}
+      aria-pressed={actif}
+      className={`group grid w-full grid-cols-[1fr_auto] items-center gap-3 rounded-xl border p-4 text-left transition-all duration-200 hover:bg-white/85 sm:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)_auto_auto] ${
+        actif ? 'border-navy/40 bg-white/90 ring-1 ring-navy/20' : nb ? 'border-rose-400/35 bg-rose-50/50' : 'border-navy/[0.07] bg-white/60'
       }`}
     >
       <div className="min-w-0">
@@ -53,6 +58,20 @@ function Rangee({ patient }) {
           {examenDe(patient).label} · {jourCourt(patient.examen.date)} à {heure(patient.examen.date)}
           <span className="text-slate-400"> ({echeance(patient)})</span>
         </p>
+        {retours.length ? (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {retours.slice(0, 3).map((r) => (
+              <span key={r.texte} className={`rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${TON_PASTILLE[r.ton] ?? TON_PASTILLE.neutre}`}>
+                {r.texte}
+              </span>
+            ))}
+            {retours.length > 3 ? (
+              <span className="rounded-md border border-navy/[0.12] bg-navy/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
+                +{retours.length - 3}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="hidden min-w-0 sm:block">
@@ -83,13 +102,17 @@ function Rangee({ patient }) {
         <p className="text-[10px] uppercase tracking-wider text-slate-500">{statut.court}</p>
       </div>
       <ChevronRight size={16} className="hidden shrink-0 text-slate-400 transition-colors group-hover:text-navy sm:block" />
-    </Link>
+    </button>
   );
 }
 
 export default function ListePatients() {
   const { patients } = useDossiers();
   const [q, setQ] = useState('');
+  // On retient l'identifiant, pas le dossier : il doit rester frais après
+  // chaque écriture du store.
+  const [ouvert, setOuvert] = useState(null);
+  const selection = patients.find((p) => p.id === ouvert) ?? null;
   // Le filtre vit dans l'URL : le Dashboard peut pointer directement sur « En alerte ».
   const [params, setParams] = useSearchParams();
   const filtre = FILTRES.some((f) => f.id === params.get('filtre')) ? params.get('filtre') : 'tous';
@@ -179,15 +202,34 @@ export default function ListePatients() {
           ))}
         </div>
 
-        <div className="mt-5 space-y-2.5">
-          {resultats.length === 0 ? (
-            <div className="rounded-xl border border-navy/[0.07] bg-white/60 p-8 text-center">
-              <p className="text-sm text-slate-700">Aucun dossier ne correspond</p>
-              <p className="mt-1.5 text-xs text-slate-500">Modifiez la recherche ou le filtre.</p>
-            </div>
-          ) : (
-            resultats.map((p) => <Rangee key={p.id} patient={p} />)
-          )}
+        <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1fr)_23rem]">
+          <div className="space-y-2.5">
+            {resultats.length === 0 ? (
+              <div className="rounded-xl border border-navy/[0.07] bg-white/60 p-8 text-center">
+                <p className="text-sm text-slate-700">Aucun dossier ne correspond</p>
+                <p className="mt-1.5 text-xs text-slate-500">Modifiez la recherche ou le filtre.</p>
+              </div>
+            ) : (
+              resultats.map((p) => (
+                <Rangee key={p.id} patient={p} actif={p.id === ouvert} onOuvrir={setOuvert} />
+              ))
+            )}
+          </div>
+
+          {/* En grand écran le tiroir occupe sa colonne ; en dessous il passe
+              par-dessus la liste, qui n'a plus la place de l'accueillir. */}
+          {selection ? (
+            <>
+              <div
+                onClick={() => setOuvert(null)}
+                aria-hidden="true"
+                className="fixed inset-0 z-40 bg-navy/25 backdrop-blur-sm xl:hidden"
+              />
+              <div className="fixed inset-x-4 bottom-4 top-4 z-50 xl:sticky xl:inset-auto xl:top-6 xl:z-auto xl:self-start">
+                <TiroirPatient patient={selection} onFermer={() => setOuvert(null)} />
+              </div>
+            </>
+          ) : null}
         </div>
       </div>
     </>

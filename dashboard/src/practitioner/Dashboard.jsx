@@ -11,6 +11,7 @@ import { examenDe, heure, jourCourt, nomComplet } from '../lib/patient.js';
 import { TONS } from '../components/ui.jsx';
 import { EnTete } from './Coquille.jsx';
 import Jalon from '../components/Jalon.jsx';
+import TiroirPatient from '../components/TiroirPatient.jsx';
 
 /**
  * Tuile de tête. Elle montre un chiffre et, quand elle en porte un, filtre la
@@ -58,17 +59,20 @@ function Titre({ icone, children, action }) {
   );
 }
 
-function Ligne({ patient, rang }) {
+function Ligne({ patient, rang, actif, onOuvrir }) {
   const { total } = calculerScore(patient);
   const statut = statutRisque(patient);
   const nb = alertesActives(patient).length;
   const courante = etapesDe(patient).find((e) => !patient.etapes[e.id]?.done);
 
   return (
-    <Link
-      to={`/patients/${patient.id}`}
-      className={`group flex items-center gap-3 rounded-xl border p-3.5 transition-all duration-200 hover:bg-white/85 ${
-        statut.ton === 'ruby' ? 'border-rose-400/40 bg-rose-50/60' : 'border-navy/[0.07] bg-white/60'
+    <button
+      type="button"
+      onClick={() => onOuvrir?.(patient.id)}
+      aria-pressed={actif}
+      className={`group flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition-all duration-200 hover:bg-white/85 ${
+        actif ? 'border-navy/40 bg-white/90 ring-1 ring-navy/20'
+          : statut.ton === 'ruby' ? 'border-rose-400/40 bg-rose-50/60' : 'border-navy/[0.07] bg-white/60'
       }`}
     >
       <span className="w-12 shrink-0 text-center text-sm font-bold tabular-nums text-navy">{rang ?? heure(patient.examen.date)}</span>
@@ -87,7 +91,7 @@ function Ligne({ patient, rang }) {
       </span>
       <span className={`shrink-0 text-base font-bold tabular-nums ${TONS[statut.ton].texte}`}>{total}</span>
       <ChevronRight size={15} className="shrink-0 text-slate-400 transition-colors group-hover:text-navy" />
-    </Link>
+    </button>
   );
 }
 
@@ -122,6 +126,8 @@ export default function Dashboard() {
   const aVenir = patients.filter((p) => joursAvant(p) >= 0);
   const jalons = parJalon(aVenir);
   const [filtre, setFiltre] = useState(null);
+  const [ouvert, setOuvert] = useState(null);
+  const dossierOuvert = patients.find((p) => p.id === ouvert) ?? null;
 
   // Un dossier est « actif » quand son examen est dans les quatorze jours.
   // Au-delà, l'échéancier a commencé mais rien ne se joue encore.
@@ -251,7 +257,7 @@ export default function Dashboard() {
             {filtre === 'jalon:J-J' ? 'dont la préparation est close, en attente de l’examen' : vue.libelle}
           </p>
           {selection.length ? (
-            <div className="space-y-2 rise">{selection.map((p) => <Ligne key={p.id} patient={p} />)}</div>
+            <div className="space-y-2 rise">{selection.map((p) => <Ligne key={p.id} patient={p} actif={p.id === ouvert} onOuvrir={setOuvert} />)}</div>
           ) : (
             <p className="rounded-xl border border-navy/[0.07] bg-white/60 p-5 text-sm text-slate-600">Aucun dossier dans cette vue.</p>
           )}
@@ -276,11 +282,11 @@ export default function Dashboard() {
                 <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-2">
                   <div>
                     <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Ordre prévu</p>
-                    <div className="space-y-2">{duJour.map((p) => <Ligne key={p.id} patient={p} />)}</div>
+                    <div className="space-y-2">{duJour.map((p) => <Ligne key={p.id} patient={p} actif={p.id === ouvert} onOuvrir={setOuvert} />)}</div>
                   </div>
                   <div>
                     <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Ordre conseillé</p>
-                    <div className="space-y-2">{conseille.map((p, i) => <Ligne key={p.id} patient={p} rang={`${i + 1}`} />)}</div>
+                    <div className="space-y-2">{conseille.map((p, i) => <Ligne key={p.id} patient={p} rang={`${i + 1}`} actif={p.id === ouvert} onOuvrir={setOuvert} />)}</div>
                   </div>
                 </div>
               </>
@@ -296,7 +302,7 @@ export default function Dashboard() {
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                       {jourCourt(g.date)} · {g.patients.length} examen{g.patients.length > 1 ? 's' : ''}
                     </p>
-                    <div className="space-y-2">{g.patients.map((p) => <Ligne key={p.id} patient={p} />)}</div>
+                    <div className="space-y-2">{g.patients.map((p) => <Ligne key={p.id} patient={p} actif={p.id === ouvert} onOuvrir={setOuvert} />)}</div>
                   </div>
                 ))}
               </div>
@@ -344,6 +350,19 @@ export default function Dashboard() {
           </aside>
         </div>
       </div>
+
+      {dossierOuvert ? (
+        <>
+          <div
+            onClick={() => setOuvert(null)}
+            aria-hidden="true"
+            className="fixed inset-0 z-40 bg-navy/25 backdrop-blur-sm"
+          />
+          <div className="fixed inset-x-4 bottom-4 top-4 z-50 sm:left-auto sm:right-4 sm:w-[23rem]">
+            <TiroirPatient patient={dossierOuvert} onFermer={() => setOuvert(null)} />
+          </div>
+        </>
+      ) : null}
     </>
   );
 }

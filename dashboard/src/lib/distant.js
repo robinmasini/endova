@@ -113,6 +113,12 @@ export async function ajouterEvenements(dossierId, evenements) {
   if (error) throw new Error(`Journal : ${error.message}`);
 }
 
+/** Le dossier part avec son journal : la cascade est portée par la base. */
+export async function supprimerDossier(id) {
+  const { error } = await supabase.from('dossiers').delete().eq('id', id);
+  if (error) throw new Error(`Suppression du dossier : ${error.message}`);
+}
+
 export async function enregistrerCabinet(cabinet) {
   const { error } = await supabase.from('cabinets').update({
     nom: cabinet.nom,

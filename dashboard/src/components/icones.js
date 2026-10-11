@@ -73,3 +73,4 @@ export { default as IdCard } from 'lucide-react/dist/esm/icons/id-card.js';
 export { default as BellRing } from 'lucide-react/dist/esm/icons/bell-ring.js';
 export { default as ShieldAlert } from 'lucide-react/dist/esm/icons/shield-alert.js';
 export { default as UserRound } from 'lucide-react/dist/esm/icons/user-round.js';
+export { default as Trash2 } from 'lucide-react/dist/esm/icons/trash-2.js';

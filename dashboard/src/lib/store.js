@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { semer, CABINET_SEED } from './seed.js';
 import { smsEchus } from './sms.js';
 import { supabaseConfigure } from './supabase.js';
-import { chargerEtat, enregistrerDossier, enregistrerCabinet, ajouterEvenements } from './distant.js';
+import { chargerEtat, enregistrerDossier, enregistrerCabinet, ajouterEvenements, supprimerDossier } from './distant.js';
 
 /**
  * Persistance locale + diffusion inter-onglets.
@@ -285,6 +285,19 @@ export const store = {
     surPatient(id, (p) => avecEvenement(p, {
       type: 'sms_envoye', etape: sms.etape.id, titre: `SMS ${sms.cle} délivré en avance — ${sms.etape.titre}`, detail: sms.texte,
     }));
+  },
+
+  /**
+   * Supprime un dossier. Irréversible : le journal part avec lui, par cascade
+   * côté base. C'est l'interface qui demande confirmation, pas le store.
+   */
+  supprimerPatient(id) {
+    ecrire({ ...etat, patients: etat.patients.filter((p) => p.id !== id) });
+    if (distant) {
+      chaines.set(id, (chaines.get(id) ?? Promise.resolve())
+        .then(() => supprimerDossier(id))
+        .catch((e) => { dernierSouci = e.message; diffuser(); }));
+    }
   },
 
   majCabinet(patch) {
