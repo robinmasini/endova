@@ -136,10 +136,19 @@ export default function Coquille() {
         </nav>
 
         <div className="border-t border-navy/[0.07] p-3">
-          <p className="px-2 pb-2 text-[11px] leading-relaxed text-slate-500">
-            <span className="block font-semibold text-slate-700">{cabinet.nomCourt}</span>
-            {patients.length} dossiers en préparation
-          </p>
+          <div className="flex items-center gap-2.5 px-2 pb-2">
+            <img
+              src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
+              alt=""
+              aria-hidden="true"
+              className="h-7 w-auto shrink-0 select-none"
+              draggable={false}
+            />
+            <p className="min-w-0 text-[11px] leading-relaxed text-slate-500">
+              <span className="block truncate font-semibold text-slate-700">{cabinet.nomCourt}</span>
+              {patients.length} dossiers en préparation
+            </p>
+          </div>
           {supabaseConfigure ? (
             <button
               type="button"
