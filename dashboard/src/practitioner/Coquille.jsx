@@ -16,7 +16,7 @@ const GROUPES = [
     titre: 'Suivi',
     sections: [
       { to: '/', fin: true, label: 'Accueil', complet: 'Tableau de bord', icone: LayoutDashboard, mobile: 0 },
-      { to: '/rappels', label: 'Rappels', complet: 'Alertes', icone: PhoneCall, compteur: 'rappels', mobile: 1 },
+      { to: '/rappels', label: 'Rappels', complet: 'Alertes', icone: PhoneCall, compteur: 'rappels' },
       { to: '/vacations', label: 'Vacations', complet: 'Vacations', icone: CalendarDays },
     ],
   },
@@ -31,7 +31,7 @@ const GROUPES = [
     titre: 'Communication',
     sections: [
       { to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 },
-      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye },
+      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye, mobile: 1 },
     ],
   },
   {
@@ -40,8 +40,9 @@ const GROUPES = [
   },
 ];
 
-// La barre mobile n'a que quatre places autour du bouton de scan SMS : les
-// vacations et les réglages restent accessibles depuis le tableau de bord.
+// La barre mobile n'a que quatre places autour du bouton de scan SMS. Les
+// rappels, les vacations et les réglages restent accessibles depuis le tableau
+// de bord — pour les rappels, par la tuile Alertes, qui en porte le compte.
 const MOBILE = GROUPES.flatMap((g) => g.sections).filter((s) => s.mobile !== undefined).sort((a, b) => a.mobile - b.mobile);
 
 function Pastille({ n }) {
