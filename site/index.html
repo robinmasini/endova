@@ -27,6 +27,7 @@
   --accent:#932B9C;
   --accent-hover:#A8389B;
   --accent-muted:rgba(147,43,156,.1);
+  --violet-clair:#B145D1;
   --navy:#051C4E;
   --texte:#051C4E;
   --texte-2:#5B5068;
@@ -251,6 +252,9 @@ img{max-width:100%;display:block}
   transform:translate3d(0,calc((1 - var(--t))*40px),calc((1 - var(--t))*-200px)) rotateY(calc((1 - var(--t))*-12deg))}
 .chiffre:nth-child(2){--r:.64}
 .chiffre:nth-child(3){--r:.70}
+/* La somme rattrapée est la promesse du produit : elle se détache des deux
+   autres chiffres, dans le violet du haut du glyphe. */
+.chiffre:nth-child(3) .n{color:var(--violet-clair)}
 .chiffre .n{font-family:var(--titre);font-weight:700;font-size:clamp(34px,4.4vw,58px);color:var(--navy);
   line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .chiffre .q{margin-top:12px;font-weight:600;font-size:clamp(13px,1.15vw,15px);line-height:1.35}
@@ -275,7 +279,18 @@ img{max-width:100%;display:block}
 .axe input::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:#fff;
   border:2px solid var(--accent);box-shadow:0 4px 14px rgba(5,28,78,.2)}
 .axe input::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
-.axe-lbl{display:flex;justify-content:space-between;color:var(--texte-2)}
+.axe-lbl{display:flex;justify-content:space-between;align-items:center;gap:6px;color:var(--texte-2)}
+/* Les repères de l'axe reprennent la pastille du produit, en plus petit.
+   Sous 560px le pictogramme s'efface : sept pastilles entières ne tiennent pas
+   sur la largeur d'un téléphone, et c'est la pastille qu'on veut garder — pas
+   le glyphe répété sept fois. */
+.axe-lbl .jalon{font-size:11px;padding:4px 10px 4px 5px;gap:5px;letter-spacing:.07em;text-transform:uppercase}
+.axe-lbl .jalon img{height:1.45em}
+@media (max-width:560px){
+  .axe-lbl{gap:3px}
+  .axe-lbl .jalon{padding:4px 7px;font-size:9.5px;letter-spacing:.03em}
+  .axe-lbl .jalon img{display:none}
+}
 .axe-txt{min-height:112px}
 .axe-txt h3{font-size:22px;color:var(--navy)}
 .axe-txt p{margin-top:10px;color:var(--texte-2);max-width:58ch}
@@ -612,7 +627,7 @@ select option{color:var(--navy)}
         <p class="lede ap">Celui d'une coloscopie court sur sept jours. Celui d'un test respiratoire commence quatre semaines avant, parce qu'un antibiotique pris entre-temps rend le résultat faux. Faites glisser le curseur : à chaque repère, ce qu'Endova demande au patient et ce qu'il vous remonte.</p>
 
         <div class="verre axe ap">
-          <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-2</span><span>J-1</span><span>H-5</span><span>H-2</span><span>Jour J</span></div>
+          <div class="axe-lbl"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;3</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;2</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;1</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;5</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span><span class="jalon plein"><img src="assets/glyphe-blanc.png" alt="">Jour J</span></div>
           <div class="axe-piste">
             <div class="axe-remplie" id="axeRemplie"></div>
             <div class="axe-pts" id="axePts"><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i><i class="axe-pt"></i></div>
