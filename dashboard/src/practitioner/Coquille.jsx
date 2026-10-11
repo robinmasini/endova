@@ -1,6 +1,8 @@
 import { NavLink, Navigate, Outlet, useSearchParams } from 'react-router-dom';
-import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus } from '../components/icones.js';
+import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus, Lock } from '../components/icones.js';
 import { useDossiers, store } from '../lib/store.js';
+import { supabaseConfigure } from '../lib/supabase.js';
+import { deconnexion } from '../lib/session.js';
 import { alertesActives } from '../lib/score.js';
 import ScanSms from '../components/ScanSms.jsx';
 import { joursAvant } from '../lib/examens.js';
@@ -138,13 +140,23 @@ export default function Coquille() {
             <span className="block font-semibold text-slate-700">{cabinet.nomCourt}</span>
             {patients.length} dossiers en préparation
           </p>
-          <button
-            type="button"
-            onClick={() => store.reinitialiser()}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
-          >
-            <RotateCcw size={13} /> Réinitialiser la démo
-          </button>
+          {supabaseConfigure ? (
+            <button
+              type="button"
+              onClick={deconnexion}
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
+            >
+              <Lock size={13} /> Se déconnecter
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => store.reinitialiser()}
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs text-slate-600 transition-colors hover:bg-navy/[0.04] hover:text-navy"
+            >
+              <RotateCcw size={13} /> Réinitialiser la démo
+            </button>
+          )}
         </div>
       </aside>
 

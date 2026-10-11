@@ -139,7 +139,6 @@ export default function Dashboard() {
     parJour.at(-1).patients.push(p);
   }
 
-  const enCours = aVenir.filter((p) => etapesDe(p).some((e) => !p.etapes[e.id]?.done)).length;
   const prets = duJour.filter((p) => statutRisque(p).court === 'Prêt').length;
   const envois = prochainsEnvois(aVenir, cabinet);
   const echus = smsEchus(aVenir, cabinet).length;

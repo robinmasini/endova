@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  AlertTriangle, CheckCircle2, XCircle, Circle, RefreshCw, ArrowDownWideNarrow, CalendarX, Syringe, Undo2, ListChecks, Clock,
+  AlertTriangle, CheckCircle2, XCircle, Circle, RefreshCw, ArrowDownWideNarrow, CalendarX, Syringe, Undo2, ListChecks,
 } from '../../components/icones.js';
 import SchemaDigestif from '../../components/SchemaDigestif.jsx';
 import { AnneauScore, TONS } from '../../components/ui.jsx';

@@ -89,6 +89,7 @@ const maintenant = () => new Date().toISOString();
 /** Applique `fn` au seul dossier `id`. */
 function surPatient(id, fn) {
   ecrire({ ...etat, patients: etat.patients.map((p) => (p.id === id ? fn(p) : p)) });
+  pousserDossier(id);
 }
 
 const avecEvenement = (p, evt) => ({
@@ -99,6 +100,40 @@ const avecEvenement = (p, evt) => ({
 const jeton = () => Math.random().toString(16).slice(2, 8);
 
 export const store = {
+  /**
+   * Passe en mode distant : l'état vient de la base et y retourne.
+   * Renvoie `'sans-cabinet'` quand le compte n'est rattaché à aucun cabinet —
+   * un tableau vide se prendrait pour une panne, il faut le dire.
+   */
+  async ouvrirSession() {
+    if (!supabaseConfigure) return 'local';
+    dernierSouci = null;
+    try {
+      const charge = await chargerEtat();
+      if (!charge) return 'sans-cabinet';
+      distant = { cabinetId: charge.cabinet.id };
+      for (const p of charge.patients) journauxPousses.set(p, (p.evenements ?? []).length);
+      etat = charge;
+      diffuser();
+      return 'distant';
+    } catch (e) {
+      dernierSouci = e.message;
+      diffuser();
+      return 'erreur';
+    }
+  },
+
+  /** Retour au jeu local, sans laisser de dossiers du cabinet derrière soi. */
+  fermerSession() {
+    distant = null;
+    etat = neuf();
+    diffuser();
+  },
+
+  dernierSouci() {
+    return dernierSouci;
+  },
+
   subscribe(fn) {
     abonnes.add(fn);
     return () => abonnes.delete(fn);
@@ -116,7 +151,8 @@ export const store = {
   },
 
   creerPatient(dossier) {
-    const id = `p${Date.now().toString(36)}`;
+    // Un UUID : c'est ce que la base attend comme clé primaire.
+    const id = crypto.randomUUID();
     const numero = `GE-${new Date().getFullYear()}-${String(etat.patients.length + 1).padStart(4, '0')}`;
     const patient = {
       ...dossier,
@@ -128,6 +164,7 @@ export const store = {
       evenements: [{ at: maintenant(), type: 'dossier_cree', auteur: etat.cabinet.utilisateur, detail: 'Échéancier SMS programmé' }],
     };
     ecrire({ ...etat, patients: [...etat.patients, patient] });
+    pousserDossier(id);
     return id;
   },
 
@@ -191,6 +228,7 @@ export const store = {
 
   majCabinet(patch) {
     ecrire({ ...etat, cabinet: { ...etat.cabinet, ...patch } });
+    if (distant) pousser(enregistrerCabinet(etat.cabinet));
   },
 
   reinitialiser() {
