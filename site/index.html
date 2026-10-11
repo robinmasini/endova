@@ -91,9 +91,11 @@ img{max-width:100%;display:block}
   opacity:calc(.25 + .75*var(--k,1));
   background:radial-gradient(ellipse 78% 64% at 42% 50%,rgba(3,11,38,.72) 0%,rgba(3,11,38,.48) 46%,rgba(3,11,38,0) 76%);
 }
-.bande .dedans{position:relative;width:min(46ch,46vw);margin-left:clamp(24px,7vw,110px)}
+.bande .dedans{position:relative;width:min(46ch,46vw);margin-left:clamp(28px,11vw,200px)}
 .bande h2{font-size:clamp(28px,4.4vw,58px);color:#fff}
-.bande .sous{margin-top:18px;font-size:clamp(15px,1.5vw,20px);color:#E6D8EE;max-width:34ch}
+.bande .sous{margin-top:18px;font-size:clamp(15px,1.5vw,20px);color:#E6D8EE;max-width:38ch;line-height:2.1}
+/* Dans un paragraphe, la pastille ne doit pas écraser la ligne. */
+.bande .sous .jalon{font-size:.7em;padding:4px 11px 4px 6px}
 
 /* Portrait. Ce bloc doit rester APRÈS les règles qu'il écrase : à spécificité
    égale, c'est l'ordre d'écriture qui tranche, et une requête média n'ajoute
@@ -225,6 +227,20 @@ img{max-width:100%;display:block}
 .verre{background:var(--panel);border:1px solid rgba(255,255,255,.8);border-radius:22px;
   backdrop-filter:blur(22px) saturate(1.7);
   box-shadow:inset 0 1px 0 0 rgba(255,255,255,.95),0 2px 6px rgba(5,28,78,.05),0 26px 60px -22px rgba(5,28,78,.22)}
+
+/* Le jalon : la pastille qui porte les repères dans tout le produit.
+   Elle doit se lire sur fond sombre comme sur fond clair, d'où le fond blanc
+   dans les deux cas et la variante pleine pour le terme de la séquence. */
+.jalon{display:inline-flex;align-items:center;gap:7px;padding:5px 13px 5px 7px;
+  border-radius:999px;background:#fff;border:1px solid rgba(5,28,78,.07);
+  box-shadow:0 1px 2px rgba(5,28,78,.10),0 8px 20px -10px rgba(5,28,78,.28);
+  font-family:var(--titre);font-weight:600;font-size:.78em;letter-spacing:.09em;
+  color:var(--accent);white-space:nowrap;line-height:1;vertical-align:middle}
+.jalon img{height:1.5em;width:auto;display:block}
+.jalon.plein{background:var(--accent);color:#fff;border-color:transparent;
+  box-shadow:0 2px 10px -2px rgba(147,43,156,.5)}
+.suite-jalons{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:30px}
+.suite-jalons .fleche{color:var(--texte-2);opacity:.5;font-size:14px}
 
 .grille-3{display:grid;gap:clamp(14px,1.6vw,20px);grid-template-columns:repeat(3,1fr);
   margin-top:clamp(30px,4.5vh,50px);width:min(1060px,92vw);perspective:1200px}
@@ -528,7 +544,7 @@ select option{color:var(--navy)}
   </a>
   <div class="liens">
     <a href="#sept-jours">Fonctionnement</a>
-    <a href="#fiche">Fiche patient</a>
+    <a href="#cabinet">Le logiciel</a>
     <a href="#economies">Économies</a>
     <a href="#tarifs">Tarifs</a>
     <a class="btn btn-vide" href="#contact">Voir une démonstration</a>
@@ -555,7 +571,7 @@ select option{color:var(--navy)}
       <div class="bande b2" data-a=".34" data-b="1" data-rampe=".085">
         <div class="dedans">
           <h2 data-split="w">Ce matin, son estomac a refusé la seconde. Dans deux heures, son côlon ne sera pas lisible.</h2>
-          <p class="sous">Endova suit chaque patient de votre cabinet par SMS, de J-7 à H-2, et vous signale l'écart tant qu'il est rattrapable.</p>
+          <p class="sous">Endova suit chaque patient de votre cabinet par SMS, de <span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span> à <span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span>, et vous signale l'écart tant qu'il est rattrapable.</p>
           <div class="rangee"><a class="btn btn-plein" href="#contact">Voir une démonstration</a></div>
         </div>
       </div>
@@ -580,9 +596,15 @@ select option{color:var(--navy)}
             <p class="lede">Il n'a rien caché. Personne ne lui a demandé.</p>
           </div>
         </div>
+        <div class="suite-jalons" aria-label="Échéancier d'une coloscopie, de J-7 au jour de l'examen">
+          <span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;3</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;2</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;1</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;5</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span>
+          <span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon plein"><img src="assets/glyphe-blanc.png" alt="">J&#8239;-&#8239;J</span>
+        </div>
+        <p class="lede" style="margin-top:16px">Six messages, six réponses, et le cabinet prévenu dès qu'une réponse sort du cadre. Le jour J, Endova passe la main.</p>
+
         <div class="grille-3">
           <div class="verre chiffre"><div class="n" data-compte="25" data-suffixe=" %">0 %</div><p class="q">des coloscopies jugées mal préparées</p><p class="d">Score de Boston insuffisant</p></div>
-          <div class="verre chiffre"><div class="n" data-compte="6" data-suffixe=" SMS">0 SMS</div><p class="q">de préopératoire par patient</p><p class="d">De J-7 à H-2, délivrés d'un seul scan</p></div>
+          <div class="verre chiffre"><div class="n" data-compte="9" data-suffixe="">0</div><p class="q">examens au catalogue</p><p class="d">Chacun son échéancier, de la coloscopie au test respiratoire</p></div>
           <div class="verre chiffre"><div class="n" data-compte="4160" data-suffixe=" €">0 €</div><p class="q">rattrapés chaque mois</p><p class="d">Pour 30 examens par semaine, voir le calcul plus bas</p></div>
         </div>
       </div>
@@ -590,9 +612,9 @@ select option{color:var(--navy)}
 
     <section id="sept-jours">
       <div class="large">
-        <p class="mono oeil ap">Le préopératoire, jour par jour</p>
-        <h2 class="titre-s ap">Sept jours de préopératoire décident de l'examen. Le patient les traverse seul.</h2>
-        <p class="lede ap">L'échéancier d'une coloscopie, de J-7 au jour J. Faites glisser le curseur pour voir ce qu'Endova demande au patient, et ce qu'il vous remonte. Le jour J, Endova passe la main.</p>
+        <p class="mono oeil ap">L'échéancier</p>
+        <h2 class="titre-s ap">Chaque examen a son compte à rebours. Le patient le traverse seul.</h2>
+        <p class="lede ap">Celui d'une coloscopie court sur sept jours. Celui d'un test respiratoire commence quatre semaines avant, parce qu'un antibiotique pris entre-temps rend le résultat faux. Faites glisser le curseur : à chaque repère, ce qu'Endova demande au patient et ce qu'il vous remonte.</p>
 
         <div class="verre axe ap">
           <div class="axe-lbl mono"><span>J-7</span><span>J-3</span><span>J-2</span><span>J-1</span><span>H-5</span><span>H-2</span><span>Jour J</span></div>
@@ -604,47 +626,66 @@ select option{color:var(--navy)}
           <div class="axe-txt" id="axeTxt"></div>
         </div>
       </div>
-    </section>
+    
 
-    <section id="rupture">
-      <div class="large">
-        <p class="mono oeil ap">Le point de rupture</p>
-        <h2 class="titre-s ap">Les patients tiennent la première dose. C'est la seconde qui les arrête.</h2>
-        <div class="duo">
-          <div class="ap">
-            <p class="cite">J'ai réussi la première dose, puis seulement quelques gorgées de la seconde avant des nausées terribles.<small>Ce que les patients écrivent, dans leurs mots, sur les forums de santé</small></p>
-            <p class="lede">La seconde fraction est celle qui nettoie le côlon droit, là où se cachent les adénomes plans. Endova découpe la prise en verres espacés, impose la pause entre chacun, et déclenche le protocole de compensation dès qu'un patient déclare un rejet.</p>
-          </div>
-          <div class="verre cadre ap"><img src="assets/app-patients.png" alt="Liste des patients suivis dans Endova, avec leur avancement et leur niveau de risque" loading="lazy"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="examens">
-      <div class="large">
-        <p class="mono oeil ap">Un échéancier par examen</p>
+    
+        <p class="mono oeil ap" style="margin-top:72px">Un échéancier par examen</p>
         <h2 class="titre-s ap">Une gastroscopie ne se prépare pas comme une coloscopie.</h2>
-        <p class="lede ap">À la création du dossier, votre secrétariat choisit l'examen. Endova en déduit les messages, les heures d'envoi et les questions à poser. Tout le préopératoire, rien après : le jour J, Endova passe la main.</p>
+        <p class="lede ap">À la création du dossier, votre secrétariat choisit l’examen. Endova en déduit les messages, les heures d’envoi et les questions à poser. Tout le préopératoire, rien après : le jour J, Endova passe la main.</p>
         <div class="grille-ex">
           <article class="verre ex ap">
-            <p class="mono">Purge · 6 SMS</p>
+            <p class="mono">Purge colique</p>
             <h3>Coloscopie</h3>
-            <p>Traitements et purge à J-7, régime sans résidu à J-3 (J-5 en préparation renforcée), contrôle des arrêts à J-2, minuteur guidé pour chaque fraction, échelle de clarté des selles à H-5, verrou de jeûne à H-2.</p>
+            <p style="margin-bottom:14px">Traitements et purge à J-7, régime sans résidu à J-3 — J-5 si la préparation est renforcée —, contrôle des arrêts à J-2, minuteur guidé pour chaque fraction, échelle de clarté des selles à H-5, verrou de jeûne à H-2.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Purge · 6 SMS</p>
+            <p class="mono">Purge colique</p>
             <h3>Coloscopie et gastroscopie</h3>
-            <p>Le même échéancier, sous la même anesthésie. Le bilan d'anémie ferriprive rappelle l'arrêt du fer oral sept jours avant, que les patients oublient presque toujours.</p>
+            <p style="margin-bottom:14px">Le même échéancier, sous la même anesthésie. Le bilan d’anémie ferriprive rappelle l’arrêt du fer oral sept jours avant, que les patients oublient presque toujours.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Jeûne · 4 SMS</p>
+            <p class="mono">Jeûne seul</p>
             <h3>Gastroscopie</h3>
-            <p>Pas de purge, tout se joue sur l'estomac. Heure limite des solides, liquides clairs jusqu'à H-2, et une attention particulière aux patients sous GLP-1, dont la vidange gastrique est ralentie.</p>
+            <p style="margin-bottom:14px">Pas de purge : tout se joue sur l’estomac. Heure limite des solides, liquides clairs jusqu’à H-2, et une vigilance particulière sous GLP-1, dont la vidange gastrique est ralentie.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
           </article>
           <article class="verre ex ap">
-            <p class="mono">Lavements · 4 SMS</p>
+            <p class="mono">Lavements</p>
             <h3>Rectosigmoïdoscopie</h3>
-            <p>Deux lavements le matin même, à une heure d'intervalle. Endova vérifie la veille que le patient les a achetés, puis lui demande le résultat.</p>
+            <p style="margin-bottom:14px">Deux lavements le matin même, à une heure d’intervalle. Endova vérifie la veille que le patient les a, puis lui demande le résultat.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;3</span></div>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Jeûne seul</p>
+            <h3>Écho-endoscopie</h3>
+            <p style="margin-bottom:14px">Bilan d’extension, pancréas, voie biliaire. Si une ponction est prévue, le contrôle des arrêts de traitement pèse plus lourd que partout ailleurs.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Jeûne seul</p>
+            <h3>CPRE — voies biliaires</h3>
+            <p style="margin-bottom:14px">Geste thérapeutique à haut risque hémorragique : la sphinctérotomie fait du contrôle des anticoagulants l’étape décisive de la préparation.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Purge du grêle</p>
+            <h3>Vidéocapsule du grêle</h3>
+            <p style="margin-bottom:14px">La capsule n’a pas de canal de lavage : ce qu’elle rencontre, elle le photographie. Liquides clairs dès midi la veille, purge le soir, à jeun depuis minuit.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">H&#8239;-&#8239;2</span></div>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Sevrage anti-acide</p>
+            <h3>pH-métrie œsophagienne</h3>
+            <p style="margin-bottom:14px">Sous inhibiteur de la pompe à protons, la mesure enregistre le médicament et non la maladie. Arrêt sept jours avant, trois pour les anti-H2.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;7</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;1</span></div>
+          </article>
+          <article class="verre ex ap">
+            <p class="mono">Sevrage anti-acide</p>
+            <h3>Test respiratoire — H. pylori</h3>
+            <p style="margin-bottom:14px">Un antibiotique ou un IPP fait disparaître la bactérie du test sans l’éradiquer : quatre semaines sans antibiotique, deux sans anti-acide.</p>
+            <div class="suite-jalons" style="margin-top:0"><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;28</span><span class="fleche" aria-hidden="true">&rarr;</span><span class="jalon"><img src="assets/glyphe-couleur.png" alt="">J&#8239;-&#8239;1</span></div>
           </article>
         </div>
       </div>
@@ -652,20 +693,14 @@ select option{color:var(--navy)}
 
     <section id="cabinet">
       <div class="large">
-        <p class="mono oeil ap">Ce que voit le cabinet</p>
+        <p class="mono oeil ap">Dans le logiciel</p>
         <h2 class="titre-s ap">Le matin, une seule liste : qui rappeler, et quoi lui dire.</h2>
-        <p class="lede ap">Un geste pour les SMS : le bouton Endova délivre d'un scan tous les messages arrivés à échéance, chaque patient à son étape. Puis une liste d'appels : un patient, un appel, ses motifs regroupés et la phrase à dire. Votre secrétariat n'improvise pas.</p>
-        <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova : préparations en cours, patients à rappeler, vacation du jour" loading="lazy"></div>
-      </div>
-    </section>
+        <p class="lede ap">Un geste pour les SMS : le bouton Endova délivre d'un scan tous les messages arrivés à échéance, chaque patient à son étape. Puis une liste d'appels — un patient, un appel, ses motifs regroupés et la phrase à dire. Votre secrétariat n'improvise pas.</p>
+        <div class="verre cadre ap" style="margin-top:44px"><img src="assets/app-dashboard.png" alt="Tableau de bord Endova : préparations en cours, alertes, vacation du jour" loading="lazy"></div>
 
-    <section id="fiche">
-      <div class="large">
-        <p class="mono oeil ap">La fiche patient</p>
-        <h2 class="titre-s ap">Quatre onglets, quatre questions. Jamais tout en vrac.</h2>
-        <p class="lede ap">L'identité, l'examen et le statut restent en haut de l'écran. En dessous, chaque onglet répond à une seule question.</p>
-        <div class="onglets">
-          <article class="verre onglet ap"><span class="num">1</span><h3>Dossier</h3><p class="q">Qui est le patient, quel examen ?</p><p>Identité, indication, anesthésie, préparation prescrite. Traitements à risque avec leur consigne usuelle, facteurs de préparation insuffisante, check-list pré-examen : consultation d'anesthésie, consentement, ordonnance, bon d'admission.</p></article>
+        <p class="lede ap" style="margin-top:56px">Un dossier s'ouvre en tiroir, sans quitter la liste : où en est le patient, ce qui manque, faut-il l'appeler. La fiche complète est là pour le détail, en quatre onglets qui répondent chacun à une seule question.</p>
+        <div class="onglets" id="fiche">
+          <article class="verre onglet ap"><span class="num">1</span><h3>Dossier</h3><p class="q">Qui est le patient, quel examen ?</p><p>Identité, indication, anesthésie, préparation prescrite. Traitements à risque avec leur consigne usuelle, facteurs de préparation insuffisante, et la check-list pré-examen.</p></article>
           <article class="verre onglet ap"><span class="num">2</span><h3>Préparation</h3><p class="q">Où en est-il ?</p><p>Index de préparation sur 100, alertes avec leur conduite à tenir, détail de chaque déclaration. Projection du Boston prévisionnel par segment colique.</p></article>
           <article class="verre onglet ap"><span class="num">3</span><h3>SMS</h3><p class="q">Qu'a-t-il reçu ?</p><p>Chaque message, programmé ou parti, avec son statut : délivré, lien ouvert, répondu. Renvoi en un clic, messages libres à partir de modèles.</p></article>
           <article class="verre onglet ap"><span class="num">4</span><h3>Traçabilité</h3><p class="q">Que pouvez-vous prouver ?</p><p>Le journal horodaté du dossier : envois, ouvertures, déclarations, appels, actions du cabinet. Exportable et imprimable.</p></article>
