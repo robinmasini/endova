@@ -74,3 +74,6 @@ export { default as BellRing } from 'lucide-react/dist/esm/icons/bell-ring.js';
 export { default as ShieldAlert } from 'lucide-react/dist/esm/icons/shield-alert.js';
 export { default as UserRound } from 'lucide-react/dist/esm/icons/user-round.js';
 export { default as Trash2 } from 'lucide-react/dist/esm/icons/trash-2.js';
+export { default as Mic } from 'lucide-react/dist/esm/icons/mic.js';
+export { default as Copy } from 'lucide-react/dist/esm/icons/copy.js';
+export { default as FileCheck2 } from 'lucide-react/dist/esm/icons/file-check-2.js';

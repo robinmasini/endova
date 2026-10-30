@@ -7,11 +7,11 @@ import { useEffect, useState } from 'react';
 import Coquille from './practitioner/Coquille.jsx';
 import Dashboard from './practitioner/Dashboard.jsx';
 import ListePatients from './practitioner/ListePatients.jsx';
-import Echeancier from './practitioner/Echeancier.jsx';
 import Reglages from './practitioner/Reglages.jsx';
-import ApercuSuivi from './practitioner/ApercuSuivi.jsx';
 import FichePage from './practitioner/fiche/FichePage.jsx';
 import NouveauDossier from './practitioner/NouveauDossier.jsx';
+import ComptesRendus from './practitioner/ComptesRendus.jsx';
+import Apercu from './practitioner/Apercu.jsx';
 import Rappels from './practitioner/Rappels.jsx';
 import Vacations from './practitioner/Vacations.jsx';
 import PatientApp from './patient/PatientApp.jsx';
@@ -66,10 +66,12 @@ export default function App() {
           <Route path="/patients/nouveau" element={<NouveauDossier />} />
           <Route path="/patients/:id" element={<FichePage />} />
           <Route path="/patients/:id/modifier" element={<NouveauDossier />} />
+          <Route path="/comptes-rendus" element={<ComptesRendus />} />
+          <Route path="/diagnostic" element={<Navigate to="/comptes-rendus" replace />} />
           <Route path="/rappels" element={<Rappels />} />
           <Route path="/vacations" element={<Vacations />} />
-          <Route path="/echeancier" element={<Echeancier />} />
-          <Route path="/apercu" element={<ApercuSuivi />} />
+          <Route path="/echeancier" element={<Navigate to="/apercu?vue=echeancier" replace />} />
+          <Route path="/apercu" element={<Apercu />} />
           <Route path="/reglages" element={<Reglages />} />
         </Route>
         {/* Page commerciale : plein écran, sans coquille ni navigation d'app. */}

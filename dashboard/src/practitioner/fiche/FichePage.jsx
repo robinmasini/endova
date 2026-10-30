@@ -1,6 +1,6 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowLeft, PhoneCall, ExternalLink, AlertTriangle, IdCard, Activity, MessageSquare, History, ChevronRight,
+  ArrowLeft, PhoneCall, ExternalLink, AlertTriangle, IdCard, Activity, MessageSquare, History, ChevronRight, Mic,
 } from '../../components/icones.js';
 import { AnneauScore, TONS } from '../../components/ui.jsx';
 import { useDossiers } from '../../lib/store.js';
@@ -11,6 +11,7 @@ import OngletDossier from './OngletDossier.jsx';
 import OngletPreparation from './OngletPreparation.jsx';
 import OngletSms from './OngletSms.jsx';
 import OngletTracabilite from './OngletTracabilite.jsx';
+import OngletComptesRendus from './OngletComptesRendus.jsx';
 
 /**
  * Quatre onglets, quatre questions, jamais mélangées :
@@ -19,6 +20,7 @@ import OngletTracabilite from './OngletTracabilite.jsx';
 const ONGLETS = [
   { id: 'dossier', label: 'Dossier', icone: IdCard, composant: OngletDossier },
   { id: 'preparation', label: 'Préparation', icone: Activity, composant: OngletPreparation },
+  { id: 'comptes-rendus', label: 'Comptes rendus', icone: Mic, composant: OngletComptesRendus },
   { id: 'sms', label: 'SMS', icone: MessageSquare, composant: OngletSms },
   { id: 'tracabilite', label: 'Traçabilité', icone: History, composant: OngletTracabilite },
 ];

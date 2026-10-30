@@ -1,5 +1,5 @@
 import { NavLink, Navigate, Outlet, useSearchParams } from 'react-router-dom';
-import { LayoutDashboard, UsersRound, CalendarClock, Settings, RotateCcw, PhoneCall, CalendarDays, Plus, Lock, Eye } from '../components/icones.js';
+import { LayoutDashboard, UsersRound, Settings, RotateCcw, PhoneCall, CalendarDays, Plus, Lock, Eye, Mic } from '../components/icones.js';
 import { useDossiers, store } from '../lib/store.js';
 import { supabaseConfigure } from '../lib/supabase.js';
 import { deconnexion } from '../lib/session.js';
@@ -21,6 +21,10 @@ const GROUPES = [
     ],
   },
   {
+    titre: 'Consultation',
+    sections: [{ to: '/comptes-rendus', label: 'Comptes rendus', complet: 'Comptes rendus', icone: Mic, mobile: 3 }],
+  },
+  {
     titre: 'Dossiers',
     sections: [
       { to: '/patients', label: 'Patients', complet: 'Patients', icone: UsersRound, mobile: 1 },
@@ -30,8 +34,7 @@ const GROUPES = [
   {
     titre: 'Communication',
     sections: [
-      { to: '/echeancier', label: 'SMS', complet: 'Échéancier SMS', icone: CalendarClock, mobile: 3 },
-      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu suivi', icone: Eye, mobile: 2 },
+      { to: '/apercu', label: 'Aperçu', complet: 'Aperçu SMS', icone: Eye, mobile: 2 },
     ],
   },
   {
@@ -60,7 +63,7 @@ function Onglet({ section: { to, fin, label, icone: Icone, compteur }, compteurs
       to={to}
       end={fin}
       className={({ isActive }) =>
-        `flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] transition-colors ${
+        `flex min-w-0 flex-1 flex-col items-center gap-1 whitespace-nowrap py-2.5 text-[10px] tracking-tight transition-colors ${
           isActive ? 'font-semibold text-navy' : 'font-medium text-slate-600'
         }`
       }
