@@ -56,7 +56,7 @@ function Case({ actif, onClick, titre, detail }) {
         actif ? 'border-navy/35 bg-navy/[0.06]' : 'border-navy/[0.08] bg-white/60 hover:bg-white'
       }`}
     >
-      <span className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border ${actif ? 'border-navy bg-navy text-white' : 'border-navy/20 bg-white'}`}>
+      <span className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border ${actif ? 'cta-violet border-navy bg-navy text-white' : 'border-navy/20 bg-white'}`}>
         {actif ? <Check size={11} strokeWidth={3} /> : null}
       </span>
       <span className="min-w-0">
@@ -365,7 +365,7 @@ export default function NouveauDossier() {
               type="button"
               onClick={() => setPas(pas + 1)}
               disabled={!valide[pas]}
-              className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white transition-all hover:brightness-125 disabled:opacity-40"
+              className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-6 py-3 text-base font-semibold text-white transition-all hover:brightness-125 disabled:opacity-40"
             >
               Suivant <ArrowRight size={15} />
             </button>
@@ -373,7 +373,7 @@ export default function NouveauDossier() {
             <button
               type="button"
               onClick={enregistrer}
-              className="inline-flex items-center gap-2 rounded-xl bg-navy px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+              className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-6 py-3 text-base font-semibold text-white shadow-[0_10px_24px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
             >
               <Check size={15} /> {existant ? 'Enregistrer les modifications' : 'Créer le dossier et programmer les SMS'}
             </button>

@@ -32,7 +32,7 @@ function Bulle({ item, onRenvoyer }) {
               ? 'border border-dashed border-rose-300 bg-rose-50/50 text-slate-600'
               : 'border border-dashed border-navy/20 bg-white/40 text-slate-500'
             : item.libre
-              ? 'rounded-br-md bg-navy text-white shadow-[0_6px_18px_-8px_rgba(147,43,156,0.6)]'
+              ? 'cta-violet rounded-br-md bg-navy text-white shadow-[0_6px_18px_-8px_rgba(147,43,156,0.6)]'
               : 'rounded-bl-md border border-white/80 bg-white/85 text-slate-800 shadow-[0_6px_18px_-10px_rgba(5,28,78,0.25)]'
         }`}
       >
@@ -117,7 +117,7 @@ export default function OngletSms({ patient, cabinet }) {
             <button
               type="submit"
               disabled={!brouillon.trim()}
-              className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white transition-all hover:brightness-110 disabled:opacity-40"
+              className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-6 py-3 text-base font-semibold text-white"
             >
               <Send size={13} /> Envoyer
             </button>

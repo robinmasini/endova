@@ -214,7 +214,7 @@ export default function PatientApp() {
         ))}
         {/* Le jour J clôt l'échéancier : à partir de là, c'est l'équipe d'endoscopie. */}
         <div className="flex items-center gap-4 rounded-xl border border-dashed border-navy/15 p-4">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-navy text-[11px] font-bold text-white">J</span>
+          <span className="cta-violet flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy text-sm font-bold text-white">J</span>
           <span className="min-w-0">
             <span className="block text-sm font-medium text-slate-900">Jour J — votre examen</span>
             <span className="mt-0.5 block text-xs text-slate-600">{jour(date)} à {heure(date)}</span>

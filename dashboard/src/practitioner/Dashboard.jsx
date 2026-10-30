@@ -187,7 +187,7 @@ export default function Dashboard() {
         </Link>
         <Link
           to="/patients/nouveau"
-          className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+          className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
         >
           <Plus size={14} /> Nouveau dossier
         </Link>

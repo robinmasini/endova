@@ -29,7 +29,7 @@ export default function Apercu() {
               aria-current={actif ? 'page' : undefined}
               onClick={() => setParams(v.id === 'suivi' ? {} : { vue: v.id }, { replace: true })}
               className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${
-                actif ? 'border-navy bg-navy font-semibold text-white' : 'border-navy/[0.1] bg-white/70 font-medium text-slate-600 hover:text-navy'
+                actif ? 'cta-violet border-navy bg-navy font-semibold text-white' : 'border-navy/[0.1] bg-white/70 font-medium text-slate-600 hover:text-navy'
               }`}
             >
               <v.icone size={15} /> {v.label}

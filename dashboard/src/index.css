@@ -186,3 +186,28 @@ body::before {
 .espace-patient .text-xl { font-size: 24px; }
 .espace-patient .text-2xl { font-size: 29px; }
 .espace-patient input, .espace-patient textarea { font-size: 18px; }
+
+/* Le violet de la dictée, sur toutes les actions importantes. Un seul geste
+   par écran porte ce dégradé : c'est lui qu'on cherche du regard. Hors calque,
+   il recouvre le fond marine que portaient ces boutons. */
+.cta-violet {
+  background: linear-gradient(90deg, #2B3492 0%, #6A1FD1 55%, #9B19F5 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 10px 24px -12px rgba(106, 31, 209, 0.65);
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cta-violet:hover { filter: brightness(1.08); box-shadow: 0 14px 30px -12px rgba(106, 31, 209, 0.75); }
+.cta-violet:active { transform: scale(0.98); }
+.cta-violet:disabled, .cta-violet[aria-disabled="true"] { filter: saturate(0.4); opacity: 0.5; box-shadow: none; }
+
+/* Tailwind 4 rend le curseur « flèche » aux boutons : au survol, rien ne dit
+   qu'on peut cliquer. Tout ce qui est cliquable reprend la main. */
+button:not(:disabled), [role="button"], a[href], select, summary, label:has(input[type="checkbox"]), label:has(input[type="radio"]) {
+  cursor: pointer;
+}
+button:disabled { cursor: not-allowed; }
+
+/* Les actions violettes réagissent franchement : elles se soulèvent. */
+.cta-violet:not(:disabled):hover { transform: translateY(-1px); }
+.cta-violet:not(:disabled):active { transform: translateY(0) scale(0.98); }

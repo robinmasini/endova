@@ -63,7 +63,7 @@ function Cabinet() {
           </div>
         </div>
         <div className="sm:col-span-2">
-          <button type="submit" className="inline-flex items-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white hover:brightness-125">
+          <button type="submit" className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-6 py-3 text-base font-semibold text-white">
             {ok ? <><Check size={13} /> Enregistré</> : 'Enregistrer'}
           </button>
         </div>

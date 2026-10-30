@@ -141,7 +141,7 @@ export default function ListePatients() {
       <EnTete titre="Patients" question={`${patients.length} dossiers, classés par date d’examen.`}>
         <Link
           to="/patients/nouveau"
-          className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
+          className="cta-violet inline-flex min-h-12 items-center gap-2 rounded-2xl bg-navy px-5 py-3 text-[15px] font-semibold text-white shadow-[0_8px_20px_-10px_rgba(147,43,156,0.7)] transition-all hover:brightness-110"
         >
           <Plus size={18} /> Nouveau dossier
         </Link>
@@ -167,7 +167,7 @@ export default function ListePatients() {
                 onClick={() => setFiltre(f.id)}
                 className={`min-h-11 shrink-0 rounded-full border px-5 py-2.5 text-[15px] font-semibold transition-colors ${
                   filtre === f.id
-                    ? 'border-navy bg-navy text-white'
+                    ? 'cta-violet border-navy bg-navy text-white'
                     : 'border-navy/[0.12] bg-white text-slate-700 hover:text-navy'
                 }`}
               >
@@ -184,7 +184,7 @@ export default function ListePatients() {
               type="button"
               onClick={() => setType(id)}
               className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                type === id ? 'bg-navy text-white' : 'bg-white/60 text-slate-600 hover:text-navy'
+                type === id ? 'cta-violet bg-navy text-white' : 'bg-white/60 text-slate-600 hover:text-navy'
               }`}
             >
               {label}

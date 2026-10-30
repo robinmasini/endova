@@ -50,7 +50,7 @@ function TracerAppel({ patient }) {
           placeholder="Ce qui a été dit, la consigne donnée…"
           className="w-full resize-none rounded-xl border border-navy/[0.1] bg-white/80 p-3 text-sm text-navy outline-none placeholder:text-slate-400 focus:border-navy/50"
         />
-        <button type="submit" className="w-full rounded-xl bg-navy px-4 py-2.5 text-xs font-semibold text-white transition-all hover:brightness-125">
+        <button type="submit" className="cta-violet min-h-12 w-full rounded-2xl bg-navy px-4 py-3 text-base font-semibold text-white">
           {ok ? 'Appel tracé ✓' : 'Enregistrer l’appel'}
         </button>
       </form>

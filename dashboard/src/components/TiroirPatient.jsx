@@ -148,7 +148,7 @@ export default function TiroirPatient({ patient, onFermer }) {
         <div className="space-y-2">
           <Link
             to={`/patients/${patient.id}`}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-white transition-all hover:brightness-110"
+            className="cta-violet flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-navy px-4 py-3 text-base font-semibold text-white"
           >
             <FileText size={15} /> Accéder à la fiche patient
           </Link>

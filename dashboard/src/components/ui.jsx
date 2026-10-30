@@ -51,9 +51,14 @@ export function AnneauScore({ valeur, ton = 'marque', taille = 128, epaisseur = 
 
 export function Bouton({ ton = 'marque', children, className = '', ...rest }) {
   const t = TONS[ton];
+  // L'action principale porte le violet de la marque ; l'ambre reste réservé au
+  // signalement d'un problème, pour qu'il se distingue au premier coup d'œil.
+  const violet = ton === 'marque' || ton === 'emerald';
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200 hover:brightness-[0.97] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:brightness-100 ${t.bord} ${t.fond} ${t.texte} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border px-5 py-3.5 text-base font-semibold transition-all duration-200 active:scale-[0.98] disabled:cursor-not-allowed ${
+        violet ? 'cta-violet' : `hover:brightness-[0.97] disabled:opacity-45 ${t.bord} ${t.fond} ${t.texte}`
+      } ${className}`}
       {...rest}
     >
       {children}
