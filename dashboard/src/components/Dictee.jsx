@@ -23,7 +23,35 @@ const NB_BARRES = 40;
 const PAS_REMPLISSAGE = 550;
 export const DEGRADE = 'linear-gradient(90deg, #2B3492 0%, #6A1FD1 55%, #9B19F5 100%)';
 
-export function brouillon(p) {
+/**
+ * Range chaque phrase dictée dans une rubrique, d'après ses mots. C'est un tri
+ * grossier, en attendant le modèle de rédaction : il évite au médecin de tout
+ * recopier, il ne remplace pas sa relecture.
+ */
+const AIGUILLAGE = [
+  { cle: 'examen', motifs: /abdomen|ventre|souple|palp|toucher rectal|auscult|masse|cicatrice|météoris|défense|sensible|indolore/i },
+  { cle: 'traitements', motifs: /\bmg\b|comprim|traitement|médicament|prend|prise|eliquis|xarelto|kardégic|kardegic|plavix|ozempic|metformine|insuline|fer\b|tardyferon|inhibiteur/i },
+  { cle: 'antecedents', motifs: /antécédent|opéré|chirurgie|appendic|cholécyst|diabète|hypertension|infarctus|cancer|polype|fibrillation|stent|apnée/i },
+  { cle: 'allergies', motifs: /allerg/i },
+  { cle: 'conduite', motifs: /coloscopie|gastroscopie|rectosigmo|on va faire|je vous propose|prescri|préparation|purge|régime|arrêt|anesthés|rendez-vous|contrôle/i },
+];
+
+export function trierDictee(segments) {
+  const tri = { examen: [], traitements: [], antecedents: [], allergies: [], conduite: [], notes: [] };
+  for (const s of segments) {
+    const texte = s.trim();
+    if (!texte) continue;
+    const cible = AIGUILLAGE.find((a) => a.motifs.test(texte));
+    tri[cible ? cible.cle : 'notes'].push(texte.charAt(0).toUpperCase() + texte.slice(1));
+  }
+  return tri;
+}
+
+const phrase = (liste) => liste.map((t) => (/[.!?]$/.test(t) ? t : `${t}.`)).join(' ');
+
+export function brouillon(p, segments = []) {
+  const tri = trierDictee(segments);
+  const avecDictee = (base, cle) => (tri[cle].length ? [base, `Dicté : ${phrase(tri[cle])}`].filter(Boolean).join('\n') : base);
   const ex = examenDe(p);
   const anesth = anesthesieDe(p);
   const protocole = protocoleDe(p);
@@ -38,20 +66,28 @@ export function brouillon(p) {
   if (critiques.length) conduite.push(`${critiques.map((t) => t.label).join(', ')} : arrêt selon la consigne du prescripteur.`);
   conduite.push('Suivi préopératoire par SMS programmé jusqu’au jour de l’examen.');
 
-  return [
+  const rubriques = [
     { cle: 'motif', titre: 'Motif', texte: `${p.examen.indication}.` },
-    { cle: 'antecedents', titre: 'Antécédents', texte: antecedents ? `${antecedents}.` : 'Pas d’antécédent notable.' },
+    { cle: 'antecedents', titre: 'Antécédents', texte: avecDictee(antecedents ? `${antecedents}.` : 'Pas d’antécédent notable.', 'antecedents') },
     {
       cle: 'traitements',
       titre: 'Traitements',
-      texte: traitements.length ? `${traitements.map((t) => `${t.label} (${t.exemples.split(',')[0]})`).join('. ')}.` : 'Aucun traitement à risque.',
+      texte: avecDictee(
+        traitements.length ? `${traitements.map((t) => `${t.label} (${t.exemples.split(',')[0]})`).join('. ')}.` : 'Aucun traitement à risque.',
+        'traitements',
+      ),
     },
-    { cle: 'allergies', titre: 'Allergies', texte: p.terrain.allergies || 'Aucune allergie connue.' },
-    { cle: 'examen', titre: 'Examen clinique', texte: '' },
+    { cle: 'allergies', titre: 'Allergies', texte: avecDictee(p.terrain.allergies || 'Aucune allergie connue.', 'allergies') },
+    { cle: 'examen', titre: 'Examen clinique', texte: phrase(tri.examen) },
     { cle: 'conclusion', titre: 'Conclusion', texte: `Indication de ${ex.label.toLowerCase()} (${anesth.label.toLowerCase()}).` },
-    { cle: 'conduite', titre: 'Conduite à tenir', texte: conduite.join(' ') },
+    { cle: 'conduite', titre: 'Conduite à tenir', texte: avecDictee(conduite.join(' '), 'conduite') },
   ];
+  if (tri.notes.length) rubriques.push({ cle: 'notes', titre: 'Notes de consultation', texte: phrase(tri.notes) });
+  return rubriques;
 }
+
+/** La reconnaissance vocale du navigateur : Chrome et Edge, Safari en partie, pas Firefox. */
+const Reconnaissance = typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : null;
 
 const TITRES = ['Motif', 'Antécédents', 'Traitements', 'Allergies', 'Examen clinique', 'Conclusion', 'Conduite à tenir'];
 
@@ -143,10 +179,19 @@ export default function Dictee({ patient, lienSuivi = true }) {
   const [cr, setCr] = useState(null);
   const [signe, setSigne] = useState(false);
   const [copie, setCopie] = useState(false);
+  const [segments, setSegments] = useState([]);
+  const [interim, setInterim] = useState('');
+  const [erreurTranscription, setErreurTranscription] = useState(null);
   const res = useRef({});
 
   function liberer() {
     const r = res.current;
+    r.actif = false;
+    try {
+      r.reco?.stop();
+    } catch {
+      // déjà arrêtée
+    }
     cancelAnimationFrame(r.raf);
     clearInterval(r.tic);
     clearInterval(r.remplissage);
@@ -166,7 +211,67 @@ export default function Dictee({ patient, lienSuivi = true }) {
     setAudio(null);
     setCr(null);
     setSigne(false);
+    setSegments([]);
+    setInterim('');
   }, [patient?.id]);
+
+  /**
+   * Transcription de démonstration : la reconnaissance vocale du navigateur.
+   * Elle s'arrête d'elle-même après un silence ; on la relance tant que
+   * l'enregistrement tourne.
+   */
+  function lancerTranscription(r) {
+    if (!Reconnaissance) {
+      setErreurTranscription('La transcription en direct fonctionne sur Chrome ou Edge.');
+      return;
+    }
+    const reco = new Reconnaissance();
+    reco.lang = 'fr-FR';
+    reco.continuous = true;
+    reco.interimResults = true;
+    reco.onresult = (e) => {
+      let provisoire = '';
+      for (let i = e.resultIndex; i < e.results.length; i += 1) {
+        const texte = e.results[i][0].transcript.trim();
+        if (e.results[i].isFinal) {
+          if (texte) {
+            r.segments = [...r.segments, texte];
+            setSegments(r.segments);
+          }
+        } else {
+          provisoire += `${texte} `;
+        }
+      }
+      setInterim(provisoire.trim());
+    };
+    reco.onerror = (e) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        r.actif = false;
+        setErreurTranscription('Le navigateur refuse la transcription : autorisez le micro pour ce site.');
+      } else if (e.error === 'network') {
+        r.actif = false;
+        setErreurTranscription('La transcription de démonstration demande une connexion internet.');
+      } else if (e.error === 'audio-capture') {
+        r.actif = false;
+        setErreurTranscription('Aucun micro détecté par le navigateur.');
+      }
+    };
+    reco.onend = () => {
+      if (r.actif) {
+        try {
+          reco.start();
+        } catch {
+          // relance déjà en cours
+        }
+      }
+    };
+    r.reco = reco;
+    try {
+      reco.start();
+    } catch {
+      setErreurTranscription('La transcription n’a pas pu démarrer.');
+    }
+  }
 
   async function demarrer() {
     liberer();
@@ -174,10 +279,16 @@ export default function Dictee({ patient, lienSuivi = true }) {
     setCr(null);
     setSigne(false);
     setSecondes(0);
+    setSegments([]);
+    setInterim('');
+    setErreurTranscription(null);
     const r = res.current;
+    r.actif = true;
+    r.segments = [];
     const debut = Date.now();
     r.tic = setInterval(() => setSecondes(Math.floor((Date.now() - debut) / 1000)), 250);
     setPhase('enregistrement');
+    lancerTranscription(r);
 
     try {
       const flux = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -218,6 +329,9 @@ export default function Dictee({ patient, lienSuivi = true }) {
 
   function arreter() {
     if (res.current.rec?.state === 'recording') res.current.rec.stop();
+    // La phrase en cours de reconnaissance compte aussi : elle n'a pas eu le temps d'être finalisée.
+    const dits = [...(res.current.segments ?? []), ...(interim ? [interim] : [])];
+    setInterim('');
     liberer();
     setNiveaux(Array(NB_BARRES).fill(0));
     setRemplies(0);
@@ -228,7 +342,7 @@ export default function Dictee({ patient, lienSuivi = true }) {
       n += 1;
       if (n > TITRES.length) {
         clearInterval(r.remplissage);
-        setCr(brouillon(patient));
+        setCr(brouillon(patient, dits));
         setPhase('termine');
       } else {
         setRemplies(n);
@@ -313,6 +427,27 @@ export default function Dictee({ patient, lienSuivi = true }) {
             </p>
           </div>
         </div>
+
+        {phase !== 'pret' ? (
+          <div className="flex flex-col gap-2.5 border-t border-[#ECE8F3] pt-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#6B6480]">Transcription en direct</p>
+              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800" title="Reconnaissance vocale du navigateur : l’audio passe par les serveurs de Google.">
+                Démo · ne pas utiliser avec de vrais patients
+              </span>
+            </div>
+            {erreurTranscription ? <p className="text-sm text-[#6B6480]">{erreurTranscription}</p> : null}
+            <div className="flex max-h-56 flex-col gap-1.5 overflow-y-auto" aria-live="polite">
+              {segments.map((s, i) => (
+                <p key={i} className="rounded-xl bg-[#F6F4FA] px-3.5 py-2 text-[14.5px] leading-relaxed text-[#2A2640]">{s}</p>
+              ))}
+              {interim ? <p className="px-3.5 py-1 text-[14.5px] italic text-[#9A93AE]">{interim}…</p> : null}
+              {!segments.length && !interim && !erreurTranscription && enCours ? (
+                <p className="text-sm text-[#9A93AE]">Parlez : vos phrases s’affichent ici.</p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
 
         {micRefuse && enCours ? (
           <p className="rounded-xl bg-[#F6F4FA] px-4 py-3 text-xs text-[#6B6480]">
