@@ -164,3 +164,25 @@ body::before {
 ::-webkit-scrollbar-thumb:hover { background: rgba(5, 28, 78, 0.28); background-clip: content-box; }
 
 ::selection { background: rgba(5, 28, 78, 0.16); }
+
+/* Lisibilité. Le logiciel se lit au cabinet, entre deux patients, souvent sur
+   un téléphone : aucun texte d'interface ne descend sous 12 px, et les tailles
+   courantes montent d'un cran. Ces règles sont hors calque, elles l'emportent
+   sur les utilitaires — un seul endroit pour régler l'échelle de toute l'app. */
+.text-\[9px\], .text-\[9\.5px\], .text-\[10px\], .text-\[10\.5px\] { font-size: 13px; }
+.text-\[11px\], .text-\[11\.5px\], .text-\[12px\], .text-\[12\.5px\], .text-\[13px\] { font-size: 14px; }
+.text-xs { font-size: 14px; line-height: 1.45; }
+.text-sm { font-size: 15.5px; line-height: 1.5; }
+
+/* Espace patient : il est lu par des patients de tous âges, souvent sur un
+   petit téléphone, parfois sans lunettes. Il monte d'un cran de plus que le
+   logiciel du cabinet. */
+.espace-patient .text-\[9px\], .espace-patient .text-\[10px\],
+.espace-patient .text-\[10\.5px\], .espace-patient .text-\[11px\], .espace-patient .text-\[11\.5px\] { font-size: 14px; }
+.espace-patient .text-xs { font-size: 16px; line-height: 1.55; }
+.espace-patient .text-sm { font-size: 17px; line-height: 1.5; }
+.espace-patient .text-base { font-size: 18px; }
+.espace-patient .text-lg { font-size: 21px; }
+.espace-patient .text-xl { font-size: 24px; }
+.espace-patient .text-2xl { font-size: 29px; }
+.espace-patient input, .espace-patient textarea { font-size: 18px; }

@@ -102,11 +102,14 @@ function LigneEtape({ etape, patient, etat, statut, onOuvrir }) {
             : 'border-navy/[0.07] bg-white/55 hover:bg-white/80'
       }`}
     >
-      <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg border ${TONS[ton].bord} ${TONS[ton].fond}`}>
-        {fait ? <Check size={15} className="text-emerald-700" strokeWidth={3} />
-          : verrouille ? <Lock size={14} className="text-slate-600" />
-          : <Jalon taille="xs">{etape.cle(patient)}</Jalon>}
-      </span>
+      {/* L'étape du jour porte son jalon tel quel : dans un carré, il débordait. */}
+      {fait || verrouille ? (
+        <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl border ${TONS[ton].bord} ${TONS[ton].fond}`}>
+          {fait ? <Check size={18} className="text-emerald-700" strokeWidth={3} /> : <Lock size={17} className="text-slate-600" />}
+        </span>
+      ) : (
+        <Jalon taille="s">{etape.cle(patient)}</Jalon>
+      )}
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-slate-900">{etape.titre}</span>
         <span className="mt-0.5 block text-xs text-slate-600">

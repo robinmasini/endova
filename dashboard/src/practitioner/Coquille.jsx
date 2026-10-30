@@ -22,7 +22,7 @@ const GROUPES = [
   },
   {
     titre: 'Consultation',
-    sections: [{ to: '/comptes-rendus', label: 'Comptes rendus', complet: 'Comptes rendus', icone: Mic, mobile: 3 }],
+    sections: [{ to: '/comptes-rendus', label: 'CR', complet: 'Comptes rendus', icone: Mic, mobile: 3 }],
   },
   {
     titre: 'Dossiers',
@@ -63,13 +63,13 @@ function Onglet({ section: { to, fin, label, icone: Icone, compteur }, compteurs
       to={to}
       end={fin}
       className={({ isActive }) =>
-        `flex min-w-0 flex-1 flex-col items-center gap-1 whitespace-nowrap py-2.5 text-[10px] tracking-tight transition-colors ${
+        `flex min-w-0 flex-1 flex-col items-center gap-1 whitespace-nowrap py-3 text-[12px] tracking-tight transition-colors ${
           isActive ? 'font-semibold text-navy' : 'font-medium text-slate-600'
         }`
       }
     >
       <span className="relative">
-        <Icone size={19} />
+        <Icone size={23} />
         {compteurs[compteur] ? (
           <span className="absolute -right-2 -top-1.5 flex min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white">
             {compteurs[compteur]}
@@ -122,7 +122,7 @@ export default function Coquille() {
         <nav className="flex-1 space-y-5 overflow-y-auto px-3">
           {GROUPES.map((g) => (
             <div key={g.titre}>
-              <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{g.titre}</p>
+              <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{g.titre}</p>
               <div className="space-y-0.5">
                 {g.sections.map(({ to, fin, complet, icone: Icone, compteur }) => (
                   <NavLink
@@ -130,14 +130,14 @@ export default function Coquille() {
                     to={to}
                     end={fin}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
+                      `flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] transition-colors ${
                         isActive
                           ? 'bg-navy/[0.07] font-semibold text-navy'
                           : 'font-medium text-slate-700 hover:bg-navy/[0.04] hover:text-navy'
                       }`
                     }
                   >
-                    <Icone size={16} className="shrink-0" />
+                    <Icone size={19} className="shrink-0" />
                     {complet}
                     <Pastille n={compteurs[compteur]} />
                   </NavLink>
@@ -149,13 +149,6 @@ export default function Coquille() {
 
         <div className="border-t border-navy/[0.07] p-3">
           <div className="flex flex-col items-center gap-2 px-2 pb-3">
-            <img
-              src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
-              alt=""
-              aria-hidden="true"
-              className="h-20 w-auto select-none"
-              draggable={false}
-            />
             <p className="w-full text-center text-[11px] leading-relaxed text-slate-500">
               <span className="block truncate font-semibold text-slate-700">{cabinet.nomCourt}</span>
               {patients.length} dossiers en préparation
@@ -194,16 +187,10 @@ export default function Coquille() {
           <img
             src={`${import.meta.env.BASE_URL}endova-glyphe.png`}
             alt="Endova"
-            className="h-12 w-auto select-none"
+            className="h-10 w-auto select-none"
             draggable={false}
           />
-          <span aria-hidden="true" className="h-9 w-px shrink-0 bg-navy/[0.12]" />
-          <img
-            src={`${import.meta.env.BASE_URL}logo-cabinet.png`}
-            alt={cabinet.nomCourt}
-            className="h-11 w-auto select-none"
-            draggable={false}
-          />
+          <span aria-hidden="true" className="font-marque text-[15px] font-semibold tracking-[0.32em] text-navy">ENDOVA</span>
         </div>
 
         {/* Contenu — la marge basse laisse passer le bouton surélevé */}
@@ -241,8 +228,8 @@ export function EnTete({ titre, question, children }) {
   return (
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-navy/[0.07] px-5 pb-5 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] sm:px-8">
       <div className="min-w-0">
-        <h1 className="text-xl font-bold tracking-tight text-navy">{titre}</h1>
-        <p className="mt-1 text-sm text-slate-600">{question}</p>
+        <h1 className="text-[28px] font-bold leading-tight tracking-tight text-navy">{titre}</h1>
+        <p className="mt-1.5 text-base text-slate-600">{question}</p>
       </div>
       {children}
     </header>

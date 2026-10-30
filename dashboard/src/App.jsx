@@ -77,7 +77,7 @@ export default function App() {
         {/* Page commerciale : plein écran, sans coquille ni navigation d'app. */}
         <Route path="/presentation" element={<Presentation />} />
         {/* La PWA patient vit hors de la coquille : plein écran, sans navigation. */}
-        <Route path="/p/:token" element={<PatientApp />} />
+        <Route path="/p/:token" element={<div className="espace-patient"><PatientApp /></div>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -32,7 +32,7 @@ function Data({ libelle, valeur, unite, detail, ton = 'marque', icone, onClick, 
       className={`relative flex aspect-square w-full flex-col rounded-2xl border p-4 text-left backdrop-blur-2xl backdrop-saturate-[180%] transition-all duration-300 sm:aspect-auto sm:p-5 ${peau} ${marque} ${onClick ? 'hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy/40' : ''}`}
     >
       <div className="flex items-start justify-between gap-2 sm:gap-3">
-        <p className="text-[10px] font-semibold uppercase leading-tight tracking-wider text-slate-600 sm:text-[11px]">{libelle}</p>
+        <p className="text-[15px] font-semibold leading-snug text-slate-700">{libelle}</p>
         <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl sm:size-11 ${t.fond} ${t.texte}`}>
           {icone}
         </span>
@@ -41,12 +41,12 @@ function Data({ libelle, valeur, unite, detail, ton = 'marque', icone, onClick, 
           le libellé garde le haut, quelle que soit sa longueur. */}
       <div className="mt-auto pt-3">
         <p className="flex items-baseline gap-1.5">
-          <span className={`text-2xl font-extrabold tracking-tight sm:text-3xl ${ton === 'marque' ? 'text-navy' : t.texte}`}>
+          <span className={`text-[40px] font-extrabold leading-none tracking-tight ${ton === 'marque' ? 'text-navy' : t.texte}`}>
             {valeur}
           </span>
           {unite ? <span className="text-xs font-medium text-slate-600">{unite}</span> : null}
         </p>
-        <p className="mt-1 text-[10px] leading-snug text-slate-600 sm:mt-1.5 sm:text-[11px] sm:leading-relaxed">{detail}</p>
+        <p className="mt-1.5 hidden text-[13px] leading-relaxed text-slate-600 sm:block">{detail}</p>
       </div>
     </Balise>
   );
